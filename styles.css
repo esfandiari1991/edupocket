@@ -1390,23 +1390,129 @@ button {
 }
 
 .vision-orb {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   display: grid;
   place-items: center;
   width: 180px;
   height: 180px;
   border-radius: 50%;
   border: 1px solid rgba(103, 232, 249, 0.2);
-  background: rgba(103, 232, 249, 0.055);
+  background:
+    radial-gradient(circle at 44% 42%, rgba(103, 232, 249, 0.18), transparent 32%),
+    rgba(103, 232, 249, 0.055);
   color: rgba(103, 232, 249, 0.72);
-  box-shadow: inset 0 0 54px rgba(103, 232, 249, 0.08), 0 0 60px rgba(103, 232, 249, 0.12);
+  box-shadow:
+    inset 0 0 54px rgba(103, 232, 249, 0.1),
+    0 0 60px rgba(103, 232, 249, 0.14);
+}
+
+.vision-orb::before,
+.vision-orb::after {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.vision-orb::before {
+  border: 1px solid rgba(103, 232, 249, 0.16);
+  background: conic-gradient(from 0deg, transparent 0 18%, rgba(103, 232, 249, 0.5) 24%, transparent 32% 62%, rgba(45, 212, 191, 0.42) 70%, transparent 78%);
+  -webkit-mask-image: radial-gradient(circle, transparent 58%, #000 60%, #000 64%, transparent 66%);
+  mask-image: radial-gradient(circle, transparent 58%, #000 60%, #000 64%, transparent 66%);
+  animation: missionHaloSpin 14s linear infinite;
+}
+
+.vision-orb::after {
+  inset: 34px;
+  border: 1px solid rgba(134, 239, 172, 0.16);
+  box-shadow: 0 0 34px rgba(103, 232, 249, 0.1);
+  animation: missionBreath 4.8s var(--ease) infinite;
+}
+
+.vision-orbit-ring {
+  position: absolute;
+  inset: 24px;
+  z-index: 1;
+  border: 1px solid rgba(103, 232, 249, 0.18);
+  border-radius: 50%;
+  transform: rotateX(64deg) rotateZ(0deg);
+  animation: missionRingSpin 11s linear infinite;
+}
+
+.vision-orbit-ring.ring-two {
+  inset: 42px;
+  border-color: rgba(45, 212, 191, 0.2);
+  transform: rotateX(64deg) rotateY(18deg) rotateZ(0deg);
+  animation: missionRingSpinTwo 8s linear infinite;
+}
+
+.vision-node {
+  --node-distance: 74px;
+  --node-start: 0deg;
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: #67e8f9;
+  box-shadow: 0 0 18px rgba(103, 232, 249, 0.9);
+  transform: translate(-50%, -50%) rotate(var(--node-start)) translateX(var(--node-distance));
+  animation: missionNodeOrbit 9s linear infinite;
+}
+
+.vision-node.node-two {
+  --node-distance: 54px;
+  --node-start: 128deg;
+  width: 7px;
+  height: 7px;
+  background: #86efac;
+  box-shadow: 0 0 18px rgba(134, 239, 172, 0.86);
+  animation-duration: 12s;
+  animation-delay: -3s;
+}
+
+.vision-node.node-three {
+  --node-distance: 66px;
+  --node-start: 244deg;
+  width: 6px;
+  height: 6px;
+  background: #f0abfc;
+  box-shadow: 0 0 18px rgba(240, 171, 252, 0.82);
+  animation-duration: 15s;
+  animation-direction: reverse;
 }
 
 .vision-orb svg {
+  position: relative;
+  z-index: 2;
   width: 130px;
   height: 130px;
   stroke: currentColor;
   stroke-width: 1.25;
   fill: none;
+  filter: drop-shadow(0 0 14px rgba(103, 232, 249, 0.34));
+  animation: missionGlyphFloat 6s var(--ease) infinite;
+}
+
+.vision-orb svg circle:first-child {
+  stroke-dasharray: 12 16;
+  animation: missionDash 12s linear infinite;
+}
+
+.vision-orb svg circle:nth-child(2) {
+  stroke-dasharray: 7 11;
+  animation: missionDashReverse 8s linear infinite;
+}
+
+.vision-orb svg path {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: missionGridSpin 28s linear infinite;
 }
 
 .hanalingoland-section {
@@ -2107,6 +2213,70 @@ button {
   }
 }
 
+@keyframes missionHaloSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes missionBreath {
+  0%,
+  100% {
+    opacity: 0.52;
+    transform: scale(0.94);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes missionRingSpin {
+  to {
+    transform: rotateX(64deg) rotateZ(360deg);
+  }
+}
+
+@keyframes missionRingSpinTwo {
+  to {
+    transform: rotateX(64deg) rotateY(18deg) rotateZ(-360deg);
+  }
+}
+
+@keyframes missionNodeOrbit {
+  to {
+    transform: translate(-50%, -50%) rotate(calc(var(--node-start) + 360deg)) translateX(var(--node-distance));
+  }
+}
+
+@keyframes missionGlyphFloat {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.025);
+  }
+}
+
+@keyframes missionDash {
+  to {
+    stroke-dashoffset: -140;
+  }
+}
+
+@keyframes missionDashReverse {
+  to {
+    stroke-dashoffset: 120;
+  }
+}
+
+@keyframes missionGridSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (max-width: 1100px) {
   .hero-title {
     font-size: 3.75rem;
@@ -2193,6 +2363,18 @@ button {
   .vision-orb {
     width: 150px;
     height: 150px;
+  }
+
+  .vision-node {
+    --node-distance: 60px;
+  }
+
+  .vision-node.node-two {
+    --node-distance: 44px;
+  }
+
+  .vision-node.node-three {
+    --node-distance: 54px;
   }
 
   .footer-grid {
