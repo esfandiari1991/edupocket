@@ -962,6 +962,266 @@ button {
   font-weight: 850;
 }
 
+.asset-section {
+  padding-top: 72px;
+}
+
+.asset-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 0.72fr) minmax(360px, 1fr);
+  align-items: center;
+  gap: 42px;
+}
+
+.asset-copy {
+  min-width: 0;
+}
+
+.asset-copy h2 {
+  max-width: 720px;
+  margin: 0;
+  color: #ffffff;
+  font-size: 2.55rem;
+  font-weight: 850;
+  line-height: 1.08;
+}
+
+.asset-copy p {
+  max-width: 690px;
+  margin: 18px 0 0;
+  color: var(--muted-strong);
+  font-size: 1.03rem;
+  line-height: 1.8;
+}
+
+.asset-board {
+  position: relative;
+  min-height: 470px;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 34px;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(45, 212, 191, 0.18), transparent 32%),
+    radial-gradient(circle at 82% 72%, rgba(192, 132, 252, 0.15), transparent 34%),
+    rgba(255, 255, 255, 0.045);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(24px);
+  padding: 22px;
+}
+
+.asset-board::before {
+  content: "";
+  position: absolute;
+  inset: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  pointer-events: none;
+}
+
+.asset-orbit {
+  position: absolute;
+  inset: 52px;
+  display: grid;
+  place-items: center;
+  color: rgba(103, 232, 249, 0.5);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.asset-orbit svg {
+  width: min(74%, 300px);
+  height: auto;
+  stroke: currentColor;
+  stroke-width: 1.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  filter: drop-shadow(0 0 28px rgba(103, 232, 249, 0.2));
+}
+
+.asset-orbit rect {
+  stroke: rgba(255, 255, 255, 0.42);
+  stroke-width: 2;
+}
+
+.asset-route-card {
+  position: absolute;
+  width: min(260px, calc(50% - 28px));
+  min-width: 0;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 22px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.04)),
+    rgba(2, 6, 23, 0.52);
+  box-shadow: 0 18px 52px rgba(0, 0, 0, 0.3);
+  padding: 17px;
+}
+
+.asset-route-card.primary {
+  top: 22px;
+  left: 22px;
+  border-color: rgba(45, 212, 191, 0.34);
+}
+
+.asset-route-card:not(.primary):not(.purple):not(.amber) {
+  top: 22px;
+  right: 22px;
+}
+
+.asset-route-card.purple {
+  right: 22px;
+  bottom: 22px;
+  border-color: rgba(232, 121, 249, 0.3);
+}
+
+.asset-route-card.amber {
+  left: 22px;
+  bottom: 22px;
+  border-color: rgba(251, 191, 36, 0.3);
+}
+
+.asset-route-card span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  border: 1px solid rgba(103, 232, 249, 0.16);
+  border-radius: 999px;
+  background: rgba(103, 232, 249, 0.06);
+  color: var(--cyan);
+  padding: 3px 9px;
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.asset-route-card.purple span {
+  border-color: rgba(232, 121, 249, 0.2);
+  background: rgba(232, 121, 249, 0.08);
+  color: #f0abfc;
+}
+
+.asset-route-card.amber span {
+  border-color: rgba(251, 191, 36, 0.2);
+  background: rgba(251, 191, 36, 0.08);
+  color: var(--amber);
+}
+
+.asset-route-card strong {
+  display: block;
+  margin-top: 14px;
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.asset-route-card small {
+  display: block;
+  margin-top: 7px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.routes-section {
+  padding-top: 40px;
+}
+
+.routes-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.route-card {
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+  min-height: 360px;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 24% 0%, rgba(45, 212, 191, 0.12), transparent 30%),
+    rgba(255, 255, 255, 0.045);
+  padding: 22px;
+}
+
+.route-card::before {
+  content: "";
+  position: absolute;
+  inset: auto 18px 18px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(103, 232, 249, 0.42), transparent);
+}
+
+.route-card-future {
+  background:
+    radial-gradient(circle at 24% 0%, rgba(244, 114, 182, 0.14), transparent 30%),
+    rgba(255, 255, 255, 0.045);
+}
+
+.route-topline {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.route-topline > span:last-child {
+  min-width: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 850;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.route-card h3 {
+  margin: 28px 0 0;
+  color: #ffffff;
+  font-size: 1.32rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.route-card p {
+  margin: 12px 0 0;
+  color: var(--muted-strong);
+  line-height: 1.65;
+}
+
+.route-steps {
+  display: grid;
+  gap: 10px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.route-steps li {
+  position: relative;
+  min-width: 0;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 14px;
+  background: rgba(2, 6, 23, 0.28);
+  color: #dbeafe;
+  padding: 10px 12px 10px 34px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.route-steps li::before {
+  content: "";
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--cyan);
+  box-shadow: 0 0 16px rgba(103, 232, 249, 0.7);
+  transform: translateY(-50%);
+}
+
 .split-layout {
   display: grid;
   grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
@@ -1503,7 +1763,8 @@ button {
   }
 
   .course-strip,
-  .collab-grid {
+  .collab-grid,
+  .routes-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -1536,10 +1797,16 @@ button {
   }
 
   .hero-grid,
+  .asset-shell,
   .split-layout,
   .hanalingoland-grid,
   .contact-grid {
     grid-template-columns: 1fr;
+  }
+
+  .asset-board {
+    width: min(100%, 720px);
+    margin: 0 auto;
   }
 
   .hero-visual {
@@ -1588,8 +1855,41 @@ button {
     width: min(100% - 28px, var(--container));
   }
 
+  .hero-copy {
+    display: contents;
+  }
+
   .hero-grid {
-    gap: 40px;
+    gap: 24px;
+  }
+
+  .hero-logo-row {
+    order: 1;
+  }
+
+  .hero-title {
+    order: 2;
+    margin-top: 0;
+  }
+
+  .hero-lede {
+    order: 3;
+    margin-top: 0;
+  }
+
+  .hero-actions {
+    order: 4;
+    margin-top: 2px;
+  }
+
+  .hero-visual {
+    order: 5;
+  }
+
+  .country-panel {
+    order: 6;
+    max-width: none;
+    margin-top: 0;
   }
 
   .hero-title {
@@ -1607,6 +1907,7 @@ button {
 
   .section-copy h2,
   .section-heading h2,
+  .asset-copy h2,
   .vision-panel h2,
   .hanalingoland-copy h2,
   .contact-copy h2 {
@@ -1615,9 +1916,41 @@ button {
 
   .teacher-grid,
   .course-strip,
+  .routes-grid,
   .collab-grid,
   .contact-cards {
     grid-template-columns: 1fr;
+  }
+
+  .asset-board {
+    display: grid;
+    min-height: auto;
+    gap: 12px;
+    padding: 18px;
+  }
+
+  .asset-board::before {
+    inset: 14px;
+  }
+
+  .asset-orbit {
+    position: relative;
+    inset: auto;
+    min-height: 190px;
+  }
+
+  .asset-orbit svg {
+    width: min(68%, 240px);
+  }
+
+  .asset-route-card,
+  .asset-route-card.primary,
+  .asset-route-card:not(.primary):not(.purple):not(.amber),
+  .asset-route-card.purple,
+  .asset-route-card.amber {
+    position: relative;
+    inset: auto;
+    width: 100%;
   }
 
   .course-card {
@@ -1642,7 +1975,7 @@ button {
   }
 
   .hero-title {
-    font-size: 2.35rem;
+    font-size: 2.2rem;
   }
 
   .hero-logo-row {
@@ -1651,10 +1984,20 @@ button {
     line-height: 1.4;
   }
 
+  .hero-section {
+    padding-top: 48px;
+    padding-bottom: 58px;
+  }
+
+  .hero-grid {
+    gap: 20px;
+  }
+
   .hero-actions,
   .hanalingoland-actions {
     display: grid;
     grid-template-columns: 1fr;
+    gap: 10px;
   }
 
   .btn,
@@ -1664,7 +2007,7 @@ button {
   }
 
   .country-panel {
-    padding: 12px;
+    padding: 11px;
   }
 
   .country-panel ul {
@@ -1684,9 +2027,9 @@ button {
   }
 
   .mentor-photo-card {
-    min-height: 408px;
+    min-height: 372px;
     border-radius: 24px;
-    margin-top: 18px;
+    margin-top: 16px;
   }
 
   .mentor-photo-card::after {
@@ -1732,6 +2075,7 @@ button {
 
   .section-copy h2,
   .section-heading h2,
+  .asset-copy h2,
   .vision-panel h2,
   .hanalingoland-copy h2,
   .contact-copy h2 {
@@ -1740,6 +2084,7 @@ button {
 
   .section-copy p,
   .section-heading p,
+  .asset-copy p,
   .vision-panel p,
   .hanalingoland-copy p,
   .contact-copy p {
