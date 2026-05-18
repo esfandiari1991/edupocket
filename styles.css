@@ -1614,6 +1614,10 @@ button {
   font-size: 0.85rem;
 }
 
+.form-note:empty {
+  display: none;
+}
+
 .form-note.is-success {
   color: var(--green);
 }

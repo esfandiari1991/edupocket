@@ -233,7 +233,7 @@
       const subject = encodeURIComponent("eduPocket waitlist request");
       const body = encodeURIComponent(`Please add me to the eduPocket waitlist.\n\nEmail: ${email}`);
 
-      message.textContent = "Opening your email app with a ready-to-send waitlist request.";
+      message.textContent = "Opening your email app now.";
       message.classList.remove("is-error");
       message.classList.add("is-success");
 
