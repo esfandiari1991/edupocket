@@ -213,14 +213,14 @@ button {
 .brand-lockup {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   min-width: 0;
 }
 
 .brand-mark {
-  width: 48px;
-  height: 48px;
-  flex: 0 0 48px;
+  width: 58px;
+  height: 58px;
+  flex: 0 0 58px;
 }
 
 .brand-mark.small {
@@ -237,14 +237,16 @@ button {
 
 .brand-name {
   color: var(--text);
-  font-size: 1rem;
-  font-weight: 800;
+  font-size: 1.13rem;
+  font-weight: 900;
+  letter-spacing: 0;
 }
 
 .brand-subtitle {
-  margin-top: 3px;
+  margin-top: 4px;
   color: var(--muted);
-  font-size: 0.73rem;
+  font-size: 0.79rem;
+  font-weight: 650;
 }
 
 .desktop-links {
@@ -2714,9 +2716,9 @@ button {
   }
 
   .brand-mark {
-    width: 42px;
-    height: 42px;
-    flex-basis: 42px;
+    width: 48px;
+    height: 48px;
+    flex-basis: 48px;
   }
 
   .hero-title {
