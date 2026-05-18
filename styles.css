@@ -745,6 +745,28 @@ button {
   margin-top: 4px;
 }
 
+.mentor-photo-copy .credential-pill {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin-top: 10px;
+  border: 1px solid rgba(134, 239, 172, 0.42);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 18% 20%, rgba(134, 239, 172, 0.22), transparent 44%),
+    linear-gradient(135deg, rgba(20, 184, 166, 0.2), rgba(16, 185, 129, 0.1));
+  box-shadow:
+    0 0 24px rgba(134, 239, 172, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  color: #bbf7d0;
+  padding: 7px 11px;
+  font-size: 0.78rem;
+  font-weight: 950;
+  letter-spacing: 0;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
 .mentor-photo-copy small {
   max-width: 300px;
   color: var(--muted);
@@ -2736,6 +2758,12 @@ button {
     bottom: 12px;
     border-radius: 18px;
     padding: 14px;
+  }
+
+  .mentor-photo-copy .credential-pill {
+    margin-top: 8px;
+    padding: 7px 10px;
+    font-size: 0.72rem;
   }
 
   .orbital-system {
