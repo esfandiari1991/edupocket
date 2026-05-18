@@ -1411,26 +1411,121 @@ button {
 
 .hanalingoland-section {
   position: relative;
+  overflow: hidden;
 }
 
 .hanalingoland-section::before {
   content: "";
   position: absolute;
-  inset: 8% 0 auto auto;
-  width: min(62vw, 760px);
-  height: 520px;
-  border-radius: 999px;
-  background: radial-gradient(circle, rgba(217, 70, 239, 0.18), transparent 68%);
-  filter: blur(30px);
+  inset: 6% -12% 8% 28%;
+  background:
+    linear-gradient(120deg, rgba(56, 189, 248, 0.12), transparent 30%),
+    radial-gradient(ellipse at 58% 42%, rgba(217, 70, 239, 0.22), transparent 62%),
+    radial-gradient(ellipse at 88% 76%, rgba(103, 232, 249, 0.14), transparent 58%);
+  filter: blur(24px);
+  opacity: 0.96;
+  pointer-events: none;
+}
+
+.hanalingoland-section::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(232, 121, 249, 0.44), rgba(103, 232, 249, 0.3), transparent);
   pointer-events: none;
 }
 
 .hanalingoland-grid {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(320px, 1fr);
+  grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.08fr);
   align-items: center;
-  gap: 46px;
+  gap: 54px;
+}
+
+.hll-brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.hll-brand-lockup > div {
+  min-width: 0;
+}
+
+.hll-brand-lockup .section-kicker {
+  margin-bottom: 5px;
+}
+
+.hll-brand-lockup strong {
+  display: block;
+  color: #fdf4ff;
+  font-size: 0.92rem;
+  font-weight: 850;
+  line-height: 1.25;
+}
+
+.hll-logo-mark {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 66px;
+  height: 66px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow:
+    0 0 0 1px rgba(232, 121, 249, 0.2),
+    0 18px 56px rgba(168, 85, 247, 0.32);
+}
+
+.hll-logo-mark svg {
+  width: 100%;
+  height: 100%;
+}
+
+.hll-instagram-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.hll-instagram-strip span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  border: 1px solid rgba(232, 121, 249, 0.18);
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, rgba(232, 121, 249, 0.11), rgba(56, 189, 248, 0.055)),
+    rgba(255, 255, 255, 0.04);
+  color: #fce7f3;
+  padding: 9px 12px;
+  font-size: 0.84rem;
+  font-weight: 850;
+}
+
+.hll-instagram-strip svg {
+  width: 17px;
+  height: 17px;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+.hll-instagram-button {
+  background:
+    linear-gradient(135deg, rgba(219, 39, 119, 0.48), rgba(168, 85, 247, 0.36), rgba(56, 189, 248, 0.18)),
+    rgba(255, 255, 255, 0.07);
+  box-shadow:
+    0 18px 70px rgba(219, 39, 119, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .hanalingoland-actions {
@@ -1443,56 +1538,307 @@ button {
 .hanalingoland-card {
   position: relative;
   overflow: hidden;
+  min-width: 0;
+  min-height: 590px;
   border-color: rgba(232, 121, 249, 0.28);
-  border-radius: 34px;
+  border-radius: 36px;
   background:
-    radial-gradient(circle at 18% 8%, rgba(232, 121, 249, 0.24), transparent 32%),
-    radial-gradient(circle at 78% 80%, rgba(103, 232, 249, 0.14), transparent 28%),
-    rgba(12, 10, 28, 0.78);
-  padding: 28px;
+    linear-gradient(145deg, rgba(255, 255, 255, 0.105), rgba(255, 255, 255, 0.035)),
+    radial-gradient(ellipse at 24% 4%, rgba(232, 121, 249, 0.28), transparent 38%),
+    radial-gradient(ellipse at 82% 64%, rgba(56, 189, 248, 0.16), transparent 34%),
+    rgba(10, 9, 30, 0.86);
+  padding: 30px;
+  box-shadow:
+    0 30px 100px rgba(2, 6, 23, 0.44),
+    0 0 92px rgba(168, 85, 247, 0.14);
 }
 
-.halo-language-map {
+.hanalingoland-card::before {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.075);
+  border-radius: 28px;
+  pointer-events: none;
+}
+
+.hanalingoland-card::after {
+  content: "";
+  position: absolute;
+  inset: -42% -20% auto;
+  height: 58%;
+  background: conic-gradient(from 150deg, transparent, rgba(232, 121, 249, 0.22), rgba(56, 189, 248, 0.16), transparent);
+  filter: blur(36px);
+  opacity: 0.72;
+  animation: slowDrift 11s var(--ease) infinite alternate;
+  pointer-events: none;
+}
+
+.hanalingoland-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.hll-orbit-stage {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin-bottom: 76px;
-}
-
-.halo-language-map span {
-  min-height: 76px;
-  display: grid;
   place-items: center;
-  border: 1px solid rgba(232, 121, 249, 0.2);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.06);
-  color: #fdf4ff;
-  font-weight: 850;
+  min-height: 292px;
+  margin: 2px 0 18px;
 }
 
-.hanalingoland-title {
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  padding-top: 22px;
+.hll-orbit-path {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(78%, 320px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(232, 121, 249, 0.24);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: orbitSpin 18s linear infinite;
 }
 
-.hanalingoland-title strong {
-  display: block;
+.hll-orbit-path::before,
+.hll-orbit-path::after {
+  content: "";
+  position: absolute;
+  inset: 18%;
+  border: 1px solid rgba(103, 232, 249, 0.12);
+  border-radius: inherit;
+}
+
+.hll-orbit-path i {
+  position: absolute;
+  left: 50%;
+  top: -6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #f0abfc;
+  box-shadow: 0 0 22px rgba(240, 171, 252, 0.9);
+  transform: translateX(-50%);
+}
+
+.hll-orbit-path.path-two {
+  width: min(64%, 258px);
+  border-color: rgba(103, 232, 249, 0.2);
+  animation-duration: 13s;
+  animation-direction: reverse;
+}
+
+.hll-orbit-path.path-two i {
+  background: #67e8f9;
+  box-shadow: 0 0 22px rgba(103, 232, 249, 0.86);
+}
+
+.hll-orbit-path.path-three {
+  width: min(48%, 196px);
+  border-color: rgba(251, 113, 133, 0.18);
+  animation-duration: 9s;
+}
+
+.hll-orbit-path.path-three i {
+  background: #fb7185;
+  box-shadow: 0 0 22px rgba(251, 113, 133, 0.78);
+}
+
+.hll-logo-large {
+  display: grid;
+  justify-items: center;
+  gap: 9px;
+  text-align: center;
+}
+
+.hll-logo-large .hll-logo-mark {
+  width: 102px;
+  height: 102px;
+  border-radius: 34px;
+  animation: pulseRing 3.6s var(--ease) infinite;
+}
+
+.hll-logo-large strong {
   color: #ffffff;
-  font-size: 2.2rem;
-  font-weight: 900;
+  font-size: clamp(1.55rem, 3vw, 2.4rem);
+  font-weight: 950;
+  letter-spacing: 0;
   line-height: 1;
 }
 
-.hanalingoland-title small {
+.hll-logo-large small {
   display: block;
-  margin-top: 8px;
-  color: #e9d5ff;
+  color: #f0abfc;
+  font-weight: 850;
 }
 
-.hanalingoland-card p {
-  margin: 18px 0 0;
+.hll-story-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.hll-story-row span {
+  min-width: 0;
+  border: 1px solid rgba(232, 121, 249, 0.18);
+  border-radius: 18px;
+  background:
+    linear-gradient(145deg, rgba(232, 121, 249, 0.12), rgba(56, 189, 248, 0.055)),
+    rgba(255, 255, 255, 0.045);
+  padding: 13px 10px;
+  text-align: center;
+}
+
+.hll-story-row b,
+.hll-story-row small {
+  display: block;
+  min-width: 0;
+}
+
+.hll-story-row b {
+  color: #ffffff;
+  font-size: 0.88rem;
+  font-weight: 900;
+}
+
+.hll-story-row small {
+  margin-top: 3px;
+  color: #e9d5ff;
+  font-size: 0.72rem;
+  line-height: 1.25;
+}
+
+.hll-feed-board {
+  margin-top: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 24px;
+  background: rgba(2, 6, 23, 0.26);
+  padding: 18px;
+}
+
+.hll-feed-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.hll-feed-head strong,
+.hll-feed-head small {
+  display: block;
+}
+
+.hll-feed-head strong {
+  color: #ffffff;
+  font-size: 1.02rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.hll-feed-head small {
+  margin-top: 4px;
   color: var(--muted-strong);
+  font-size: 0.84rem;
+  line-height: 1.35;
+}
+
+.hll-feed-head svg {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 auto;
+  stroke: #f0abfc;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+.hll-reel-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.hll-reel-grid span {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  min-height: 58px;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.045);
+  color: #fdf4ff;
+  padding: 11px 12px;
+  font-size: 0.84rem;
+  font-weight: 850;
+  line-height: 1.25;
+}
+
+.hll-reel-grid svg {
+  width: 19px;
+  height: 19px;
+  flex: 0 0 auto;
+  stroke: #67e8f9;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+.hll-follow-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 12px;
+  border: 1px solid rgba(244, 114, 182, 0.32);
+  border-radius: 20px;
+  background:
+    linear-gradient(135deg, rgba(219, 39, 119, 0.24), rgba(168, 85, 247, 0.2), rgba(56, 189, 248, 0.08)),
+    rgba(255, 255, 255, 0.055);
+  color: #ffffff;
+  padding: 14px;
+  transition:
+    transform 180ms var(--ease),
+    border-color 180ms var(--ease),
+    box-shadow 180ms var(--ease);
+}
+
+.hll-follow-banner:hover {
+  border-color: rgba(244, 114, 182, 0.72);
+  box-shadow: 0 16px 48px rgba(219, 39, 119, 0.22);
+  transform: translateY(-2px);
+}
+
+.hll-follow-banner strong,
+.hll-follow-banner small {
+  display: block;
+}
+
+.hll-follow-banner strong {
+  font-size: 0.98rem;
+  font-weight: 950;
+  line-height: 1.2;
+}
+
+.hll-follow-banner small {
+  margin-top: 3px;
+  color: #fce7f3;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.hll-follow-banner svg {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
 }
 
 .collab-grid {
@@ -1836,6 +2182,14 @@ button {
     grid-template-columns: 1fr;
   }
 
+  .hanalingoland-grid {
+    gap: 34px;
+  }
+
+  .hanalingoland-card {
+    min-height: auto;
+  }
+
   .vision-orb {
     width: 150px;
     height: 150px;
@@ -1961,6 +2315,14 @@ button {
     min-height: auto;
   }
 
+  .hll-orbit-stage {
+    min-height: 250px;
+  }
+
+  .hll-story-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .halo-language-map {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     margin-bottom: 42px;
@@ -2002,6 +2364,23 @@ button {
     display: grid;
     grid-template-columns: 1fr;
     gap: 10px;
+  }
+
+  .hll-brand-lockup {
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .hll-logo-mark {
+    width: 56px;
+    height: 56px;
+    border-radius: 20px;
+  }
+
+  .hll-instagram-strip {
+    display: grid;
+    grid-template-columns: 1fr;
   }
 
   .btn,
@@ -2114,6 +2493,34 @@ button {
 
   .hanalingoland-title strong {
     font-size: 1.72rem;
+  }
+
+  .hll-orbit-stage {
+    min-height: 214px;
+    margin-top: 0;
+  }
+
+  .hll-logo-large .hll-logo-mark {
+    width: 84px;
+    height: 84px;
+    border-radius: 28px;
+  }
+
+  .hll-story-row,
+  .hll-reel-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hll-feed-board {
+    padding: 14px;
+  }
+
+  .hll-follow-banner {
+    align-items: flex-start;
+  }
+
+  .hll-feed-head {
+    align-items: center;
   }
 }
 
