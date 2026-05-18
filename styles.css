@@ -265,12 +265,43 @@ button {
   font-weight: 650;
   transition:
     color 180ms var(--ease),
-    background 180ms var(--ease);
+    background 180ms var(--ease),
+    border-color 180ms var(--ease),
+    box-shadow 180ms var(--ease),
+    text-shadow 180ms var(--ease);
 }
 
 .desktop-links a:hover,
 .desktop-links a.is-active {
   background: rgba(103, 232, 249, 0.1);
+  color: #ffffff;
+}
+
+.desktop-links a.hll-nav-link {
+  border: 1px solid rgba(255, 56, 96, 0.38);
+  background:
+    radial-gradient(circle at 20% 10%, rgba(255, 255, 255, 0.22), transparent 38%),
+    linear-gradient(135deg, rgba(255, 41, 96, 0.2), rgba(217, 70, 239, 0.12));
+  box-shadow:
+    0 0 22px rgba(255, 45, 95, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  color: #ffd6df;
+  font-weight: 900;
+  text-shadow:
+    0 0 12px rgba(255, 56, 96, 0.7),
+    0 0 26px rgba(217, 70, 239, 0.34);
+}
+
+.desktop-links a.hll-nav-link:hover,
+.desktop-links a.hll-nav-link.is-active {
+  border-color: rgba(255, 117, 143, 0.72);
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.32), transparent 38%),
+    linear-gradient(135deg, rgba(255, 41, 96, 0.34), rgba(217, 70, 239, 0.18));
+  box-shadow:
+    0 0 32px rgba(255, 45, 95, 0.38),
+    0 0 42px rgba(217, 70, 239, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
   color: #ffffff;
 }
 
@@ -368,6 +399,24 @@ button {
 .mobile-menu a:hover,
 .mobile-menu a.is-active {
   background: rgba(103, 232, 249, 0.09);
+  color: #ffffff;
+}
+
+.mobile-menu a.hll-nav-link {
+  border: 1px solid rgba(255, 56, 96, 0.34);
+  background:
+    radial-gradient(circle at 12% 12%, rgba(255, 255, 255, 0.18), transparent 42%),
+    linear-gradient(135deg, rgba(255, 41, 96, 0.18), rgba(217, 70, 239, 0.12));
+  box-shadow: 0 0 24px rgba(255, 45, 95, 0.2);
+  color: #ffd6df;
+  text-shadow: 0 0 16px rgba(255, 56, 96, 0.56);
+}
+
+.mobile-menu a.hll-nav-link:hover,
+.mobile-menu a.hll-nav-link.is-active {
+  background:
+    radial-gradient(circle at 12% 12%, rgba(255, 255, 255, 0.26), transparent 42%),
+    linear-gradient(135deg, rgba(255, 41, 96, 0.3), rgba(217, 70, 239, 0.16));
   color: #ffffff;
 }
 
@@ -2254,6 +2303,15 @@ button {
 
 .footer-links a:hover {
   color: var(--cyan);
+}
+
+.footer-links a.hll-nav-link {
+  color: #ff8ba4;
+  text-shadow: 0 0 18px rgba(255, 56, 96, 0.42);
+}
+
+.footer-links a.hll-nav-link:hover {
+  color: #ffffff;
 }
 
 .footer-note {
