@@ -42,6 +42,12 @@ vercel --prod
 
 If a Vercel login is required, run `vercel login` first.
 
+Current Vercel production URL:
+
+```text
+https://edupocket-rho.vercel.app
+```
+
 ## Folder structure
 
 - `.git`: project history
@@ -77,9 +83,9 @@ Podcast audio files go in `public/audio`. The podcast script creates an `audioSr
 - `featured: true` includes the item in featured homepage sections.
 - Tags generate `/tags/[tag]` routes automatically.
 
-## Custom domain later
+## Production URL later
 
-The app can use `NEXT_PUBLIC_SITE_URL` for canonical metadata and sitemap URLs. Set it to the final production URL in Vercel when the domain is ready.
+The app can use `NEXT_PUBLIC_SITE_URL` for canonical metadata and sitemap URLs. Set it in Vercel if the production URL changes.
 
 ## Future upgrade ideas
 

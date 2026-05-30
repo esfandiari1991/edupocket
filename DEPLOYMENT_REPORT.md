@@ -2,7 +2,7 @@
 
 ## Status
 
-Build verified locally from the clean OpenAI/Codex workspace. GitHub and Vercel steps are in progress.
+Production build complete, committed, pushed to GitHub, deployed to Vercel, and verified live.
 
 ## Local path
 
@@ -21,7 +21,7 @@ Previous local prototype/workspace was found at /Users/ali/Documents/Claude/Proj
 
 ## Environment
 
-- Date/time: 2026-05-30 15:15:55 EEST
+- Date/time: 2026-05-30 15:31:12 EEST
 - Node: v25.5.0
 - npm: 11.8.0
 - pnpm: 10.28.2
@@ -38,6 +38,10 @@ pnpm lint
 pnpm check
 pnpm build
 pnpm verify:routes
+vercel login
+vercel link --yes --project edupocket
+vercel --prod --yes
+/usr/bin/curl -I -L
 ```
 
 Visual QA screenshots were captured with Google Chrome headless because the Browser/Kapture extension did not connect.
@@ -69,20 +73,39 @@ Visual QA screenshots were captured with Google Chrome headless because the Brow
 
 ## GitHub status
 
-Pending.
+- Repository: `https://github.com/esfandiari1991/edupocket`
+- Branch pushed: `feature/edupocket-final-by-codex`
+- Initial production build commit: `fb3151d`
+- Vercel GitHub integration: connected during Vercel project linking.
 
 ## Vercel status
 
-Pending.
+- Project: `arads-projects-dad3a535/edupocket`
+- Deploy command: `vercel --prod --yes`
+- Build status: passed
+- Inspect URL: `https://vercel.com/arads-projects-dad3a535/edupocket/Fx125YxyrG2vGJuXshydLJQRXE5L`
+- Note: the first Vercel deploy attempt failed because the local folder name contains uppercase letters and Vercel project names must be lowercase. The project was linked explicitly as `edupocket`, then production deployment succeeded.
 
 ## Production URL
 
-Pending.
+- Stable production alias: `https://edupocket-rho.vercel.app`
+- Immutable production deployment URL: `https://edupocket-2s578wrgb-arads-projects-dad3a535.vercel.app`
 
 ## Live verification
 
-Pending.
+Verified with `/usr/bin/curl -I -L`:
+
+- `200` `https://edupocket-rho.vercel.app/`
+- `200` `https://edupocket-rho.vercel.app/articles`
+- `200` `https://edupocket-rho.vercel.app/lessons`
+- `200` `https://edupocket-rho.vercel.app/podcasts`
+- `200` `https://edupocket-rho.vercel.app/about`
+- `200` `https://edupocket-rho.vercel.app/articles/getting-started-with-ai-learning`
+- `200` `https://edupocket-rho.vercel.app/lessons/the-a-r-e-speaking-framework`
+- `200` `https://edupocket-rho.vercel.app/podcasts/how-to-learn-with-ai-without-becoming-lazy`
+- `200` `https://edupocket-rho.vercel.app/sitemap.xml`
+- `200` `https://edupocket-rho.vercel.app/robots.txt`
 
 ## Blockers
 
-None yet.
+None.
