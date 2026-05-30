@@ -17,7 +17,7 @@ export function Hero() {
       <Container className="py-12 sm:py-16 lg:py-20">
         <div className="grid gap-10 lg:grid-cols-12 lg:items-center">
           <div className="relative z-10 min-w-0 lg:col-span-7">
-            <h1 className="max-w-4xl text-[2.35rem] font-semibold leading-[1.05] text-white sm:text-5xl lg:text-6xl">
+            <h1 className="type-display max-w-4xl text-[2.35rem] font-semibold leading-[1.08] text-white sm:text-5xl lg:text-6xl">
             <LocalizedText
               en={
                 <>
@@ -27,7 +27,7 @@ export function Hero() {
               fa="یادگیری عملی، کوچینگ مستقیم، و سیستم های انگلیسی با کمک هوش مصنوعی."
             />
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
+            <p className="type-lead mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
             <LocalizedText
               en={
                 <>

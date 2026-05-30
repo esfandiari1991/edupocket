@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
-import { Inter, Vazirmatn } from "next/font/google";
+import { IBM_Plex_Sans_Arabic, Manrope, Vazirmatn } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/lib/site";
 import { Footer } from "@/components/site/Footer";
@@ -8,10 +8,17 @@ import { LanguageBootScript } from "@/components/site/LanguageBootScript";
 import { MobileContactDock } from "@/components/site/MobileContactDock";
 import { Navbar } from "@/components/site/Navbar";
 
-const inter = Inter({
+const manrope = Manrope({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-latin",
+});
+
+const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
+  subsets: ["arabic"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  variable: "--font-persian-display",
 });
 
 const vazirmatn = Vazirmatn({
@@ -52,7 +59,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en" dir="ltr" data-lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${vazirmatn.variable}`}>
+      <body className={`${manrope.variable} ${ibmPlexSansArabic.variable} ${vazirmatn.variable}`}>
         <LanguageBootScript />
         <Navbar />
         <main className="pb-16 sm:pb-0">{children}</main>
