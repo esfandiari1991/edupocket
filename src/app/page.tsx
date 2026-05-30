@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, BookMarked, BrainCircuit, FlaskConical, GraduationCap, Handshake, Languages, Sparkles } from "lucide-react";
+import { ArrowRight, BookMarked, BrainCircuit, FlaskConical, GraduationCap, Handshake, Microscope, Sparkles } from "lucide-react";
 import { commonText } from "@/lib/i18n";
 import { getFeaturedArticles, getFeaturedLessons, getFeaturedPodcasts } from "@/lib/content";
 import { Container } from "@/components/site/Container";
@@ -18,13 +18,13 @@ const labHighlights = [
     icon: FlaskConical,
   },
   {
-    title: { en: "Skill drills", fa: "تمرین مهارت ها" },
-    text: { en: "Grammar, vocabulary, reading, writing, and exam habits.", fa: "گرامر، واژگان، ریدینگ، رایتینگ و عادت های آزمونی." },
-    icon: Languages,
+    title: { en: "Expert learning loops", fa: "چرخه های یادگیری حرفه ای" },
+    text: { en: "Short cycles inspired by deliberate practice: focus, feedback, and one next move.", fa: "چرخه های کوتاه شبیه تمرین سنجیده: تمرکز، بازخورد و فقط یک قدم بعدی." },
+    icon: Microscope,
   },
   {
-    title: { en: "No empty doors", fa: "بدون در خالی" },
-    text: { en: "Future material is marked as upcoming instead of pretending to be ready.", fa: "محتوای آینده به شکل به زودی مشخص است، نه لینک خالی." },
+    title: { en: "AI-augmented review", fa: "مرور تقویت شده با AI" },
+    text: { en: "Use AI as a mirror for mistakes, patterns, and stronger memory.", fa: "از AI مثل آینه ای برای خطاها، الگوها و حافظه قوی تر استفاده کن." },
     icon: Sparkles,
   },
   {
@@ -102,8 +102,8 @@ export default function HomePage() {
                 </h2>
                 <p className="mt-5 text-sm leading-7 text-slate-300 sm:text-base">
                   <LocalizedText
-                    en="A compact practice space for level checks, grammar, vocabulary, reading, writing, and exam habits. It is useful now, and future material is clearly marked as upcoming."
-                    fa="یک فضای تمرین فشرده برای تعیین سطح، گرامر، واژگان، ریدینگ، رایتینگ و عادت های آزمونی. همین حالا قابل استفاده است و محتوای آینده شفاف به عنوان به زودی مشخص شده."
+                    en="A compact practice space for level checks, grammar, vocabulary, reading, writing, and exam habits. It starts small, then grows around feedback, memory cues, and AI-supported study loops."
+                    fa="یک فضای تمرین فشرده برای تعیین سطح، گرامر، واژگان، ریدینگ، رایتینگ و عادت های آزمونی. کوچک شروع می شود و بعد حول بازخورد، نشانه های حافظه و چرخه های مطالعه با AI رشد می کند."
                   />
                 </p>
               </div>
@@ -151,8 +151,8 @@ export default function HomePage() {
               </h2>
               <p className="mt-4 max-w-xl text-sm leading-7 text-slate-400 sm:text-base">
                 <LocalizedText
-                  en="The strongest action on this site should be simple: if your goal is serious, message Ali and turn it into a plan."
-                  fa="مهم ترین اکشن سایت باید ساده باشد: اگر هدفت جدی است، به علی پیام بده و آن را تبدیل به برنامه کن."
+                  en="If your goal is serious, message me and turn it into a clear, doable learning plan."
+                  fa="اگر هدفت جدی است، به من پیام بده و آن را به یک برنامه روشن و قابل اجرا تبدیل کن."
                 />
               </p>
               <DirectContactButtons
@@ -215,7 +215,7 @@ export default function HomePage() {
         <Container>
           <SectionHeading
             title={<LocalizedText en="Coming soon" fa="به زودی" />}
-            description={<LocalizedText en="Future features are teased honestly here, without empty destination pages." fa="ایده های آینده شفاف معرفی می شوند، بدون اینکه مخاطب وارد صفحه های خالی شود." />}
+            description={<LocalizedText en="Roadmap ideas stay visible, polished, and clearly marked until they are ready." fa="ایده های آینده تا زمان آماده شدن، شفاف، مرتب و چشم نواز در نقشه راه می مانند." />}
           />
           <div className="grid gap-4 md:grid-cols-3">
             {comingSoon.map((item) => (

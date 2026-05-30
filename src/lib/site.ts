@@ -36,8 +36,8 @@ export const siteConfig = {
     bale: {
       label: "Bale",
       faLabel: "بله",
-      handle: "@ali_esfandiari",
-      href: "https://ble.ir/ali_esfandiari",
+      handle: "@esfandiari_1991",
+      href: "https://ble.ir/esfandiari_1991",
     },
     email: {
       label: "Email",

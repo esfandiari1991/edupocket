@@ -62,7 +62,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
       <body className={`${manrope.variable} ${ibmPlexSansArabic.variable} ${vazirmatn.variable}`}>
         <LanguageBootScript />
         <Navbar />
-        <main className="pb-16 sm:pb-0">{children}</main>
+        <main className="pb-28 sm:pb-0">{children}</main>
         <Footer />
         <MobileContactDock />
       </body>

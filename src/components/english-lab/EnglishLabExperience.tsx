@@ -98,7 +98,7 @@ export function EnglishLabExperience() {
               {[
                 { en: "40-50% starter scale", fa: "نسخه شروع ۴۰ تا ۵۰ درصدی" },
                 { en: "instant feedback", fa: "بازخورد فوری" },
-                { en: "no empty links", fa: "بدون لینک خالی" },
+                { en: "AI review cues", fa: "نشانه های مرور با AI" },
               ].map((item) => (
                 <div key={item.en} className="motion-micro-tile rounded-[8px] border border-white/10 bg-slate-950/30 px-4 py-3 text-sm font-semibold text-slate-200">
                   <LocalizedText en={item.en} fa={item.fa} />

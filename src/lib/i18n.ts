@@ -40,7 +40,7 @@ export const commonText = {
     en: "Students, teachers, self-learners, and creators building practical learning systems.",
     fa: "برای دانش آموزان، معلم ها، خودآموزها و سازنده هایی که سیستم یادگیری عملی می سازند.",
   },
-  builtWith: { en: "Built with Next.js and deployed on Vercel.", fa: "ساخته شده با Next.js و منتشر شده روی Vercel." },
+  builtWith: { en: "Built by Blue Rose Academy (Ali Esfandiari Rad).", fa: "ساخته شده توسط Blue Rose Academy (Ali Esfandiari Rad)." },
   audioSoon: { en: "Audio Soon", fa: "صوت به زودی" },
   comingSoon: { en: "Coming Soon", fa: "به زودی" },
   explore: { en: "Explore", fa: "گشت و گذار" },
