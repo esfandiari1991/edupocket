@@ -7,6 +7,14 @@ type DirectContactButtonsProps = {
   variant?: "hero" | "compact" | "footer";
   className?: string;
   showSecondary?: boolean;
+  primaryLabel?: {
+    en: string;
+    fa: string;
+  };
+  primarySubLabel?: {
+    en: string;
+    fa: string;
+  };
 };
 
 const secondaryLinks = [
@@ -33,7 +41,13 @@ const secondaryLinks = [
   },
 ];
 
-export function DirectContactButtons({ variant = "compact", className, showSecondary = true }: DirectContactButtonsProps) {
+export function DirectContactButtons({
+  variant = "compact",
+  className,
+  showSecondary = true,
+  primaryLabel = { en: "Message Ali directly", fa: "پیام مستقیم به علی" },
+  primarySubLabel = { en: siteConfig.contact.telegram.handle, fa: siteConfig.contact.telegram.handle },
+}: DirectContactButtonsProps) {
   const isHero = variant === "hero";
   const isFooter = variant === "footer";
 
@@ -61,10 +75,10 @@ export function DirectContactButtons({ variant = "compact", className, showSecon
         </span>
         <span className="min-w-0 flex-1">
           <span className="block truncate text-base leading-5">
-            <LocalizedText en="Message Ali directly" fa="پیام مستقیم به علی" />
+            <LocalizedText en={primaryLabel.en} fa={primaryLabel.fa} />
           </span>
           <span className="mt-1 block truncate text-xs font-semibold text-slate-700">
-            <LocalizedText en={siteConfig.contact.telegram.handle} fa={siteConfig.contact.telegram.handle} />
+            <LocalizedText en={primarySubLabel.en} fa={primarySubLabel.fa} />
           </span>
         </span>
         <ArrowUpRight aria-hidden="true" className="size-5 shrink-0 rtl:-rotate-90" />

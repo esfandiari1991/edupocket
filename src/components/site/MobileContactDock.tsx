@@ -13,7 +13,7 @@ export function MobileContactDock() {
       >
         <Send aria-hidden="true" className="size-5 rtl:rotate-180" />
         <span>
-          <LocalizedText en="Message Ali" fa="پیام به علی" />
+          <LocalizedText en="Collaborate with me" fa="همکاری با من" />
         </span>
       </a>
     </div>

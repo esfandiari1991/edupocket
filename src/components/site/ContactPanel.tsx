@@ -9,10 +9,10 @@ type ContactPanelProps = {
 
 const copy = {
   general: {
-    title: { en: "Want a personal learning route?", fa: "مسیر یادگیری شخصی می خواهی؟" },
+    title: { en: "Work with Ali on your next learning step.", fa: "برای قدم بعدی یادگیری با علی همکاری کن." },
     text: {
-      en: "Send Ali a direct message for English, AI study plans, lessons, content ideas, or collaboration.",
-      fa: "برای انگلیسی، برنامه مطالعه با هوش مصنوعی، کلاس، ایده محتوا یا همکاری مستقیم به علی پیام بده.",
+      en: "Send one clear message for tutoring, English coaching, AI learning systems, content ideas, or education projects.",
+      fa: "برای تدریس، کوچینگ انگلیسی، سیستم یادگیری با هوش مصنوعی، ایده محتوا یا پروژه آموزشی یک پیام واضح بفرست.",
     },
   },
   article: {
@@ -51,14 +51,14 @@ export function ContactPanel({ context = "general", className }: ContactPanelPro
   return (
     <section
       className={cn(
-        "relative overflow-hidden rounded-[8px] border border-amber-200/20 bg-[linear-gradient(135deg,rgba(251,191,36,0.14),rgba(96,165,250,0.08)_48%,rgba(255,255,255,0.045))] p-5 shadow-[0_28px_90px_rgba(0,0,0,0.22)] sm:p-6 lg:p-8",
+        "relative overflow-hidden rounded-[8px] border border-amber-200/20 bg-[linear-gradient(135deg,rgba(251,191,36,0.16),rgba(14,165,233,0.1)_48%,rgba(255,255,255,0.045))] p-5 shadow-[0_28px_90px_rgba(0,0,0,0.22)] sm:p-6 lg:p-8",
         className,
       )}
     >
-      <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+      <div className="grid gap-7 lg:grid-cols-[1fr_1fr] lg:items-center">
         <div>
           <p className="text-sm font-semibold text-amber-200">
-            <LocalizedText en="Direct contact" fa="ارتباط مستقیم" />
+            <LocalizedText en="Collaboration" fa="همکاری" />
           </p>
           <h2 className="mt-3 text-2xl font-semibold leading-tight text-white sm:text-3xl">
             <LocalizedText en={selected.title.en} fa={selected.title.fa} />
@@ -67,7 +67,11 @@ export function ContactPanel({ context = "general", className }: ContactPanelPro
             <LocalizedText en={selected.text.en} fa={selected.text.fa} />
           </p>
         </div>
-        <DirectContactButtons variant="hero" />
+        <DirectContactButtons
+          variant="hero"
+          primaryLabel={{ en: "Collaborate with me", fa: "همکاری با من" }}
+          primarySubLabel={{ en: "Fastest response on Telegram", fa: "سریع ترین پاسخ در تلگرام" }}
+        />
       </div>
     </section>
   );

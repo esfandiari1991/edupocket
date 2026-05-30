@@ -1,71 +1,109 @@
 import Image from "next/image";
-import { BookOpenText, GraduationCap, Headphones } from "lucide-react";
-import { ButtonLink } from "@/components/site/ButtonLink";
+import Link from "next/link";
+import { ArrowRight, BrainCircuit, GraduationCap, Sparkles } from "lucide-react";
 import { Container } from "@/components/site/Container";
 import { DirectContactButtons } from "@/components/site/DirectContactButtons";
 import { LocalizedText } from "@/components/site/LocalizedText";
 
+const routes = [
+  { en: "English coaching", fa: "کوچینگ انگلیسی", icon: GraduationCap },
+  { en: "AI study systems", fa: "سیستم مطالعه با AI", icon: BrainCircuit },
+  { en: "Interactive practice", fa: "تمرین تعاملی", icon: Sparkles },
+];
+
 export function Hero() {
   return (
-    <section className="overflow-hidden border-b border-white/10 bg-[radial-gradient(circle_at_75%_20%,rgba(251,191,36,0.12),transparent_26%),linear-gradient(180deg,#06111f_0%,#081827_48%,#050b16_100%)]">
-      <Container className="grid items-center gap-10 py-14 md:grid-cols-[0.95fr_1.05fr] md:py-16 lg:py-20">
-        <div className="relative z-10 min-w-0">
-          <h1 className="max-w-[20rem] break-words text-[2rem] font-semibold leading-[1.12] text-white min-[420px]:max-w-[calc(100vw_-_2rem)] min-[420px]:text-4xl sm:max-w-3xl sm:text-5xl lg:text-6xl">
+    <section className="overflow-hidden border-b border-white/10 bg-[linear-gradient(180deg,#06111f_0%,#071522_52%,#050b16_100%)]">
+      <Container className="py-12 sm:py-16 lg:py-20">
+        <div className="grid gap-10 lg:grid-cols-12 lg:items-center">
+          <div className="relative z-10 min-w-0 lg:col-span-7">
+            <h1 className="max-w-4xl text-[2.35rem] font-semibold leading-[1.05] text-white sm:text-5xl lg:text-6xl">
             <LocalizedText
               en={
                 <>
-                  Learning systems for teachers, students, and <span className="whitespace-nowrap">AI-powered</span> creators.
+                  Practical learning, direct coaching, and <span className="text-amber-200">AI-powered</span> English systems.
                 </>
               }
-              fa="سیستم های یادگیری برای معلم ها، زبان آموزها و سازنده های هوش مصنوعی."
+              fa="یادگیری عملی، کوچینگ مستقیم، و سیستم های انگلیسی با کمک هوش مصنوعی."
             />
-          </h1>
-          <p className="mt-6 max-w-[18.5rem] break-words text-base leading-8 text-slate-300 min-[420px]:max-w-[calc(100vw_-_2rem)] sm:max-w-2xl sm:text-lg">
+            </h1>
+            <p className="mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
             <LocalizedText
               en={
                 <>
-                  EduPocket collects practical notes, micro-lessons, podcast episodes, and frameworks from Ali Rad&apos;s work in
-                  English teaching, AI, programming, and language learning.
+                  EduPocket is Ali Rad&apos;s focused learning hub for students, teachers, and self-learners who want sharper
+                  English, smarter study routines, and useful AI habits.
                 </>
               }
-              fa="EduPocket یادداشت های کاربردی، درس های کوتاه، اپیزودهای صوتی و چارچوب های کاری علی راد را در آموزش انگلیسی، هوش مصنوعی، برنامه نویسی و یادگیری زبان جمع می کند."
+              fa="EduPocket هاب متمرکز علی راد برای دانشجوها، معلم ها و خودآموزهایی است که انگلیسی قوی تر، روتین مطالعه بهتر و عادت های کاربردی AI می خواهند."
             />
-          </p>
-          <div className="mt-6 flex items-center gap-3 rounded-[8px] border border-white/10 bg-white/[0.04] p-2 pr-4 shadow-[0_18px_54px_rgba(0,0,0,0.16)] sm:w-fit">
-            <Image
-              src="/images/ali-rad-friendly.jpg"
-              alt="Ali Rad"
-              width={56}
-              height={56}
-              className="size-14 shrink-0 rounded-[8px] object-cover"
-            />
-            <p className="text-sm leading-6 text-slate-300">
-              <LocalizedText en="Built from Ali Rad's teaching, tutoring, and AI-learning practice." fa="ساخته شده از تجربه تدریس، کوچینگ زبان و تمرین های هوش مصنوعی علی راد." />
             </p>
+
+            <div className="mt-8 grid gap-3 sm:max-w-2xl sm:grid-cols-[1fr_auto] sm:items-stretch">
+              <DirectContactButtons
+                variant="hero"
+                showSecondary={false}
+                primaryLabel={{ en: "Collaborate with me", fa: "همکاری با من" }}
+                primarySubLabel={{ en: "Tutoring, AI study plans, projects", fa: "تدریس، برنامه AI، پروژه آموزشی" }}
+              />
+              <Link
+                href="/english-lab"
+                className="inline-flex min-h-14 items-center justify-center gap-2 rounded-[8px] border border-sky-200/25 bg-sky-300/10 px-5 py-3 text-sm font-semibold text-sky-100 transition hover:border-sky-200/50 hover:bg-sky-300/15 focus:outline-none focus:ring-2 focus:ring-sky-200/60"
+              >
+                <LocalizedText en="Enter English Lab" fa="ورود به آزمایشگاه زبان" />
+                <ArrowRight aria-hidden="true" className="size-4 rtl:rotate-180" />
+              </Link>
+            </div>
+
+            <div className="mt-8 grid gap-3 sm:grid-cols-3">
+              {routes.map((item) => {
+                const Icon = item.icon;
+
+                return (
+                  <div key={item.en} className="flex items-center gap-3 rounded-[8px] border border-white/10 bg-white/[0.035] p-3">
+                    <span className="flex size-9 shrink-0 items-center justify-center rounded-[8px] bg-amber-200/10 text-amber-200">
+                      <Icon aria-hidden="true" className="size-4" />
+                    </span>
+                    <span className="text-sm font-semibold text-slate-100">
+                      <LocalizedText en={item.en} fa={item.fa} />
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-          <DirectContactButtons variant="hero" className="mt-8" />
-          <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-            <ButtonLink href="/articles" icon={BookOpenText}>
-              <LocalizedText en="Read Articles" fa="خواندن مقاله ها" />
-            </ButtonLink>
-            <ButtonLink href="/lessons" icon={GraduationCap}>
-              <LocalizedText en="Explore Lessons" fa="دیدن درس ها" />
-            </ButtonLink>
-            <ButtonLink href="/podcasts" icon={Headphones}>
-              <LocalizedText en="Podcast Notes" fa="یادداشت پادکست ها" />
-            </ButtonLink>
+
+          <div className="relative min-w-0 lg:col-span-5">
+            <div className="absolute inset-4 rounded-full bg-amber-300/10 blur-3xl" aria-hidden="true" />
+            <div className="relative overflow-hidden rounded-[8px] border border-white/10 bg-white/[0.045] p-3 shadow-[0_36px_100px_rgba(0,0,0,0.34)]">
+              <Image
+                src="/images/ali-rad-learning.jpg"
+                alt="Ali Rad studying and building learning systems"
+                width={752}
+                height={1360}
+                priority
+                className="h-[25rem] w-full rounded-[6px] object-cover object-[50%_34%] sm:h-[34rem] lg:h-[38rem]"
+              />
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <div className="rounded-[8px] border border-white/10 bg-slate-950/70 p-4">
+                  <p className="text-xs font-semibold uppercase text-amber-200">
+                    <LocalizedText en="Human first" fa="اول انسان" />
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-slate-300">
+                    <LocalizedText en="Real teaching practice, not anonymous content." fa="تجربه واقعی تدریس، نه محتوای بی هویت." />
+                  </p>
+                </div>
+                <div className="rounded-[8px] border border-white/10 bg-slate-950/70 p-4">
+                  <p className="text-xs font-semibold uppercase text-sky-200">
+                    <LocalizedText en="Focused path" fa="مسیر متمرکز" />
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-slate-300">
+                    <LocalizedText en="English, AI, and study systems in one place." fa="انگلیسی، AI و سیستم مطالعه در یک مسیر." />
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="relative min-w-0">
-          <div className="absolute inset-6 rounded-full bg-amber-300/10 blur-3xl" aria-hidden="true" />
-          <Image
-            src="/images/edupocket-hero-system.png"
-            alt="EduPocket notebook with language cards, AI learning checklist, and audio lesson card"
-            width={1536}
-            height={1024}
-            priority
-            className="relative mx-auto w-full max-w-[calc(100vw_-_2rem)] rounded-[8px] object-contain shadow-[0_36px_100px_rgba(0,0,0,0.34)] md:max-w-2xl"
-          />
         </div>
       </Container>
     </section>
