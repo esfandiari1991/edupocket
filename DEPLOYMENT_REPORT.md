@@ -54,6 +54,13 @@ Previous local prototype/workspace was found at /Users/ali/Documents/Claude/Proj
 - Verification run on 2026-05-30 21:03: `pnpm install`, `pnpm lint`, `pnpm check`, `pnpm build`, `pnpm exec next start -p 3001`, route `curl -I` checks, and `BASE_URL=http://localhost:3001 pnpm verify:routes`.
 - Final local status: lint passed, TypeScript check passed, production build passed, route smoke tests passed.
 - Note: `pnpm install` reported pnpm's standard ignored-build-scripts warning for `sharp` and `unrs-resolver`; it did not involve Playwright and did not block install, lint, check, or build.
+- Production deploy run on 2026-05-30 21:04: `vercel --prod --yes`.
+- Vercel production deployment: Ready.
+- Latest inspect URL: `https://vercel.com/arads-projects-dad3a535/edupocket/5zBtjiwzQj8sJasWqzjG1Bc1hUV7`.
+- Latest immutable deployment URL: `https://edupocket-7ylpm9psi-arads-projects-dad3a535.vercel.app` (Vercel authentication returns `401` on direct generated deployment URLs).
+- Verified public production alias: `https://edupocket-rho.vercel.app`.
+- Live route checks on `https://edupocket-rho.vercel.app`: `/`, `/articles`, `/lessons`, `/podcasts`, `/about`, `/english-lab`, `/sitemap.xml`, and `/robots.txt` returned `200`.
+- Custom domain status remains an external DNS handoff: Vercel aliased `edupocket.org` and `www.edupocket.org`, but the domain still needs DNS to point fully at Vercel before subroutes resolve there.
 
 ## Environment
 
