@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Headphones } from "lucide-react";
 import type { PodcastEpisode } from "@/types/content";
-import { formatDateFa, itemDescription, itemTitle } from "@/lib/i18n";
+import { commonText, formatDateFa, itemDescription, itemTitle } from "@/lib/i18n";
 import { formatDate } from "@/lib/utils";
 import { AudioWavePlaceholder } from "@/components/audio/AudioWavePlaceholder";
 import { Badge } from "@/components/site/Badge";
@@ -27,6 +27,11 @@ export function AudioEpisodeCard({ episode }: { episode: PodcastEpisode }) {
           <Badge>
             <LocalizedText en={`Episode ${episode.episode}`} fa={`اپیزود ${episode.episode}`} />
           </Badge>
+          {!episode.audioAvailable ? (
+            <span className="rounded-[6px] border border-slate-500/30 bg-slate-800/70 px-2 py-1 text-xs font-semibold text-slate-300">
+              <LocalizedText en={commonText.audioSoon.en} fa={commonText.audioSoon.fa} />
+            </span>
+          ) : null}
           <span className="text-xs text-slate-500">
             <LocalizedText en={formatDate(episode.date)} fa={formatDateFa(episode.date)} />
           </span>

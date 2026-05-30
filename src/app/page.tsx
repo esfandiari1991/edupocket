@@ -10,26 +10,31 @@ import { ContentCard } from "@/components/site/ContentCard";
 import { Hero } from "@/components/site/Hero";
 import { LocalizedText } from "@/components/site/LocalizedText";
 import { SectionHeading } from "@/components/site/SectionHeading";
+import { UpcomingPocket } from "@/components/site/UpcomingPocket";
 
 const comingSoon = [
   {
     title: { en: "Book summaries", fa: "خلاصه کتاب ها" },
     description: { en: "Consciousness, quantum physics, self-development, and big ideas.", fa: "آگاهی، فیزیک کوانتوم، رشد فردی و ایده های بزرگ." },
+    note: { en: "No empty page yet", fa: "هنوز صفحه باز ندارد" },
     icon: BookMarked,
   },
   {
     title: { en: "Mini educational apps", fa: "مینی اپ های آموزشی" },
     description: { en: "Small tools for practice, recall, planning, and learning loops.", fa: "ابزارهای کوچک برای تمرین، یادآوری، برنامه ریزی و چرخه های یادگیری." },
+    note: { en: "Prototype in the lab", fa: "نمونه اولیه در حال ساخت" },
     icon: Sparkles,
   },
   {
     title: { en: "Language tools", fa: "ابزارهای زبان" },
     description: { en: "Vocabulary systems, error logs, and bilingual learning support.", fa: "سیستم واژگان، دفتر خطاها و پشتیبانی دوزبانه برای یادگیری زبان." },
+    note: { en: "Waiting for the first release", fa: "در انتظار اولین نسخه" },
     icon: Languages,
   },
   {
     title: { en: "Deep knowledge pockets", fa: "پاکت های دانش عمیق" },
     description: { en: "Connected notes that turn difficult ideas into usable maps.", fa: "یادداشت های متصل که ایده های سخت را به نقشه های قابل استفاده تبدیل می کنند." },
+    note: { en: "Roadmap pocket", fa: "در نقشه راه" },
     icon: BrainCircuit,
   },
 ];
@@ -97,12 +102,12 @@ export default function HomePage() {
               <div className="rounded-[8px] border border-white/10 bg-white/[0.04] p-6">
                 <Headphones aria-hidden="true" className="size-7 text-amber-200" />
                 <h3 className="mt-5 text-lg font-semibold text-white">
-                  <LocalizedText en="Ready for audio lessons" fa="آماده برای درس های صوتی" />
+                  <LocalizedText en="Podcast notes now, audio soon" fa="فعلا یادداشت پادکست؛ صوت به زودی" />
                 </h3>
                 <p className="mt-3 text-sm leading-6 text-slate-400">
                   <LocalizedText
-                    en="Podcast notes and transcripts live beside the player, so listening becomes a study workflow."
-                    fa="یادداشت ها و راهنمای شنیدن کنار پلیر قرار می گیرند تا گوش دادن تبدیل به یک روند مطالعه شود."
+                    en="The episode pages are open for notes and transcripts. Full audio files get a clear soon-state until they are attached."
+                    fa="صفحه های اپیزود برای یادداشت و راهنما باز هستند. تا وقتی فایل صوتی وصل نشده، وضعیت به زودی شفاف نشان داده می شود."
                   />
                 </p>
               </div>
@@ -186,25 +191,9 @@ export default function HomePage() {
             description={<LocalizedText en="Future features are teased honestly here, without empty destination pages." fa="ایده های آینده شفاف معرفی می شوند، بدون اینکه مخاطب وارد صفحه های خالی شود." />}
           />
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {comingSoon.map((item) => {
-              const Icon = item.icon;
-              return (
-                <div key={item.title.en} className="rounded-[8px] border border-white/10 bg-white/[0.04] p-5">
-                  <Icon aria-hidden="true" className="size-6 text-amber-200" />
-                  <div className="mt-5 flex items-center justify-between gap-3">
-                    <h3 className="font-semibold text-white">
-                      <LocalizedText en={item.title.en} fa={item.title.fa} />
-                    </h3>
-                    <span className="rounded-[6px] bg-amber-300/10 px-2 py-1 text-xs font-semibold text-amber-100">
-                      <LocalizedText en={commonText.comingSoon.en} fa={commonText.comingSoon.fa} />
-                    </span>
-                  </div>
-                  <p className="mt-3 text-sm leading-6 text-slate-400">
-                    <LocalizedText en={item.description.en} fa={item.description.fa} />
-                  </p>
-                </div>
-              );
-            })}
+            {comingSoon.map((item) => (
+              <UpcomingPocket key={item.title.en} title={item.title} description={item.description} note={item.note} icon={item.icon} />
+            ))}
           </div>
         </Container>
       </section>

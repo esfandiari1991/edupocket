@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Pause, Play, RotateCcw, RotateCw, Volume2, VolumeX } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AudioWavePlaceholder } from "@/components/audio/AudioWavePlaceholder";
+import { commonText } from "@/lib/i18n";
 import { LocalizedText } from "@/components/site/LocalizedText";
 
 type EduPocketPlayerProps = {
@@ -77,7 +78,12 @@ export function EduPocketPlayer({ title, titleFa, audioSrc, audioAvailable = tru
   if (error) {
     return (
       <div className="rounded-[8px] border border-amber-300/20 bg-amber-300/10 p-5">
-        <p className="text-xs font-semibold uppercase text-amber-100">EduPocket Audio</p>
+        <div className="flex flex-wrap items-center gap-2">
+          <p className="text-xs font-semibold uppercase text-amber-100">EduPocket Audio</p>
+          <span className="rounded-[6px] border border-slate-500/30 bg-slate-950/45 px-2 py-1 text-xs font-semibold text-slate-200">
+            <LocalizedText en={commonText.audioSoon.en} fa={commonText.audioSoon.fa} />
+          </span>
+        </div>
         <h2 className="mt-2 text-lg font-semibold text-white">
           <LocalizedText en={title} fa={titleFa ?? title} />
         </h2>

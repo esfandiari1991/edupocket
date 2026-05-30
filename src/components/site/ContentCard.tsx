@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Clock, Headphones, Layers, NotebookPen } from "lucide-react";
 import type { ContentItem } from "@/types/content";
 import { contentHref, formatDate } from "@/lib/utils";
-import { contentMeta, formatDateFa, formatReadingTimeFa, itemDescription, itemTitle } from "@/lib/i18n";
+import { commonText, contentMeta, formatDateFa, formatReadingTimeFa, itemDescription, itemTitle } from "@/lib/i18n";
 import { Badge } from "@/components/site/Badge";
 import { LocalizedText } from "@/components/site/LocalizedText";
 import { TagPill } from "@/components/site/TagPill";
@@ -32,6 +32,11 @@ export function ContentCard({ item }: { item: ContentItem }) {
             <Badge>
               <LocalizedText en={meta.en} fa={meta.fa} />
             </Badge>
+            {item.kind === "podcast" && !item.audioAvailable ? (
+              <span className="rounded-[6px] border border-slate-500/30 bg-slate-800/70 px-2 py-1 text-xs font-semibold text-slate-300">
+                <LocalizedText en={commonText.audioSoon.en} fa={commonText.audioSoon.fa} />
+              </span>
+            ) : null}
             <span className="inline-flex items-center gap-1 text-xs text-slate-500">
               <Clock aria-hidden="true" className="size-3.5" />
               <LocalizedText en={readingTime.en} fa={readingTime.fa} />

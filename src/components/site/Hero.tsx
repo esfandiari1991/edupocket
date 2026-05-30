@@ -52,7 +52,7 @@ export function Hero() {
               <LocalizedText en="Explore Lessons" fa="دیدن درس ها" />
             </ButtonLink>
             <ButtonLink href="/podcasts" icon={Headphones}>
-              <LocalizedText en="Listen to Podcasts" fa="شنیدن پادکست ها" />
+              <LocalizedText en="Podcast Notes" fa="یادداشت پادکست ها" />
             </ButtonLink>
           </div>
         </div>
