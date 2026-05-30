@@ -1,0 +1,180 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+  --background: #06111f;
+  --foreground: #f8fafc;
+  --muted: #9aa8ba;
+  --panel: rgba(255, 255, 255, 0.055);
+  --border: rgba(255, 255, 255, 0.11);
+  --accent: #fbbf24;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(14, 165, 233, 0.12), transparent 28rem),
+    radial-gradient(circle at 85% 12%, rgba(251, 191, 36, 0.11), transparent 24rem),
+    var(--background);
+  color: var(--foreground);
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: rgba(251, 191, 36, 0.32);
+  color: #ffffff;
+}
+
+.audio-range {
+  height: 0.35rem;
+  cursor: pointer;
+  appearance: none;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(251, 191, 36, 0.9), rgba(96, 165, 250, 0.7));
+  outline: none;
+}
+
+.audio-range::-webkit-slider-thumb {
+  height: 1rem;
+  width: 1rem;
+  appearance: none;
+  border: 2px solid #0f172a;
+  border-radius: 999px;
+  background: #fbbf24;
+}
+
+.audio-range::-moz-range-thumb {
+  height: 1rem;
+  width: 1rem;
+  border: 2px solid #0f172a;
+  border-radius: 999px;
+  background: #fbbf24;
+}
+
+.prose-edupocket {
+  color: #dbe4ef;
+  font-size: 1rem;
+  line-height: 1.85;
+}
+
+.prose-edupocket > * + * {
+  margin-top: 1.25rem;
+}
+
+.prose-edupocket h1,
+.prose-edupocket h2,
+.prose-edupocket h3 {
+  color: #ffffff;
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+.prose-edupocket h1 {
+  font-size: clamp(2rem, 5vw, 3.6rem);
+}
+
+.prose-edupocket h2 {
+  margin-top: 2.25rem;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.prose-edupocket h3 {
+  margin-top: 1.75rem;
+  font-size: 1.25rem;
+}
+
+.prose-edupocket p,
+.prose-edupocket li {
+  color: #cbd5e1;
+}
+
+.prose-edupocket ul,
+.prose-edupocket ol {
+  padding-left: 1.3rem;
+}
+
+.prose-edupocket li + li {
+  margin-top: 0.45rem;
+}
+
+.prose-edupocket blockquote {
+  border-left: 3px solid #fbbf24;
+  border-radius: 0 8px 8px 0;
+  background: rgba(251, 191, 36, 0.08);
+  padding: 1rem 1.25rem;
+  color: #fde68a;
+}
+
+.prose-edupocket code {
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.9);
+  padding: 0.15rem 0.35rem;
+  color: #fde68a;
+  font-size: 0.9em;
+}
+
+.prose-edupocket pre {
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: #020617;
+  padding: 1rem;
+}
+
+.prose-edupocket pre code {
+  background: transparent;
+  padding: 0;
+  color: #e2e8f0;
+}
+
+.prose-edupocket table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.prose-edupocket th,
+.prose-edupocket td {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.prose-edupocket th {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+
+.prose-edupocket hr {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
