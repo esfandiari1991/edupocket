@@ -119,6 +119,7 @@ Visual QA screenshots were captured with Google Chrome headless/CDP because the 
 - Production local server: passed on `http://localhost:3002`
 - Responsive audit: passed across 108 page/language/viewport states with zero horizontal overflow failures after fixes
 - Motion QA: passed with reduced-motion handling, true 390px mobile emulation, and zero horizontal overflow in English and Persian
+- Language slider QA: passed with a longer unlock-style track, real drag interaction, desktop and 390px mobile checks, and no overflow
 - SEO routes: `/opengraph-image`, `/twitter-image`, `/manifest.webmanifest`, `/sitemap.xml`, and `/robots.txt` returned `200`
 
 ## Local verification
@@ -148,7 +149,10 @@ Visual QA screenshots were captured with Google Chrome headless/CDP because the 
   - Final logo/navbar screenshot: `/tmp/edupocket-final-prod-navbar-1440.png`
   - Final contact CTA screenshot: `/tmp/edupocket-final-prod-contact-1440.png`
   - Final mobile Persian homepage screenshot: `/tmp/edupocket-final-prod-home-390-fa.png`
+  - Final language slider desktop screenshot: `/tmp/edupocket-slider-desktop-final.png`
+  - Final language slider mobile screenshot: `/tmp/edupocket-slider-mobile-cdp.png`
   - Language toggle state: passed
+  - Language slider drag interaction: passed locally and on the live Vercel alias
   - Persian RTL layout and typography: passed
   - Supplied founder images: passed
   - Missing-audio state: passed
@@ -170,6 +174,7 @@ Visual QA screenshots were captured with Google Chrome headless/CDP because the 
 - Latest motion system commit: `755f409`
 - Latest contact copy commit: `50779cc`
 - Latest logo, animation, and SEO commit: `2251660`
+- Latest language slider interaction commit: `efe6464`
 - Vercel GitHub integration: connected during Vercel project linking.
 
 ## Vercel status
@@ -177,7 +182,7 @@ Visual QA screenshots were captured with Google Chrome headless/CDP because the 
 - Project: `arads-projects-dad3a535/edupocket`
 - Deploy command: `vercel --prod --yes`
 - Build status: passed
-- Latest inspect URL: `https://vercel.com/arads-projects-dad3a535/edupocket/9yVaQaMJ857zPeYhjkurNojdUrQ7`
+- Latest inspect URL: `https://vercel.com/arads-projects-dad3a535/edupocket/7rs4jLsmWtGqGGyc2E7LqbTrJmss`
 - Deployment status: Ready
 - Production environment variable: `NEXT_PUBLIC_SITE_URL=https://edupocket.org`
 - Note: the first Vercel deploy attempt failed because the local folder name contains uppercase letters and Vercel project names must be lowercase. The project was linked explicitly as `edupocket`, then production deployment succeeded.
@@ -185,7 +190,7 @@ Visual QA screenshots were captured with Google Chrome headless/CDP because the 
 ## Production URL
 
 - Stable production alias: `https://edupocket-rho.vercel.app`
-- Latest immutable production deployment URL: `https://edupocket-ax22178bj-arads-projects-dad3a535.vercel.app`
+- Latest immutable production deployment URL: `https://edupocket-kieazkufu-arads-projects-dad3a535.vercel.app`
 - Custom domain aliases added in Vercel: `https://edupocket.org`, `https://www.edupocket.org`
 - Custom domain DNS status: pending DNS update by the domain owner.
 - Generated deployment URLs currently return Vercel authentication (`401`) when visited directly. The public Vercel project alias below was verified and is the shareable live URL until custom DNS is updated.
@@ -207,6 +212,8 @@ Verified with HTTP HEAD checks:
 - `200` `https://edupocket-rho.vercel.app/robots.txt`
 - `200` `https://edupocket-rho.vercel.app/opengraph-image`
 - `200` `https://edupocket-rho.vercel.app/manifest.webmanifest`
+
+Live language slider interaction was verified on `https://edupocket-rho.vercel.app`: dragging the longer unlock-style control from EN to Persian changed the page language state to `fa` and document direction to `rtl` with no console warnings or errors.
 
 Canonical sitemap/robots output was verified through the Vercel alias and now points to `https://edupocket.org` without path-breaking whitespace.
 
