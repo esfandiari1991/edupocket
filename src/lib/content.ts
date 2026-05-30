@@ -81,12 +81,15 @@ function baseFromMatter(kind: ContentKind, filePath: string, data: RawFrontmatte
     slug: slugify(path.basename(filePath).replace(/\.mdx?$/, "")),
     title: requiredString(data, "title", filePath),
     description: requiredString(data, "description", filePath),
+    faTitle: optionalString(data, "faTitle"),
+    faDescription: optionalString(data, "faDescription"),
     date: requiredString(data, "date", filePath),
     updated: optionalString(data, "updated"),
     tags: tags(data, filePath),
     published: requiredBoolean(data, "published", filePath),
     featured: requiredBoolean(data, "featured", filePath),
     body,
+    faBody: optionalString(data, "faContent"),
   };
 }
 
@@ -97,6 +100,7 @@ function parseArticle(filePath: string): Article {
     ...base,
     kind: "article",
     category: requiredString(parsed.data, "category", filePath),
+    faCategory: optionalString(parsed.data, "faCategory"),
     readingTime: readingTime(parsed.content).text,
   };
 }
@@ -109,6 +113,8 @@ function parseLesson(filePath: string): Lesson {
     kind: "lesson",
     level: requiredString(parsed.data, "level", filePath),
     skill: requiredString(parsed.data, "skill", filePath),
+    faLevel: optionalString(parsed.data, "faLevel"),
+    faSkill: optionalString(parsed.data, "faSkill"),
     readingTime: readingTime(parsed.content).text,
   };
 }
@@ -132,6 +138,7 @@ function parsePodcast(filePath: string): PodcastEpisode {
     audioSrc,
     duration: requiredString(parsed.data, "duration", filePath),
     language: requiredString(parsed.data, "language", filePath),
+    faLanguage: optionalString(parsed.data, "faLanguage"),
     transcript: requiredBoolean(parsed.data, "transcript", filePath),
     cover: optionalString(parsed.data, "cover"),
     audioAvailable: audioFileAvailable(audioSrc),

@@ -34,13 +34,30 @@ fs.writeFileSync(
   `---
 title: "${title.replaceAll('"', '\\"')}"
 description: "Add a clear one-sentence description."
+faTitle: "عنوان فارسی را وارد کنید"
+faDescription: "توضیح کوتاه فارسی را وارد کنید."
 date: "${date}"
 updated: "${date}"
 tags:
   - Learning
 category: "Study Systems"
+faCategory: "سیستم های مطالعه"
 published: false
 featured: false
+faContent: |
+  ## ایده اصلی
+
+  مسئله کاربردی یادگیری را به فارسی توضیح دهید.
+
+  ## چارچوب
+
+  - قدم اول
+  - قدم دوم
+  - قدم سوم
+
+  ## تمرین
+
+  یک قدم بعدی مفید به خواننده بدهید.
 ---
 
 ## Core idea

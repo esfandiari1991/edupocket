@@ -11,8 +11,11 @@ function productionUrl() {
 export const siteConfig = {
   name: "EduPocket",
   tagline: "Practical learning systems for English, AI, teaching, and technology.",
+  faTagline: "سیستم های یادگیری عملی برای انگلیسی، هوش مصنوعی، تدریس و تکنولوژی.",
   description:
     "EduPocket is Ali Rad's library of practical notes, teaching systems, AI experiments, language-learning frameworks, and audio lessons.",
+  faDescription:
+    "EduPocket کتابخانه علی راد برای یادداشت های کاربردی، سیستم های تدریس، تجربه های هوش مصنوعی، چارچوب های یادگیری زبان و درس های صوتی است.",
   author: "Ali Esfandiari Rad",
   shortAuthor: "Ali Rad",
   url: productionUrl(),
@@ -34,11 +37,11 @@ export const siteConfig = {
     "Podcasts",
   ],
   nav: [
-    { href: "/", label: "Home" },
-    { href: "/articles", label: "Articles" },
-    { href: "/lessons", label: "Lessons" },
-    { href: "/podcasts", label: "Podcasts" },
-    { href: "/about", label: "About" },
+    { href: "/", label: "Home", faLabel: "خانه" },
+    { href: "/articles", label: "Articles", faLabel: "مقاله ها" },
+    { href: "/lessons", label: "Lessons", faLabel: "درس ها" },
+    { href: "/podcasts", label: "Podcasts", faLabel: "پادکست ها" },
+    { href: "/about", label: "About", faLabel: "درباره" },
   ],
 } as const;
 

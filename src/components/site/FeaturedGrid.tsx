@@ -1,11 +1,12 @@
+import type { ReactNode } from "react";
 import type { ContentItem } from "@/types/content";
 import { ContentCard } from "@/components/site/ContentCard";
 import { EmptyState } from "@/components/site/EmptyState";
 
 type FeaturedGridProps = {
   items: ContentItem[];
-  emptyTitle: string;
-  emptyDescription: string;
+  emptyTitle: ReactNode;
+  emptyDescription: ReactNode;
 };
 
 export function FeaturedGrid({ items, emptyTitle, emptyDescription }: FeaturedGridProps) {

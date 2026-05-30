@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { BookOpen } from "lucide-react";
 import { siteConfig } from "@/lib/site";
+import { LocalizedText } from "@/components/site/LocalizedText";
 
 export function BrandMark() {
   return (
@@ -12,7 +13,9 @@ export function BrandMark() {
         <span className="block text-lg font-semibold text-white transition group-hover:text-amber-100">
           {siteConfig.name}
         </span>
-        <span className="mt-1 block text-xs font-medium text-slate-400">by {siteConfig.shortAuthor}</span>
+        <span className="mt-1 block text-xs font-medium text-slate-400">
+          <LocalizedText en={`by ${siteConfig.shortAuthor}`} fa="با علی راد" />
+        </span>
       </span>
     </Link>
   );

@@ -4,9 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { Pause, Play, RotateCcw, RotateCw, Volume2, VolumeX } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AudioWavePlaceholder } from "@/components/audio/AudioWavePlaceholder";
+import { LocalizedText } from "@/components/site/LocalizedText";
 
 type EduPocketPlayerProps = {
   title: string;
+  titleFa?: string;
   audioSrc?: string;
   audioAvailable?: boolean;
   compact?: boolean;
@@ -23,7 +25,7 @@ function formatTime(seconds: number) {
   return `${minutes}:${remainder}`;
 }
 
-export function EduPocketPlayer({ title, audioSrc, audioAvailable = true, compact = false }: EduPocketPlayerProps) {
+export function EduPocketPlayer({ title, titleFa, audioSrc, audioAvailable = true, compact = false }: EduPocketPlayerProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -76,9 +78,11 @@ export function EduPocketPlayer({ title, audioSrc, audioAvailable = true, compac
     return (
       <div className="rounded-[8px] border border-amber-300/20 bg-amber-300/10 p-5">
         <p className="text-xs font-semibold uppercase text-amber-100">EduPocket Audio</p>
-        <h2 className="mt-2 text-lg font-semibold text-white">{title}</h2>
+        <h2 className="mt-2 text-lg font-semibold text-white">
+          <LocalizedText en={title} fa={titleFa ?? title} />
+        </h2>
         <p className="mt-3 text-sm leading-6 text-amber-50/80">
-          Audio file is not attached yet. The episode notes are still available.
+          <LocalizedText en="Audio file is not attached yet. The episode notes are still available." fa="فایل صوتی هنوز اضافه نشده است. یادداشت های اپیزود همچنان در دسترس هستند." />
         </p>
       </div>
     );
@@ -101,7 +105,9 @@ export function EduPocketPlayer({ title, audioSrc, audioAvailable = true, compac
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
         <div className="min-w-0 flex-1">
           <p className="text-xs font-semibold uppercase text-amber-200">EduPocket Audio</p>
-          <h2 className="mt-1 truncate text-base font-semibold text-white">{title}</h2>
+          <h2 className="mt-1 truncate text-base font-semibold text-white">
+            <LocalizedText en={title} fa={titleFa ?? title} />
+          </h2>
         </div>
         <div className="flex items-center gap-2">
           <button

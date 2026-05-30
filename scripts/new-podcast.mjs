@@ -46,6 +46,8 @@ fs.writeFileSync(
   `---
 title: "${title.replaceAll('"', '\\"')}"
 description: "Add a clear one-sentence episode description."
+faTitle: "عنوان فارسی اپیزود را وارد کنید"
+faDescription: "توضیح کوتاه فارسی اپیزود را وارد کنید."
 date: "${date}"
 updated: "${date}"
 episode: ${episode}
@@ -53,11 +55,26 @@ season: 1
 audioSrc: "/audio/${slug}.mp3"
 duration: "00:00"
 language: "English"
+faLanguage: "انگلیسی"
 transcript: true
 tags:
   - Learning
 published: false
 featured: false
+faContent: |
+  ## خلاصه اپیزود
+
+  درس صوتی را به فارسی خلاصه کنید.
+
+  ## ایده های اصلی
+
+  - ایده اول
+  - ایده دوم
+  - ایده سوم
+
+  ## پرامپت مطالعه
+
+  یک اقدام بعدی مفید به شنونده بدهید.
 ---
 
 ## Episode summary

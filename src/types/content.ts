@@ -5,24 +5,30 @@ export type BaseContent = {
   slug: string;
   title: string;
   description: string;
+  faTitle?: string;
+  faDescription?: string;
   date: string;
   updated?: string;
   tags: string[];
   published: boolean;
   featured: boolean;
   body: string;
+  faBody?: string;
   readingTime?: string;
 };
 
 export type Article = BaseContent & {
   kind: "article";
   category: string;
+  faCategory?: string;
 };
 
 export type Lesson = BaseContent & {
   kind: "lesson";
   level: string;
   skill: string;
+  faLevel?: string;
+  faSkill?: string;
 };
 
 export type PodcastEpisode = BaseContent & {
@@ -32,6 +38,7 @@ export type PodcastEpisode = BaseContent & {
   audioSrc: string;
   duration: string;
   language: string;
+  faLanguage?: string;
   transcript: boolean;
   cover?: string;
   audioAvailable: boolean;

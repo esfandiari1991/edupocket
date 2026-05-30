@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { BrainCircuit, GraduationCap, Languages, Laptop, ListChecks, Repeat } from "lucide-react";
 import { Container } from "@/components/site/Container";
+import { LocalizedText } from "@/components/site/LocalizedText";
 import { SectionHeading } from "@/components/site/SectionHeading";
 
 export const metadata: Metadata = {
@@ -9,42 +11,90 @@ export const metadata: Metadata = {
 };
 
 const strengths = [
-  { title: "English teaching", text: "IELTS, TOEFL, KET, Business English, conversational English, and kids English.", icon: GraduationCap },
-  { title: "Languages", text: "Arabic teaching, bilingual support, vocabulary systems, and language coaching.", icon: Languages },
-  { title: "Technology", text: "Computer engineering, Python, SQL, AI practice, and learning-system design.", icon: Laptop },
-  { title: "Frameworks", text: "Structured teaching frameworks, micro-lessons, exam strategy, and practical roadmaps.", icon: ListChecks },
-  { title: "Practice loops", text: "Spaced repetition, error logs, feedback cycles, and small measurable habits.", icon: Repeat },
-  { title: "AI learning", text: "AI as a thinking partner for teachers, students, and creators, not a shortcut.", icon: BrainCircuit },
+  {
+    title: { en: "English teaching", fa: "آموزش انگلیسی" },
+    text: { en: "IELTS, TOEFL, KET, Business English, conversational English, and kids English.", fa: "آیلتس، تافل، KET، انگلیسی کسب و کار، مکالمه و انگلیسی کودکان." },
+    icon: GraduationCap,
+  },
+  {
+    title: { en: "Languages", fa: "زبان ها" },
+    text: { en: "Arabic teaching, bilingual support, vocabulary systems, and language coaching.", fa: "آموزش عربی، پشتیبانی دوزبانه، سیستم واژگان و کوچینگ زبان." },
+    icon: Languages,
+  },
+  {
+    title: { en: "Technology", fa: "تکنولوژی" },
+    text: { en: "Computer engineering, Python, SQL, AI practice, and learning-system design.", fa: "مهندسی کامپیوتر، پایتون، SQL، تمرین هوش مصنوعی و طراحی سیستم یادگیری." },
+    icon: Laptop,
+  },
+  {
+    title: { en: "Frameworks", fa: "چارچوب ها" },
+    text: { en: "Structured teaching frameworks, micro-lessons, exam strategy, and practical roadmaps.", fa: "چارچوب های تدریس، درس های کوتاه، استراتژی آزمون و نقشه های کاربردی." },
+    icon: ListChecks,
+  },
+  {
+    title: { en: "Practice loops", fa: "چرخه های تمرین" },
+    text: { en: "Spaced repetition, error logs, feedback cycles, and small measurable habits.", fa: "مرور فاصله دار، دفتر خطا، چرخه بازخورد و عادت های کوچک قابل سنجش." },
+    icon: Repeat,
+  },
+  {
+    title: { en: "AI learning", fa: "یادگیری با AI" },
+    text: { en: "AI as a thinking partner for teachers, students, and creators, not a shortcut.", fa: "هوش مصنوعی به عنوان همراه فکر برای معلم ها، زبان آموزها و سازنده ها؛ نه میانبر." },
+    icon: BrainCircuit,
+  },
 ];
 
 export default function AboutPage() {
   return (
     <Container className="py-16">
       <SectionHeading
-        title="About Ali Rad"
-        description="EduPocket is the public learning library of Ali Esfandiari Rad: English teacher, computer engineer, Arabic teacher, AI practitioner, CELTA student, online tutor, and language coach."
+        title={<LocalizedText en="About Ali Rad" fa="درباره علی راد" />}
+        description={
+          <LocalizedText
+            en="EduPocket is the public learning library of Ali Esfandiari Rad: English teacher, computer engineer, Arabic teacher, AI practitioner, CELTA student, online tutor, and language coach."
+            fa="EduPocket کتابخانه عمومی یادگیری علی اسفندیاری راد است: مدرس انگلیسی، مهندس کامپیوتر، مدرس عربی، فعال در هوش مصنوعی، زبان آموز CELTA، مدرس آنلاین و کوچ زبان."
+          />
+        }
       />
       <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
-        <div className="rounded-[8px] border border-white/10 bg-white/[0.045] p-6">
-          <h2 className="text-2xl font-semibold text-white">A practical education lab</h2>
-          <p className="mt-4 text-sm leading-7 text-slate-400">
-            Ali teaches English, exam preparation, math, SQL, Python, and AI learning systems online. EduPocket brings
-            those lessons into a structured content hub: notes, micro-lessons, podcasts, and frameworks that help learners
-            practice with clarity.
-          </p>
-          <p className="mt-4 text-sm leading-7 text-slate-400">
-            The focus is simple: make learning easier to repeat. That means clear frameworks, short lessons, error logs,
-            spaced repetition, bilingual support, and AI-assisted study habits that improve real performance.
-          </p>
+        <div className="overflow-hidden rounded-[8px] border border-white/10 bg-white/[0.045] shadow-[0_28px_90px_rgba(0,0,0,0.24)]">
+          <Image
+            src="/images/ali-rad-profile.jpg"
+            alt="Ali Rad"
+            width={1024}
+            height={1024}
+            priority
+            className="aspect-square w-full object-cover"
+          />
+          <div className="p-6">
+            <h2 className="text-2xl font-semibold text-white">
+              <LocalizedText en="A practical education lab" fa="یک آزمایشگاه آموزش کاربردی" />
+            </h2>
+            <p className="mt-4 text-sm leading-7 text-slate-400">
+              <LocalizedText
+                en="Ali teaches English, exam preparation, math, SQL, Python, and AI learning systems online. EduPocket brings those lessons into a structured content hub: notes, micro-lessons, podcasts, and frameworks that help learners practice with clarity."
+                fa="علی انگلیسی، آمادگی آزمون، ریاضی، SQL، پایتون و سیستم های یادگیری با هوش مصنوعی را آنلاین تدریس می کند. EduPocket این تجربه ها را به یک هاب محتوایی ساختارمند تبدیل می کند: یادداشت، درس کوتاه، پادکست و چارچوب هایی که تمرین را شفاف تر می کنند."
+              />
+            </p>
+            <p className="mt-4 text-sm leading-7 text-slate-400">
+              <LocalizedText
+                en="The focus is simple: make learning easier to repeat. That means clear frameworks, short lessons, error logs, spaced repetition, bilingual support, and AI-assisted study habits that improve real performance."
+                fa="تمرکز ساده است: یادگیری باید راحت تر تکرار شود. یعنی چارچوب روشن، درس کوتاه، دفتر خطا، مرور فاصله دار، پشتیبانی دوزبانه و عادت های مطالعه با کمک هوش مصنوعی که عملکرد واقعی را بهتر می کنند."
+              />
+            </p>
+          </div>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           {strengths.map((item) => {
             const Icon = item.icon;
             return (
-              <div key={item.title} className="rounded-[8px] border border-white/10 bg-white/[0.04] p-5">
+              <div key={item.title.en} className="rounded-[8px] border border-white/10 bg-white/[0.04] p-5">
                 <Icon aria-hidden="true" className="size-6 text-amber-200" />
-                <h3 className="mt-4 font-semibold text-white">{item.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-400">{item.text}</p>
+                <h3 className="mt-4 font-semibold text-white">
+                  <LocalizedText en={item.title.en} fa={item.title.fa} />
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-slate-400">
+                  <LocalizedText en={item.text.en} fa={item.text.fa} />
+                </p>
               </div>
             );
           })}

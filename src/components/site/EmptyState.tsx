@@ -1,6 +1,7 @@
 import { BookOpen } from "lucide-react";
+import type { ReactNode } from "react";
 
-export function EmptyState({ title, description }: { title: string; description: string }) {
+export function EmptyState({ title, description }: { title: ReactNode; description: ReactNode }) {
   return (
     <div className="rounded-[8px] border border-dashed border-white/15 bg-white/[0.03] p-8 text-center">
       <BookOpen aria-hidden="true" className="mx-auto size-8 text-amber-300" />

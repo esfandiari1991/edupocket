@@ -2,6 +2,8 @@
 
 EduPocket is Ali Rad's public educational content hub: practical notes, teaching systems, AI experiments, language-learning frameworks, and audio lessons.
 
+The site is bilingual. Visitors can switch between English and Persian from the animated language slider in the header.
+
 ## Official local path
 
 ```text
@@ -54,6 +56,7 @@ https://edupocket-rho.vercel.app
 - `src/app`: routes, metadata, sitemap, robots, and page layouts
 - `src/components`: site, MDX, and audio components
 - `src/lib`: site config, content loaders, utilities
+- `src/lib/i18n.ts`: shared bilingual labels, date formatting, and content metadata helpers
 - `src/types`: shared content types
 - `content/articles`: article MDX files
 - `content/lessons`: micro-lesson MDX files
@@ -76,6 +79,8 @@ pnpm new:podcast "Title"
 Articles, lessons, and podcasts are drafts by default. Set `published: true` to publish.
 
 Podcast audio files go in `public/audio`. The podcast script creates an `audioSrc` like `/audio/title.mp3`; place the matching file there and update `duration`.
+
+Each content file should include Persian fields (`faTitle`, `faDescription`, and `faContent`). Articles also support `faCategory`, lessons support `faSkill` and `faLevel`, and podcasts support `faLanguage`.
 
 ## Publish and feature behavior
 

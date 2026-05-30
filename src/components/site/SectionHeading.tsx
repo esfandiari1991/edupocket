@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 
 type SectionHeadingProps = {
-  title: string;
-  description?: string;
+  title: ReactNode;
+  description?: ReactNode;
   action?: ReactNode;
 };
 

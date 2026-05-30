@@ -29,6 +29,8 @@ Set frontmatter:
 ```md
 audioSrc: "/audio/how-to-learn-with-ai-without-becoming-lazy.mp3"
 duration: "08:42"
+language: "English"
+faLanguage: "انگلیسی"
 ```
 
 External audio URLs are supported by setting `audioSrc` to a full `https://` URL.
@@ -41,6 +43,8 @@ If a local audio file is missing, EduPocket does not crash. The player shows:
 Audio file is not attached yet. The episode notes are still available.
 ```
 
+The Persian missing-audio message is shown automatically when the visitor switches to فارسی.
+
 ## Transcript support
 
 Set `transcript: true` to show the transcript guide area. The full transcript can be added in the MDX body.
@@ -48,6 +52,7 @@ Set `transcript: true` to show the transcript guide area. The full transcript ca
 ## Publishing checklist
 
 - Episode title is specific.
+- `faTitle`, `faDescription`, `faLanguage`, and `faContent` are filled in.
 - Description explains the learning value.
 - `episode`, `season`, `duration`, and `language` are correct.
 - Audio file exists or missing-audio state is intentional.

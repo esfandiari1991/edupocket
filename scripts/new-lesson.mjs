@@ -34,14 +34,34 @@ fs.writeFileSync(
   `---
 title: "${title.replaceAll('"', '\\"')}"
 description: "Add a clear one-sentence lesson description."
+faTitle: "عنوان فارسی درس را وارد کنید"
+faDescription: "توضیح کوتاه فارسی درس را وارد کنید."
 date: "${date}"
 updated: "${date}"
 level: "A2-B2"
+faLevel: "A2 تا B2"
 skill: "Study Skills"
+faSkill: "مهارت مطالعه"
 tags:
   - Learning
 published: false
 featured: false
+faContent: |
+  ## هدف
+
+  زبان آموز بعد از این درس باید چه کاری بتواند انجام دهد؟
+
+  ## مدل
+
+  یک نمونه قوی نشان دهید.
+
+  ## تمرین
+
+  یک تمرین متمرکز بدهید.
+
+  ## تمرکز بازخورد
+
+  مهم ترین نکته برای بررسی را نام ببرید.
 ---
 
 ## Target

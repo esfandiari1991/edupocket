@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { getAllArticles } from "@/lib/content";
+import { commonText } from "@/lib/i18n";
 import { Container } from "@/components/site/Container";
 import { FeaturedGrid } from "@/components/site/FeaturedGrid";
+import { LocalizedText } from "@/components/site/LocalizedText";
 import { SectionHeading } from "@/components/site/SectionHeading";
 
 export const metadata: Metadata = {
@@ -15,13 +17,13 @@ export default function ArticlesPage() {
   return (
     <Container className="py-16">
       <SectionHeading
-        title="Articles"
-        description="Readable, practical notes for AI-assisted learning, teaching frameworks, study systems, and technology."
+        title={<LocalizedText en="Articles" fa="مقاله ها" />}
+        description={<LocalizedText en="Readable, practical notes for AI-assisted learning, teaching frameworks, study systems, and technology." fa="یادداشت های خواندنی و کاربردی درباره یادگیری با هوش مصنوعی، چارچوب های تدریس، سیستم های مطالعه و تکنولوژی." />}
       />
       <FeaturedGrid
         items={articles}
-        emptyTitle="No articles yet"
-        emptyDescription="Published articles will appear here when the EduPocket library grows."
+        emptyTitle={<LocalizedText en={commonText.noArticles.en} fa={commonText.noArticles.fa} />}
+        emptyDescription={<LocalizedText en={commonText.noArticlesDescription.en} fa={commonText.noArticlesDescription.fa} />}
       />
     </Container>
   );

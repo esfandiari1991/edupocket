@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { getAllLessons } from "@/lib/content";
+import { commonText } from "@/lib/i18n";
 import { Container } from "@/components/site/Container";
 import { FeaturedGrid } from "@/components/site/FeaturedGrid";
+import { LocalizedText } from "@/components/site/LocalizedText";
 import { SectionHeading } from "@/components/site/SectionHeading";
 
 export const metadata: Metadata = {
@@ -15,13 +17,13 @@ export default function LessonsPage() {
   return (
     <Container className="py-16">
       <SectionHeading
-        title="Lessons"
-        description="Short, structured micro-lessons that turn a topic into a repeatable learning move."
+        title={<LocalizedText en="Lessons" fa="درس ها" />}
+        description={<LocalizedText en="Short, structured micro-lessons that turn a topic into a repeatable learning move." fa="درس های کوتاه و ساختارمند که هر موضوع را به یک حرکت قابل تکرار تبدیل می کنند." />}
       />
       <FeaturedGrid
         items={lessons}
-        emptyTitle="No lessons yet"
-        emptyDescription="Published micro-lessons will appear here."
+        emptyTitle={<LocalizedText en={commonText.noLessons.en} fa={commonText.noLessons.fa} />}
+        emptyDescription={<LocalizedText en={commonText.noLessonsDescription.en} fa={commonText.noLessonsDescription.fa} />}
       />
     </Container>
   );

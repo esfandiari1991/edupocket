@@ -27,9 +27,45 @@ body {
     var(--background);
   color: var(--foreground);
   font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    var(--font-latin), var(--font-persian), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+}
+
+html[data-lang="fa"] body {
+  font-family:
+    var(--font-persian), var(--font-latin), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.lang-fa {
+  display: none;
+}
+
+html[data-lang="fa"] .lang-en {
+  display: none !important;
+}
+
+html[data-lang="fa"] .lang-fa {
+  display: revert;
+}
+
+html[data-lang="en"] .lang-fa {
+  display: none !important;
+}
+
+.language-toggle::after {
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: 9px;
+  background: linear-gradient(90deg, rgba(251, 191, 36, 0.22), rgba(96, 165, 250, 0.16), rgba(251, 191, 36, 0.22));
+  content: "";
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.language-toggle:hover::after {
+  opacity: 1;
 }
 
 ::selection {
@@ -105,6 +141,17 @@ body {
   padding-left: 1.3rem;
 }
 
+html[data-lang="fa"] .prose-edupocket {
+  direction: rtl;
+  text-align: right;
+}
+
+html[data-lang="fa"] .prose-edupocket ul,
+html[data-lang="fa"] .prose-edupocket ol {
+  padding-right: 1.3rem;
+  padding-left: 0;
+}
+
 .prose-edupocket li + li {
   margin-top: 0.45rem;
 }
@@ -115,6 +162,12 @@ body {
   background: rgba(251, 191, 36, 0.08);
   padding: 1rem 1.25rem;
   color: #fde68a;
+}
+
+html[data-lang="fa"] .prose-edupocket blockquote {
+  border-right: 3px solid #fbbf24;
+  border-left: 0;
+  border-radius: 8px 0 0 8px;
 }
 
 .prose-edupocket code {
@@ -152,6 +205,11 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 0.75rem;
   text-align: left;
+}
+
+html[data-lang="fa"] .prose-edupocket th,
+html[data-lang="fa"] .prose-edupocket td {
+  text-align: right;
 }
 
 .prose-edupocket th {
