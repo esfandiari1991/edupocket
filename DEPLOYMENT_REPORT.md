@@ -2,7 +2,7 @@
 
 ## Status
 
-Production build complete, committed, pushed to GitHub, deployed to Vercel, and verified live on the public Vercel project alias. Latest pass adds the polished motion system requested after the initial production deployment.
+Production build complete, committed, pushed to GitHub, deployed to Vercel, and verified live on the public Vercel project alias. Latest pass adds the final logo system, smoother unlock-style language slider, stronger tasteful motion, corrected collaboration CTA layout, and SEO hardening.
 
 ## Local path
 
@@ -21,6 +21,8 @@ Previous local prototype/workspace was found at /Users/ali/Documents/Claude/Proj
 - Responsive hardening for small mobile widths, MDX code blocks, RTL text, and animated contact CTAs.
 - Homepage alignment polish with a simplified section structure, stronger hero symmetry, and prominent collaboration CTAs.
 - Polished motion system across the hero, CTAs, content cards, upcoming states, English Lab controls, and MDX media.
+- Canva generated an editable logo candidate and Figma contains the EduPocket Logo System board.
+- SEO pass added canonical metadata for `https://edupocket.org`, JSON-LD structured data, sitemap priorities, robots output, manifest, favicon SVG, and generated Open Graph/Twitter images.
 - Vercel production deployment first.
 - External DNS/hosting providers are out of scope for this pass.
 - Previous static prototype preserved under `legacy-static/`.
@@ -51,20 +53,29 @@ Previous local prototype/workspace was found at /Users/ali/Documents/Claude/Proj
 - Playwright required for local build: no.
 - Playwright required for Vercel deploy: no.
 - Optional future e2e rule: if Playwright is added later, keep `test:e2e` separate and never call it from `build`, `check`, `lint`, `postinstall`, `prepare`, or Vercel production deployment.
-- Verification run on 2026-05-30 21:03: `pnpm install`, `pnpm lint`, `pnpm check`, `pnpm build`, `pnpm exec next start -p 3001`, route `curl -I` checks, and `BASE_URL=http://localhost:3001 pnpm verify:routes`.
+- Verification run on 2026-05-31 00:47: `pnpm lint`, `pnpm check`, `pnpm build`, `pnpm exec next start -p 3002`, route `curl -I` checks, and `BASE_URL=http://localhost:3002 pnpm verify:routes`.
 - Final local status: lint passed, TypeScript check passed, production build passed, route smoke tests passed.
 - Note: `pnpm install` reported pnpm's standard ignored-build-scripts warning for `sharp` and `unrs-resolver`; it did not involve Playwright and did not block install, lint, check, or build.
-- Production deploy run on 2026-05-30 21:04: `vercel --prod --yes`.
+- Production deploy run on 2026-05-31 00:42: `vercel --prod --yes`.
 - Vercel production deployment: Ready.
-- Latest inspect URL: `https://vercel.com/arads-projects-dad3a535/edupocket/5zBtjiwzQj8sJasWqzjG1Bc1hUV7`.
-- Latest immutable deployment URL: `https://edupocket-7ylpm9psi-arads-projects-dad3a535.vercel.app` (Vercel authentication returns `401` on direct generated deployment URLs).
+- Latest inspect URL: `https://vercel.com/arads-projects-dad3a535/edupocket/9yVaQaMJ857zPeYhjkurNojdUrQ7`.
+- Latest immutable deployment URL: `https://edupocket-ax22178bj-arads-projects-dad3a535.vercel.app` (Vercel authentication returns `401` on direct generated deployment URLs).
 - Verified public production alias: `https://edupocket-rho.vercel.app`.
 - Live route checks on `https://edupocket-rho.vercel.app`: `/`, `/articles`, `/lessons`, `/podcasts`, `/about`, `/english-lab`, `/sitemap.xml`, and `/robots.txt` returned `200`.
 - Custom domain status remains an external DNS handoff: Vercel aliased `edupocket.org` and `www.edupocket.org`, but the domain still needs DNS to point fully at Vercel before subroutes resolve there.
 
+## Latest brand and SEO assets
+
+- Canva editable logo candidate: `https://www.canva.com/d/AQeQgb2OUr-Cp6V`
+- Figma logo system: `https://www.figma.com/design/t7mY7RDYwp9A4ZFo8HcSHa`
+- Site favicon/brand icon: `public/icons/edupocket-mark.svg`
+- Open Graph image route: `/opengraph-image`
+- Twitter image route: `/twitter-image`
+- Manifest route: `/manifest.webmanifest`
+
 ## Environment
 
-- Date/time: 2026-05-30 18:17:06 EEST
+- Date/time: 2026-05-31 00:47:27 EEST
 - Node: v25.5.0
 - npm: 11.8.0
 - pnpm: 10.28.2
@@ -80,14 +91,16 @@ pnpm install
 pnpm lint
 pnpm check
 pnpm build
-BASE_URL=http://localhost:3001 pnpm verify:routes
+pnpm exec next start -p 3002
+BASE_URL=http://localhost:3002 pnpm verify:routes
 vercel login
 vercel link --yes --project edupocket
 printf %s 'https://edupocket.org' | vercel env add NEXT_PUBLIC_SITE_URL production --force --yes
 vercel domains add edupocket.org
 vercel domains add www.edupocket.org
 vercel --prod --yes
-vercel inspect https://edupocket-8bpw6dzb7-arads-projects-dad3a535.vercel.app
+BASE_URL=https://edupocket-rho.vercel.app pnpm verify:routes
+vercel inspect https://edupocket-ax22178bj-arads-projects-dad3a535.vercel.app
 vercel domains inspect edupocket.org
 vercel domains inspect www.edupocket.org
 dig +short edupocket.org
@@ -103,12 +116,14 @@ Visual QA screenshots were captured with Google Chrome headless/CDP because the 
 - Lint: passed
 - TypeScript check: passed
 - Production build: passed
+- Production local server: passed on `http://localhost:3002`
 - Responsive audit: passed across 108 page/language/viewport states with zero horizontal overflow failures after fixes
 - Motion QA: passed with reduced-motion handling, true 390px mobile emulation, and zero horizontal overflow in English and Persian
+- SEO routes: `/opengraph-image`, `/twitter-image`, `/manifest.webmanifest`, `/sitemap.xml`, and `/robots.txt` returned `200`
 
 ## Local verification
 
-- Production server: `http://localhost:3001`
+- Production server: `http://localhost:3002`
 - Verified routes with HTTP 200:
   - `/`
   - `/articles`
@@ -130,6 +145,9 @@ Visual QA screenshots were captured with Google Chrome headless/CDP because the 
   - Latest motion English Lab mobile screenshot: `/tmp/edupocket-cdp-lab-390-en.png`
   - About Persian screenshot: `/tmp/edupocket-about-fa.png`
   - Podcast Persian screenshot: `/tmp/edupocket-podcast-fa.png`
+  - Final logo/navbar screenshot: `/tmp/edupocket-final-prod-navbar-1440.png`
+  - Final contact CTA screenshot: `/tmp/edupocket-final-prod-contact-1440.png`
+  - Final mobile Persian homepage screenshot: `/tmp/edupocket-final-prod-home-390-fa.png`
   - Language toggle state: passed
   - Persian RTL layout and typography: passed
   - Supplied founder images: passed
@@ -150,6 +168,8 @@ Visual QA screenshots were captured with Google Chrome headless/CDP because the 
 - Homepage alignment and collaboration CTA commit: `3b54d9b`
 - Original media materials commit: `eb80f85`
 - Latest motion system commit: `755f409`
+- Latest contact copy commit: `50779cc`
+- Latest logo, animation, and SEO commit: `2251660`
 - Vercel GitHub integration: connected during Vercel project linking.
 
 ## Vercel status
@@ -157,7 +177,7 @@ Visual QA screenshots were captured with Google Chrome headless/CDP because the 
 - Project: `arads-projects-dad3a535/edupocket`
 - Deploy command: `vercel --prod --yes`
 - Build status: passed
-- Latest inspect URL: `https://vercel.com/arads-projects-dad3a535/edupocket/5MxHj7SL9H18FmUkfBdbieUbRtzK`
+- Latest inspect URL: `https://vercel.com/arads-projects-dad3a535/edupocket/9yVaQaMJ857zPeYhjkurNojdUrQ7`
 - Deployment status: Ready
 - Production environment variable: `NEXT_PUBLIC_SITE_URL=https://edupocket.org`
 - Note: the first Vercel deploy attempt failed because the local folder name contains uppercase letters and Vercel project names must be lowercase. The project was linked explicitly as `edupocket`, then production deployment succeeded.
@@ -165,7 +185,7 @@ Visual QA screenshots were captured with Google Chrome headless/CDP because the 
 ## Production URL
 
 - Stable production alias: `https://edupocket-rho.vercel.app`
-- Latest immutable production deployment URL: `https://edupocket-orw2regy2-arads-projects-dad3a535.vercel.app`
+- Latest immutable production deployment URL: `https://edupocket-ax22178bj-arads-projects-dad3a535.vercel.app`
 - Custom domain aliases added in Vercel: `https://edupocket.org`, `https://www.edupocket.org`
 - Custom domain DNS status: pending DNS update by the domain owner.
 - Generated deployment URLs currently return Vercel authentication (`401`) when visited directly. The public Vercel project alias below was verified and is the shareable live URL until custom DNS is updated.
@@ -185,6 +205,8 @@ Verified with HTTP HEAD checks:
 - `200` `https://edupocket-rho.vercel.app/podcasts/how-to-learn-with-ai-without-becoming-lazy`
 - `200` `https://edupocket-rho.vercel.app/sitemap.xml`
 - `200` `https://edupocket-rho.vercel.app/robots.txt`
+- `200` `https://edupocket-rho.vercel.app/opengraph-image`
+- `200` `https://edupocket-rho.vercel.app/manifest.webmanifest`
 
 Canonical sitemap/robots output was verified through the Vercel alias and now points to `https://edupocket.org` without path-breaking whitespace.
 
