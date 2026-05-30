@@ -34,7 +34,7 @@ export function LanguageToggle() {
 
   return (
     <div
-      className="language-toggle group relative inline-grid min-w-[9.7rem] grid-cols-2 items-center rounded-[8px] border border-white/10 bg-white/[0.055] p-1 text-xs font-semibold shadow-[0_14px_44px_rgba(0,0,0,0.18)]"
+      className="language-toggle group relative inline-grid min-w-[8.2rem] grid-cols-2 items-center rounded-[8px] border border-white/10 bg-white/[0.055] p-1 text-xs font-semibold shadow-[0_14px_44px_rgba(0,0,0,0.18)] sm:min-w-[9.7rem]"
       dir="ltr"
       aria-label="Language"
     >
@@ -50,7 +50,7 @@ export function LanguageToggle() {
         aria-pressed={language === "en"}
         onClick={() => selectLanguage("en")}
         className={cn(
-          "relative z-10 inline-flex min-h-9 items-center justify-center gap-1.5 rounded-[6px] px-3 transition",
+          "relative z-10 inline-flex min-h-9 items-center justify-center gap-1 rounded-[6px] px-2 transition sm:gap-1.5 sm:px-3",
           language === "en" ? "text-slate-950" : "text-slate-300 hover:text-white",
         )}
       >
@@ -62,7 +62,7 @@ export function LanguageToggle() {
         aria-pressed={language === "fa"}
         onClick={() => selectLanguage("fa")}
         className={cn(
-          "relative z-10 min-h-9 rounded-[6px] px-3 transition",
+          "relative z-10 min-h-9 rounded-[6px] px-2 transition sm:px-3",
           language === "fa" ? "text-slate-950" : "text-slate-300 hover:text-white",
         )}
       >

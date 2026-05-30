@@ -22,7 +22,7 @@ export function ContentCard({ item }: { item: ContentItem }) {
   const readingTime = item.kind === "podcast" ? { en: item.duration, fa: item.duration } : { en: item.readingTime, fa: formatReadingTimeFa(item.readingTime) };
 
   return (
-    <article className="group rounded-[8px] border border-white/10 bg-white/[0.045] p-5 shadow-[0_20px_60px_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5 hover:border-amber-300/35 hover:bg-white/[0.065]">
+    <article className="motion-card group rounded-[8px] border border-white/10 bg-white/[0.045] p-5 shadow-[0_20px_60px_rgba(0,0,0,0.18)]">
       <div className="flex items-start gap-4">
         <div className="flex size-10 shrink-0 items-center justify-center rounded-[8px] border border-amber-300/20 bg-amber-300/10 text-amber-200">
           <Icon aria-hidden="true" className="size-5" />

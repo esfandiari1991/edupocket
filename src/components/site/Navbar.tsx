@@ -10,25 +10,28 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#06111f]/88 backdrop-blur-xl">
       <Container>
-        <div className="grid min-h-20 gap-4 py-4 lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:gap-6">
-          <div className="flex flex-col items-start gap-3 min-[380px]:flex-row min-[380px]:items-center min-[380px]:justify-between lg:justify-start">
+        <div className="grid min-h-20 min-w-0 gap-4 py-4 lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:gap-6">
+          <div className="flex min-w-0 flex-col items-start gap-3 min-[380px]:w-full min-[380px]:flex-row min-[380px]:items-center min-[380px]:justify-between lg:justify-start">
             <BrandMark />
             <div className="lg:hidden">
               <LanguageToggle />
             </div>
           </div>
-          <nav aria-label="Primary navigation" className="flex w-full flex-wrap justify-center gap-1 text-sm font-medium text-slate-300 lg:w-auto lg:items-center">
+          <nav
+            aria-label="Primary navigation"
+            className="grid w-full min-w-0 grid-cols-3 gap-1 text-center text-sm font-medium text-slate-300 min-[560px]:flex min-[560px]:flex-wrap min-[560px]:justify-center lg:w-auto lg:items-center"
+          >
             {siteConfig.nav.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="rounded-[8px] px-2.5 py-2 transition hover:bg-white/6 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-300/70 md:px-3"
+                className="min-w-0 rounded-[8px] px-2 py-2 transition hover:bg-white/6 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-300/70 md:px-3"
               >
                 <LocalizedText en={item.label} fa={item.faLabel} />
               </Link>
             ))}
           </nav>
-          <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-center lg:w-auto lg:justify-end">
+          <div className="flex w-full min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-center lg:w-auto lg:justify-end">
             <div className="hidden lg:block">
               <LanguageToggle />
             </div>

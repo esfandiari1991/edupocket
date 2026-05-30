@@ -64,7 +64,7 @@ export function DirectContactButtons({
         target="_blank"
         rel="noopener noreferrer"
         className={cn(
-          "group relative isolate inline-flex min-h-14 min-w-0 items-center justify-between gap-3 overflow-hidden rounded-[8px] border border-amber-100/70 bg-gradient-to-r from-amber-300 via-amber-200 to-sky-200 px-4 py-3 text-start font-semibold text-slate-950 shadow-[0_22px_70px_rgba(251,191,36,0.28)] transition hover:-translate-y-0.5 hover:shadow-[0_28px_90px_rgba(251,191,36,0.34)] focus:outline-none focus:ring-2 focus:ring-amber-100",
+          "motion-button-pop group relative isolate inline-flex min-h-14 min-w-0 items-center justify-between gap-3 overflow-hidden rounded-[8px] border border-amber-100/70 bg-gradient-to-r from-amber-300 via-amber-200 to-sky-200 px-4 py-3 text-start font-semibold text-slate-950 shadow-[0_22px_70px_rgba(251,191,36,0.28)] transition hover:-translate-y-0.5 hover:shadow-[0_28px_90px_rgba(251,191,36,0.34)] focus:outline-none focus:ring-2 focus:ring-amber-100",
           isHero ? "sm:min-w-[18rem] sm:px-5" : "w-full sm:w-auto",
           isFooter ? "sm:w-full" : "",
         )}

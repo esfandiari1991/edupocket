@@ -79,7 +79,7 @@ export function EnglishLabExperience() {
 
   return (
     <div className="space-y-10">
-      <section className="overflow-hidden rounded-[8px] border border-white/10 bg-[radial-gradient(circle_at_20%_20%,rgba(251,191,36,0.16),transparent_24rem),linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.025))] p-5 shadow-[0_28px_100px_rgba(0,0,0,0.24)] sm:p-8">
+      <section className="motion-lab-stage motion-reveal overflow-hidden rounded-[8px] border border-white/10 bg-[radial-gradient(circle_at_20%_20%,rgba(251,191,36,0.16),transparent_24rem),linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.025))] p-5 shadow-[0_28px_100px_rgba(0,0,0,0.24)] sm:p-8">
         <div className="grid gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
           <div>
             <p className="text-sm font-semibold text-amber-200">
@@ -100,7 +100,7 @@ export function EnglishLabExperience() {
                 { en: "instant feedback", fa: "بازخورد فوری" },
                 { en: "no empty links", fa: "بدون لینک خالی" },
               ].map((item) => (
-                <div key={item.en} className="rounded-[8px] border border-white/10 bg-slate-950/30 px-4 py-3 text-sm font-semibold text-slate-200">
+                <div key={item.en} className="motion-micro-tile rounded-[8px] border border-white/10 bg-slate-950/30 px-4 py-3 text-sm font-semibold text-slate-200">
                   <LocalizedText en={item.en} fa={item.fa} />
                 </div>
               ))}
@@ -116,9 +116,10 @@ export function EnglishLabExperience() {
                   <button
                     key={track.id}
                     type="button"
+                    data-selected={selected ? "true" : "false"}
                     onClick={() => selectSkill(track.id)}
                     className={cn(
-                      "min-h-24 rounded-[8px] border p-3 text-start transition focus:outline-none focus:ring-2 focus:ring-amber-300/60",
+                      "motion-skill-button min-h-24 rounded-[8px] border p-3 text-start transition focus:outline-none focus:ring-2 focus:ring-amber-300/60",
                       selected ? "border-amber-300/65 bg-amber-300/12 text-white shadow-[0_18px_50px_rgba(251,191,36,0.12)]" : "border-white/10 bg-white/[0.035] text-slate-300 hover:border-amber-300/35",
                     )}
                   >
@@ -135,7 +136,7 @@ export function EnglishLabExperience() {
       </section>
 
       <section className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
-        <div className="rounded-[8px] border border-white/10 bg-white/[0.035] p-5">
+        <div className="motion-practice-panel rounded-[8px] border border-white/10 bg-white/[0.035] p-5">
           <div className="flex items-center gap-3">
             <span className={cn("flex size-11 items-center justify-center rounded-[8px] bg-gradient-to-br", selectedTrack.color)}>
               <SelectedTrackIcon aria-hidden="true" className="size-5 text-amber-100" />
@@ -155,7 +156,7 @@ export function EnglishLabExperience() {
               type="button"
               onClick={() => selectLevel(allLevels)}
               className={cn(
-                "rounded-[8px] border px-3 py-2 text-sm font-semibold transition",
+                "motion-chip rounded-[8px] border px-3 py-2 text-sm font-semibold transition",
                 selectedLevel === allLevels ? "border-amber-300/60 bg-amber-300/12 text-amber-100" : "border-white/10 bg-white/[0.035] text-slate-300 hover:border-amber-300/35",
               )}
             >
@@ -167,7 +168,7 @@ export function EnglishLabExperience() {
                 type="button"
                 onClick={() => selectLevel(level.id)}
                 className={cn(
-                  "rounded-[8px] border px-3 py-2 text-sm font-semibold transition",
+                  "motion-chip rounded-[8px] border px-3 py-2 text-sm font-semibold transition",
                   selectedLevel === level.id ? "border-amber-300/60 bg-amber-300/12 text-amber-100" : "border-white/10 bg-white/[0.035] text-slate-300 hover:border-amber-300/35",
                 )}
               >
@@ -186,10 +187,12 @@ export function EnglishLabExperience() {
                   <button
                     key={module.id}
                     type="button"
+                    data-active={active && !locked ? "true" : "false"}
+                    data-locked={locked ? "true" : "false"}
                     disabled={locked}
                     onClick={() => selectModule(module)}
                     className={cn(
-                      "rounded-[8px] border p-4 text-start transition focus:outline-none focus:ring-2 focus:ring-amber-300/60 disabled:cursor-not-allowed",
+                      "motion-module-button rounded-[8px] border p-4 text-start transition focus:outline-none focus:ring-2 focus:ring-amber-300/60 disabled:cursor-not-allowed",
                       active && !locked
                         ? "border-amber-300/60 bg-amber-300/10"
                         : locked
@@ -236,7 +239,7 @@ export function EnglishLabExperience() {
           </div>
         </div>
 
-        <div className="rounded-[8px] border border-white/10 bg-white/[0.045] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
+        <div className="motion-practice-panel motion-delay-1 rounded-[8px] border border-white/10 bg-white/[0.045] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="text-xs font-semibold text-amber-200">{activeModule.level}</p>
@@ -250,7 +253,7 @@ export function EnglishLabExperience() {
             <button
               type="button"
               onClick={reset}
-              className="inline-flex items-center justify-center gap-2 rounded-[8px] border border-white/10 px-3 py-2 text-sm font-semibold text-slate-200 transition hover:border-amber-300/40 hover:text-amber-100"
+              className="motion-button-pop inline-flex items-center justify-center gap-2 rounded-[8px] border border-white/10 px-3 py-2 text-sm font-semibold text-slate-200 transition hover:border-amber-300/40 hover:text-amber-100"
             >
               <RefreshCw aria-hidden="true" className="size-4" />
               <LocalizedText en="Reset" fa="شروع دوباره" />
@@ -258,7 +261,7 @@ export function EnglishLabExperience() {
           </div>
 
           {activeModule.skill === "listening" ? (
-            <div className="mt-5 rounded-[8px] border border-sky-200/15 bg-sky-300/[0.08] p-4">
+            <div className="motion-card mt-5 rounded-[8px] border border-sky-200/15 bg-sky-300/[0.08] p-4">
               <button type="button" onClick={() => setShowTranscript((value) => !value)} className="inline-flex items-center gap-2 text-sm font-semibold text-sky-100">
                 {showTranscript ? <EyeOff aria-hidden="true" className="size-4" /> : <Eye aria-hidden="true" className="size-4" />}
                 <LocalizedText en={showTranscript ? "Hide transcript" : "Reveal transcript"} fa={showTranscript ? "پنهان کردن متن" : "نمایش متن شنیداری"} />
@@ -279,7 +282,7 @@ export function EnglishLabExperience() {
           ) : null}
 
           {activeModule.skill === "writing" ? (
-            <div className="mt-5 rounded-[8px] border border-rose-200/15 bg-rose-300/[0.08] p-4">
+            <div className="motion-card mt-5 rounded-[8px] border border-rose-200/15 bg-rose-300/[0.08] p-4">
               <label className="text-sm font-semibold text-rose-100" htmlFor="writing-studio">
                 <LocalizedText en="Write 50-90 words: Should students use AI for homework practice?" fa="۵۰ تا ۹۰ کلمه بنویس: آیا دانش آموزها باید برای تمرین تکلیف از AI استفاده کنند؟" />
               </label>
@@ -317,7 +320,7 @@ export function EnglishLabExperience() {
               const correct = selected === question.answer;
 
               return (
-                <fieldset key={question.prompt.en} className="rounded-[8px] border border-white/10 bg-slate-950/28 p-4">
+                <fieldset key={question.prompt.en} className="motion-question-card rounded-[8px] border border-white/10 bg-slate-950/28 p-4">
                   <legend className="px-1 text-sm font-semibold text-white">
                     <LocalizedText en={question.prompt.en} fa={question.prompt.fa} />
                   </legend>
@@ -331,7 +334,7 @@ export function EnglishLabExperience() {
                         <label
                           key={option.en}
                           className={cn(
-                            "flex cursor-pointer items-center gap-3 rounded-[8px] border px-3 py-2.5 text-sm font-medium transition",
+                            "motion-answer-option flex cursor-pointer items-center gap-3 rounded-[8px] border px-3 py-2.5 text-sm font-medium transition",
                             revealCorrect
                               ? "border-emerald-300/45 bg-emerald-300/12 text-emerald-50"
                               : revealWrong
@@ -382,7 +385,7 @@ export function EnglishLabExperience() {
                 type="button"
                 disabled={!complete}
                 onClick={() => setSubmitted(true)}
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-[8px] bg-amber-400 px-5 py-3 text-sm font-bold text-slate-950 shadow-[0_18px_44px_rgba(251,191,36,0.22)] transition hover:bg-amber-300 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400 disabled:shadow-none"
+                className="motion-button-pop inline-flex min-h-12 items-center justify-center gap-2 rounded-[8px] bg-amber-400 px-5 py-3 text-sm font-bold text-slate-950 shadow-[0_18px_44px_rgba(251,191,36,0.22)] transition hover:bg-amber-300 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400 disabled:shadow-none"
               >
                 <LocalizedText en="Check answers" fa="بررسی جواب ها" />
                 <ArrowRight aria-hidden="true" className="size-4 rtl:rotate-180" />
