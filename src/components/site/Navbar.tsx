@@ -11,9 +11,9 @@ export function Navbar() {
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#06111f]/88 backdrop-blur-xl">
       <Container>
         <div className="grid min-h-20 min-w-0 gap-4 py-4 xl:grid-cols-[minmax(10rem,1fr)_auto_minmax(26rem,1fr)] xl:items-center xl:gap-6">
-          <div className="flex min-w-0 flex-col items-start gap-3 min-[380px]:w-full min-[380px]:flex-row min-[380px]:items-center min-[380px]:justify-between xl:justify-start">
+          <div className="flex min-w-0 flex-col items-start gap-3 min-[520px]:w-full min-[520px]:flex-row min-[520px]:items-center min-[520px]:justify-between xl:justify-start">
             <BrandMark />
-            <div className="xl:hidden">
+            <div className="w-full min-[520px]:w-[15.25rem] sm:w-[18.5rem] xl:hidden">
               <LanguageToggle />
             </div>
           </div>
@@ -33,7 +33,7 @@ export function Navbar() {
           </nav>
           <div className="flex w-full min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-center xl:w-auto xl:justify-end">
             <div className="hidden xl:block">
-              <LanguageToggle />
+              <LanguageToggle className="w-[18.5rem]" />
             </div>
             <a
               href={siteConfig.contact.telegram.href}
