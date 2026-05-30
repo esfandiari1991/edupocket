@@ -5,6 +5,7 @@ import { commonText, tagLabel } from "@/lib/i18n";
 import { getAllTags, getFeaturedArticles, getFeaturedLessons, getFeaturedPodcasts } from "@/lib/content";
 import { slugify } from "@/lib/utils";
 import { Container } from "@/components/site/Container";
+import { ContactPanel } from "@/components/site/ContactPanel";
 import { ContentCard } from "@/components/site/ContentCard";
 import { Hero } from "@/components/site/Hero";
 import { LocalizedText } from "@/components/site/LocalizedText";
@@ -107,6 +108,12 @@ export default function HomePage() {
               </div>
             </div>
           </div>
+        </Container>
+      </section>
+
+      <section className="border-b border-white/10 py-16">
+        <Container>
+          <ContactPanel context="general" />
         </Container>
       </section>
 

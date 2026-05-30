@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getAllArticles } from "@/lib/content";
 import { commonText } from "@/lib/i18n";
 import { Container } from "@/components/site/Container";
+import { DirectContactButtons } from "@/components/site/DirectContactButtons";
 import { FeaturedGrid } from "@/components/site/FeaturedGrid";
 import { LocalizedText } from "@/components/site/LocalizedText";
 import { SectionHeading } from "@/components/site/SectionHeading";
@@ -19,6 +20,7 @@ export default function ArticlesPage() {
       <SectionHeading
         title={<LocalizedText en="Articles" fa="مقاله ها" />}
         description={<LocalizedText en="Readable, practical notes for AI-assisted learning, teaching frameworks, study systems, and technology." fa="یادداشت های خواندنی و کاربردی درباره یادگیری با هوش مصنوعی، چارچوب های تدریس، سیستم های مطالعه و تکنولوژی." />}
+        action={<DirectContactButtons showSecondary={false} />}
       />
       <FeaturedGrid
         items={articles}

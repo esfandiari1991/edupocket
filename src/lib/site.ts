@@ -20,6 +20,32 @@ export const siteConfig = {
   shortAuthor: "Ali Rad",
   url: productionUrl(),
   contactEmail: "aliesfandiari@outlook.com",
+  contact: {
+    telegram: {
+      label: "Telegram",
+      faLabel: "تلگرام",
+      handle: "@esfandiari_Rad",
+      href: "https://t.me/esfandiari_Rad",
+    },
+    instagram: {
+      label: "Instagram",
+      faLabel: "اینستاگرام",
+      handle: "@esfandiari_RAD",
+      href: "https://www.instagram.com/esfandiari_RAD/",
+    },
+    bale: {
+      label: "Bale",
+      faLabel: "بله",
+      handle: "@ali_esfandiari",
+      href: "https://ble.ir/ali_esfandiari",
+    },
+    email: {
+      label: "Email",
+      faLabel: "ایمیل",
+      handle: "aliesfandiari@outlook.com",
+      href: "mailto:aliesfandiari@outlook.com?subject=EduPocket%20Direct%20Message",
+    },
+  },
   topics: [
     "AI Learning",
     "English Teaching",

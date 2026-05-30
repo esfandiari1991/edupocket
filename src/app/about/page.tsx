@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { BrainCircuit, GraduationCap, Languages, Laptop, ListChecks, Repeat } from "lucide-react";
+import { ContactPanel } from "@/components/site/ContactPanel";
 import { Container } from "@/components/site/Container";
 import { LocalizedText } from "@/components/site/LocalizedText";
 import { SectionHeading } from "@/components/site/SectionHeading";
@@ -100,6 +101,7 @@ export default function AboutPage() {
           })}
         </div>
       </div>
+      <ContactPanel context="about" className="mt-8" />
     </Container>
   );
 }

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { siteConfig } from "@/lib/site";
 import { BrandMark } from "@/components/site/BrandMark";
 import { Container } from "@/components/site/Container";
+import { DirectContactButtons } from "@/components/site/DirectContactButtons";
 import { commonText } from "@/lib/i18n";
 import { LocalizedText } from "@/components/site/LocalizedText";
 
@@ -17,6 +18,7 @@ export function Footer() {
             <p className="text-sm leading-6 text-slate-400">
               <LocalizedText en={siteConfig.description} fa={siteConfig.faDescription} />
             </p>
+            <DirectContactButtons variant="footer" showSecondary={false} />
           </div>
           <div>
             <h2 className="text-sm font-semibold text-white">

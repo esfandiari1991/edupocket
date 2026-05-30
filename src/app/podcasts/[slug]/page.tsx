@@ -6,6 +6,7 @@ import { getAllPodcasts, getPodcastBySlug, getRelatedPodcasts } from "@/lib/cont
 import { commonText, formatDateFa, itemBody, itemDescription, itemTitle, podcastLanguage } from "@/lib/i18n";
 import { formatDate } from "@/lib/utils";
 import { AudioTranscript } from "@/components/audio/AudioTranscript";
+import { ContactPanel } from "@/components/site/ContactPanel";
 import { EduPocketPlayer } from "@/components/audio/EduPocketPlayer";
 import { Container } from "@/components/site/Container";
 import { FeaturedGrid } from "@/components/site/FeaturedGrid";
@@ -101,6 +102,7 @@ export default async function PodcastPage({ params }: PageProps) {
           <MDXContent source={body.fa} />
         </div>
       </section>
+      <ContactPanel context="podcast" className="mx-auto mt-10 max-w-3xl" />
       <section className="mt-16">
         <h2 className="mb-5 text-2xl font-semibold text-white">
           <LocalizedText en={commonText.relatedEpisodes.en} fa={commonText.relatedEpisodes.fa} />

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { Send } from "lucide-react";
 import { siteConfig } from "@/lib/site";
 import { BrandMark } from "@/components/site/BrandMark";
 import { Container } from "@/components/site/Container";
@@ -25,13 +25,15 @@ export function Navbar() {
           </nav>
           <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center lg:w-auto">
             <LanguageToggle />
-            <Link
-              href="/articles"
+            <a
+              href={siteConfig.contact.telegram.href}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex w-full items-center justify-center gap-2 rounded-[8px] bg-amber-400 px-4 py-2.5 text-sm font-semibold text-slate-950 shadow-[0_18px_44px_rgba(251,191,36,0.22)] transition hover:bg-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-200 sm:w-auto"
             >
-              <LocalizedText en="Start reading" fa="شروع مطالعه" />
-              <ArrowRight aria-hidden="true" className="size-4 rtl:rotate-180" />
-            </Link>
+              <LocalizedText en="Message Ali" fa="پیام به علی" />
+              <Send aria-hidden="true" className="size-4 rtl:rotate-180" />
+            </a>
           </div>
         </div>
       </Container>

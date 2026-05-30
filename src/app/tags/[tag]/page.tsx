@@ -3,6 +3,7 @@ import { getAllTags, getContentByTag, getTagLabel } from "@/lib/content";
 import { tagLabel as localizedTagLabel } from "@/lib/i18n";
 import { slugify } from "@/lib/utils";
 import { Container } from "@/components/site/Container";
+import { DirectContactButtons } from "@/components/site/DirectContactButtons";
 import { FeaturedGrid } from "@/components/site/FeaturedGrid";
 import { LocalizedText } from "@/components/site/LocalizedText";
 import { SectionHeading } from "@/components/site/SectionHeading";
@@ -36,6 +37,7 @@ export default async function TagPage({ params }: PageProps) {
       <SectionHeading
         title={<LocalizedText en={`Tag: ${localizedLabel.en}`} fa={`برچسب: ${localizedLabel.fa}`} />}
         description={<LocalizedText en="Connected articles, micro-lessons, and podcast episodes from the EduPocket library." fa="مقاله ها، درس های کوتاه و اپیزودهای مرتبط از کتابخانه EduPocket." />}
+        action={<DirectContactButtons showSecondary={false} />}
       />
       <FeaturedGrid
         items={items}

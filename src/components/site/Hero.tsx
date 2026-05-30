@@ -2,6 +2,7 @@ import Image from "next/image";
 import { BookOpenText, GraduationCap, Headphones } from "lucide-react";
 import { ButtonLink } from "@/components/site/ButtonLink";
 import { Container } from "@/components/site/Container";
+import { DirectContactButtons } from "@/components/site/DirectContactButtons";
 import { LocalizedText } from "@/components/site/LocalizedText";
 
 export function Hero() {
@@ -42,8 +43,9 @@ export function Hero() {
               <LocalizedText en="Built from Ali Rad's teaching, tutoring, and AI-learning practice." fa="ساخته شده از تجربه تدریس، کوچینگ زبان و تمرین های هوش مصنوعی علی راد." />
             </p>
           </div>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <ButtonLink href="/articles" icon={BookOpenText} variant="primary">
+          <DirectContactButtons variant="hero" className="mt-8" />
+          <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+            <ButtonLink href="/articles" icon={BookOpenText}>
               <LocalizedText en="Read Articles" fa="خواندن مقاله ها" />
             </ButtonLink>
             <ButtonLink href="/lessons" icon={GraduationCap}>

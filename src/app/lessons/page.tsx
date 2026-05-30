@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getAllLessons } from "@/lib/content";
 import { commonText } from "@/lib/i18n";
 import { Container } from "@/components/site/Container";
+import { DirectContactButtons } from "@/components/site/DirectContactButtons";
 import { FeaturedGrid } from "@/components/site/FeaturedGrid";
 import { LocalizedText } from "@/components/site/LocalizedText";
 import { SectionHeading } from "@/components/site/SectionHeading";
@@ -19,6 +20,7 @@ export default function LessonsPage() {
       <SectionHeading
         title={<LocalizedText en="Lessons" fa="درس ها" />}
         description={<LocalizedText en="Short, structured micro-lessons that turn a topic into a repeatable learning move." fa="درس های کوتاه و ساختارمند که هر موضوع را به یک حرکت قابل تکرار تبدیل می کنند." />}
+        action={<DirectContactButtons showSecondary={false} />}
       />
       <FeaturedGrid
         items={lessons}

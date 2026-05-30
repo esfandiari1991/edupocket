@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { getAllLessons, getLessonBySlug, getRelatedLessons } from "@/lib/content";
 import { commonText, formatDateFa, formatReadingTimeFa, itemBody, itemDescription, itemTitle, lessonLevel, lessonSkill } from "@/lib/i18n";
 import { formatDate } from "@/lib/utils";
+import { ContactPanel } from "@/components/site/ContactPanel";
 import { Container } from "@/components/site/Container";
 import { FeaturedGrid } from "@/components/site/FeaturedGrid";
 import { LocalizedText } from "@/components/site/LocalizedText";
@@ -96,6 +97,7 @@ export default async function LessonPage({ params }: PageProps) {
           </div>
         </div>
       </article>
+      <ContactPanel context="lesson" className="mx-auto mt-10 max-w-3xl" />
       <section className="mt-16">
         <h2 className="mb-5 text-2xl font-semibold text-white">
           <LocalizedText en={commonText.relatedLessons.en} fa={commonText.relatedLessons.fa} />

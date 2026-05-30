@@ -3,6 +3,7 @@ import { getAllPodcasts, getFeaturedPodcasts } from "@/lib/content";
 import { commonText } from "@/lib/i18n";
 import { AudioEpisodeCard } from "@/components/audio/AudioEpisodeCard";
 import { Container } from "@/components/site/Container";
+import { DirectContactButtons } from "@/components/site/DirectContactButtons";
 import { EmptyState } from "@/components/site/EmptyState";
 import { LocalizedText } from "@/components/site/LocalizedText";
 import { SectionHeading } from "@/components/site/SectionHeading";
@@ -21,6 +22,7 @@ export default function PodcastsPage() {
       <SectionHeading
         title={<LocalizedText en="Podcasts" fa="پادکست ها" />}
         description={<LocalizedText en="Audio lessons with notes, transcripts, and practical study prompts." fa="درس های صوتی همراه با یادداشت، راهنمای شنیدن و تمرین های کاربردی." />}
+        action={<DirectContactButtons showSecondary={false} />}
       />
       {featured ? (
         <div className="mb-8 rounded-[8px] border border-amber-300/20 bg-amber-300/10 p-4">

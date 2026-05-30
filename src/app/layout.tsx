@@ -5,6 +5,7 @@ import "./globals.css";
 import { siteConfig } from "@/lib/site";
 import { Footer } from "@/components/site/Footer";
 import { LanguageBootScript } from "@/components/site/LanguageBootScript";
+import { MobileContactDock } from "@/components/site/MobileContactDock";
 import { Navbar } from "@/components/site/Navbar";
 
 const inter = Inter({
@@ -54,8 +55,9 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
       <body className={`${inter.variable} ${vazirmatn.variable}`}>
         <LanguageBootScript />
         <Navbar />
-        <main>{children}</main>
+        <main className="pb-16 sm:pb-0">{children}</main>
         <Footer />
+        <MobileContactDock />
       </body>
     </html>
   );
