@@ -179,17 +179,30 @@ html[data-lang="fa"] .prose-edupocket blockquote {
 }
 
 .prose-edupocket pre {
+  max-width: 100%;
   overflow-x: auto;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   background: #020617;
   padding: 1rem;
+  white-space: pre-wrap;
 }
 
 .prose-edupocket pre code {
+  display: block;
+  max-width: 100%;
   background: transparent;
   padding: 0;
   color: #e2e8f0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+html[data-lang="fa"] .prose-edupocket pre,
+html[data-lang="fa"] .prose-edupocket pre code {
+  direction: rtl;
+  text-align: right;
 }
 
 .prose-edupocket table {

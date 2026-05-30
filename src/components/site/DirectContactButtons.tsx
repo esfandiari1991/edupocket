@@ -55,7 +55,7 @@ export function DirectContactButtons({ variant = "compact", className, showSecon
           isFooter ? "sm:w-full" : "",
         )}
       >
-        <span className="absolute inset-y-0 left-[-33%] z-[-1] w-1/3 skew-x-[-18deg] bg-white/35 blur-sm transition-transform duration-700 group-hover:translate-x-[360%]" />
+        <span className="absolute inset-y-0 left-0 z-[-1] w-1/3 skew-x-[-18deg] bg-white/35 opacity-0 blur-sm transition-[opacity,transform] duration-700 group-hover:translate-x-[220%] group-hover:opacity-100" />
         <span className="flex size-10 shrink-0 items-center justify-center rounded-[8px] bg-slate-950 text-amber-200">
           <Send aria-hidden="true" className="size-5 rtl:rotate-180" />
         </span>
