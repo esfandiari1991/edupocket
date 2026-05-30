@@ -66,6 +66,7 @@ export const siteConfig = {
     { href: "/", label: "Home", faLabel: "خانه" },
     { href: "/articles", label: "Articles", faLabel: "مقاله ها" },
     { href: "/lessons", label: "Lessons", faLabel: "درس ها" },
+    { href: "/english-lab", label: "English Lab", faLabel: "آزمایشگاه زبان" },
     { href: "/podcasts", label: "Podcasts", faLabel: "پادکست ها" },
     { href: "/about", label: "About", faLabel: "درباره" },
   ],

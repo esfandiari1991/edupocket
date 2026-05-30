@@ -49,6 +49,54 @@ export default function HomePage() {
     <>
       <Hero />
 
+      <section className="border-b border-white/10 bg-[#050b16] py-16">
+        <Container>
+          <div className="overflow-hidden rounded-[8px] border border-amber-200/20 bg-[radial-gradient(circle_at_15%_15%,rgba(251,191,36,0.18),transparent_24rem),linear-gradient(135deg,rgba(255,255,255,0.06),rgba(96,165,250,0.06)_46%,rgba(255,255,255,0.03))] p-5 shadow-[0_28px_100px_rgba(0,0,0,0.24)] sm:p-8">
+            <div className="grid gap-7 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
+              <div>
+                <p className="text-sm font-semibold text-amber-200">
+                  <LocalizedText en="New interactive section" fa="بخش تعاملی جدید" />
+                </p>
+                <h2 className="mt-4 max-w-3xl text-3xl font-semibold leading-tight text-white sm:text-5xl">
+                  <LocalizedText en="Enter the EduPocket English Test Lab." fa="وارد آزمایشگاه تست انگلیسی EduPocket شو." />
+                </h2>
+                <p className="mt-5 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
+                  <LocalizedText
+                    en="A serious practice hub with grammar, vocabulary, reading, listening-style tasks, Use of English, writing, exam habits, and a fast level sample. It is intentionally scaled to a focused 40-50% starter version, with no empty links."
+                    fa="یک هاب تمرین جدی با گرامر، واژگان، ریدینگ، تمرین های شبیه شنیداری، کاربرد انگلیسی، نوشتن، عادت های آزمونی و نمونه تعیین سطح. عمدا در نسخه شروع ۴۰ تا ۵۰ درصدی ساخته شده و لینک خالی ندارد."
+                  />
+                </p>
+                <Link
+                  href="/english-lab"
+                  className="mt-7 inline-flex min-h-16 w-full items-center justify-center gap-3 rounded-[8px] bg-gradient-to-r from-amber-300 via-amber-200 to-sky-200 px-6 py-4 text-base font-bold text-slate-950 shadow-[0_24px_80px_rgba(251,191,36,0.28)] transition hover:-translate-y-0.5 hover:shadow-[0_32px_100px_rgba(251,191,36,0.35)] focus:outline-none focus:ring-2 focus:ring-amber-100 sm:w-auto sm:min-w-[20rem]"
+                >
+                  <Sparkles aria-hidden="true" className="size-5" />
+                  <LocalizedText en="Enter English Lab" fa="ورود به آزمایشگاه زبان" />
+                  <ArrowRight aria-hidden="true" className="size-5 rtl:rotate-180" />
+                </Link>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {[
+                  { title: { en: "8 practice zones", fa: "۸ حوزه تمرین" }, text: { en: "Grammar to exams", fa: "از گرامر تا آزمون" } },
+                  { title: { en: "A1-B2 starter map", fa: "نقشه شروع A1 تا B2" }, text: { en: "compact, not overwhelming", fa: "فشرده، نه سنگین" } },
+                  { title: { en: "Instant feedback", fa: "بازخورد فوری" }, text: { en: "answer, score, explanation", fa: "جواب، امتیاز، توضیح" } },
+                  { title: { en: "Upcoming is locked", fa: "آینده قفل است" }, text: { en: "visible, not clickable", fa: "واضح، غیرقابل کلیک" } },
+                ].map((item) => (
+                  <div key={item.title.en} className="rounded-[8px] border border-white/10 bg-slate-950/30 p-4">
+                    <p className="font-semibold text-white">
+                      <LocalizedText en={item.title.en} fa={item.title.fa} />
+                    </p>
+                    <p className="mt-2 text-sm text-slate-400">
+                      <LocalizedText en={item.text.en} fa={item.text.fa} />
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Container>
+      </section>
+
       <section className="border-b border-white/10 py-16">
         <Container>
           <SectionHeading

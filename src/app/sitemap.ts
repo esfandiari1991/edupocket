@@ -5,7 +5,7 @@ import { slugify } from "@/lib/utils";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = siteConfig.url.replace(/\/$/, "");
-  const staticRoutes = ["", "/articles", "/lessons", "/podcasts", "/about"].map((route) => ({
+  const staticRoutes = ["", "/articles", "/lessons", "/english-lab", "/podcasts", "/about"].map((route) => ({
     url: `${base}${route}`,
     lastModified: new Date(),
   }));

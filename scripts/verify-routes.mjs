@@ -4,6 +4,7 @@ const routes = [
   "/",
   "/articles",
   "/lessons",
+  "/english-lab",
   "/podcasts",
   "/about",
   "/articles/getting-started-with-ai-learning",
