@@ -120,7 +120,7 @@ Visual QA screenshots were captured with Google Chrome headless/CDP because the 
 - Project: `arads-projects-dad3a535/edupocket`
 - Deploy command: `vercel --prod --yes`
 - Build status: passed
-- Latest inspect URL: `https://vercel.com/arads-projects-dad3a535/edupocket/2L8nFFd6K9SucKagh65HgPFoSZsB`
+- Latest inspect URL: `https://vercel.com/arads-projects-dad3a535/edupocket/5MxHj7SL9H18FmUkfBdbieUbRtzK`
 - Deployment status: Ready
 - Production environment variable: `NEXT_PUBLIC_SITE_URL=https://edupocket.org`
 - Note: the first Vercel deploy attempt failed because the local folder name contains uppercase letters and Vercel project names must be lowercase. The project was linked explicitly as `edupocket`, then production deployment succeeded.
@@ -128,7 +128,7 @@ Visual QA screenshots were captured with Google Chrome headless/CDP because the 
 ## Production URL
 
 - Stable production alias: `https://edupocket-rho.vercel.app`
-- Latest immutable production deployment URL: `https://edupocket-ifu9vr68b-arads-projects-dad3a535.vercel.app`
+- Latest immutable production deployment URL: `https://edupocket-orw2regy2-arads-projects-dad3a535.vercel.app`
 - Custom domain aliases added in Vercel: `https://edupocket.org`, `https://www.edupocket.org`
 - Custom domain DNS status: pending DNS update by the domain owner.
 - Generated deployment URLs currently return Vercel authentication (`401`) when visited directly. The public Vercel project alias below was verified and is the shareable live URL until custom DNS is updated.
