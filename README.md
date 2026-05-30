@@ -36,6 +36,12 @@ pnpm check
 pnpm build
 ```
 
+## Playwright and deployment QA
+
+EduPocket v1 does not require Playwright for production deployment. The required gates are lint, TypeScript check, production build, route checks, and manual or browser QA when available.
+
+Playwright is not installed as a direct dependency, no Playwright config is present, and no build, lint, check, postinstall, prepare, or Vercel command runs browser e2e tests. If automated e2e testing is added later, keep it optional and separate from production deployment.
+
 ## Deploy
 
 ```bash

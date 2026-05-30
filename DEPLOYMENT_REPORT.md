@@ -25,6 +25,36 @@ Previous local prototype/workspace was found at /Users/ali/Documents/Claude/Proj
 - External DNS/hosting providers are out of scope for this pass.
 - Previous static prototype preserved under `legacy-static/`.
 
+## Playwright diagnosis
+
+- Project root checked: `/Users/ali/Documents/OpenAI/Projects/EduPocket`.
+- Requested path `/Users/ali/Documents/OpenAI/Projects/Blue Rose Academy` was not present; the actual project root was identified from the existing `package.json`, `README.md`, Vercel link, and Blue Rose Academy branding in the EduPocket source.
+- Direct Playwright dependency/devDependency: none in `package.json`.
+- Playwright config: none found (`playwright.config.ts`, `playwright.config.mts`, and `playwright.config.js` are absent).
+- Test folders: no `tests/` or `e2e/` folder found at the project root.
+- GitHub Actions: no `.github/workflows/` folder found.
+- Vercel config: no `vercel.json`; the linked Vercel project uses the default Next.js build.
+- Scripts checked: `build`, `lint`, `check`, `dev`, `start`, and content helper scripts do not invoke Playwright.
+- Lockfile note: `pnpm-lock.yaml` mentions `@playwright/test` only as an optional peer dependency declared by `next@16.2.6`; it is not installed directly and is not called by the project.
+- Exact Playwright error available: none found in project files or scripts during this diagnosis.
+
+## Playwright resolution
+
+- Strategy used: isolated as optional / not part of the critical path.
+- Root cause: the project did not have a real Playwright runtime requirement; any Playwright concern came from optional tooling expectations or Next.js optional peer metadata, not from production scripts.
+- Production-critical scripts remain clean:
+  - `pnpm lint`
+  - `pnpm check`
+  - `pnpm build`
+  - `pnpm verify:routes`
+- Playwright remains installed directly: no.
+- Playwright required for local build: no.
+- Playwright required for Vercel deploy: no.
+- Optional future e2e rule: if Playwright is added later, keep `test:e2e` separate and never call it from `build`, `check`, `lint`, `postinstall`, `prepare`, or Vercel production deployment.
+- Verification run on 2026-05-30 21:03: `pnpm install`, `pnpm lint`, `pnpm check`, `pnpm build`, `pnpm exec next start -p 3001`, route `curl -I` checks, and `BASE_URL=http://localhost:3001 pnpm verify:routes`.
+- Final local status: lint passed, TypeScript check passed, production build passed, route smoke tests passed.
+- Note: `pnpm install` reported pnpm's standard ignored-build-scripts warning for `sharp` and `unrs-resolver`; it did not involve Playwright and did not block install, lint, check, or build.
+
 ## Environment
 
 - Date/time: 2026-05-30 18:17:06 EEST
