@@ -2,10 +2,10 @@ function productionUrl() {
   const explicitUrl = process.env.NEXT_PUBLIC_SITE_URL;
   const vercelProductionUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL;
   const vercelUrl = process.env.VERCEL_URL;
-  const url = explicitUrl ?? vercelProductionUrl ?? vercelUrl;
+  const url = (explicitUrl ?? vercelProductionUrl ?? vercelUrl)?.trim();
 
-  if (!url) return "http://localhost:3000";
-  return url.startsWith("http") ? url : `https://${url}`;
+  if (!url) return "https://edupocket.org";
+  return (url.startsWith("http") ? url : `https://${url}`).replace(/\/$/, "");
 }
 
 export const siteConfig = {
