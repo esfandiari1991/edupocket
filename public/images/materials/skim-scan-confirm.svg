@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">Skim Scan Confirm reading routine</title>
+  <desc id="desc">A visual reading routine for exam tasks: skim for structure, scan for keywords, confirm meaning.</desc>
+  <rect width="1280" height="720" rx="34" fill="#050b16"/>
+  <text x="80" y="95" fill="#fff" font-family="Manrope, Inter, Arial, sans-serif" font-size="46" font-weight="800">Skim - Scan - Confirm</text>
+  <text x="80" y="136" fill="#9fb0c4" font-family="Manrope, Inter, Arial, sans-serif" font-size="22">A reading routine for speed without blind guessing.</text>
+  <g transform="translate(86 216)" font-family="Manrope, Inter, Arial, sans-serif">
+    <rect width="1108" height="360" rx="28" fill="#0e1a2a" stroke="#26384f"/>
+    <line x1="372" y1="48" x2="372" y2="312" stroke="#26384f"/>
+    <line x1="736" y1="48" x2="736" y2="312" stroke="#26384f"/>
+    <g transform="translate(50 52)">
+      <text x="0" y="48" fill="#fbbf24" font-size="56" font-weight="900">01</text>
+      <text x="0" y="100" fill="#fff" font-size="32" font-weight="800">Skim</text>
+      <text x="0" y="150" fill="#b8c5d7" font-size="20">Topic, title, repeated words,</text>
+      <text x="0" y="182" fill="#b8c5d7" font-size="20">first and last sentences.</text>
+    </g>
+    <g transform="translate(420 52)">
+      <text x="0" y="48" fill="#fbbf24" font-size="56" font-weight="900">02</text>
+      <text x="0" y="100" fill="#fff" font-size="32" font-weight="800">Scan</text>
+      <text x="0" y="150" fill="#b8c5d7" font-size="20">Names, numbers, dates,</text>
+      <text x="0" y="182" fill="#b8c5d7" font-size="20">keywords, synonyms.</text>
+    </g>
+    <g transform="translate(786 52)">
+      <text x="0" y="48" fill="#fbbf24" font-size="56" font-weight="900">03</text>
+      <text x="0" y="100" fill="#fff" font-size="32" font-weight="800">Confirm</text>
+      <text x="0" y="150" fill="#b8c5d7" font-size="20">Read around the answer.</text>
+      <text x="0" y="182" fill="#b8c5d7" font-size="20">Match meaning, not only words.</text>
+    </g>
+  </g>
+  <rect x="230" y="617" width="820" height="54" rx="14" fill="#0e1a2a" stroke="#26384f"/>
+  <text x="640" y="653" text-anchor="middle" fill="#e0f2fe" font-family="Manrope, Inter, Arial, sans-serif" font-size="22" font-weight="700">Find the answer. Then prove it.</text>
+</svg>

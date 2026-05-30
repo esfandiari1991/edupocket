@@ -7,11 +7,11 @@ type AudioTranscriptProps = {
 };
 
 const sampleBeats = [
-  ["00:00", "Welcome and the learning problem", "خوشامد و مسئله یادگیری"],
-  ["01:30", "Why systems beat motivation", "چرا سیستم از انگیزه قوی تر است"],
-  ["03:10", "Practice, feedback, and error logs", "تمرین، بازخورد و دفتر خطا"],
-  ["05:45", "How AI can support thinking", "هوش مصنوعی چطور به فکر کردن کمک می کند"],
-  ["07:20", "A small action for this week", "یک اقدام کوچک برای این هفته"],
+  ["00:00", "Topic and learning problem", "موضوع و مسئله یادگیری"],
+  ["00:08", "Core rule", "قانون اصلی"],
+  ["00:18", "Practice move", "حرکت تمرینی"],
+  ["00:30", "Feedback and reflection", "بازخورد و بازتاب"],
+  ["00:42", "Next small action", "قدم کوچک بعدی"],
 ];
 
 export function AudioTranscript({ enabled, title, titleFa }: AudioTranscriptProps) {
@@ -26,13 +26,13 @@ export function AudioTranscript({ enabled, title, titleFa }: AudioTranscriptProp
         <LocalizedText
           en={
             <>
-              Use these listening beats as a study map for <span className="text-slate-200">{title}</span>. The full transcript can be
-              expanded later when the audio is attached.
+              Use these listening beats as a study map for <span className="text-slate-200">{title}</span>. The original short audio
+              is attached above, and the notes below expand the lesson.
             </>
           }
           fa={
             <>
-              از این ایستگاه های شنیداری به عنوان نقشه مطالعه برای <span className="text-slate-200">{titleFa ?? title}</span> استفاده کن. وقتی فایل صوتی اضافه شود، متن کامل هم قابل گسترش است.
+              از این ایستگاه های شنیداری به عنوان نقشه مطالعه برای <span className="text-slate-200">{titleFa ?? title}</span> استفاده کن. فایل صوتی کوتاه و اصلی بالا اضافه شده و یادداشت های پایین درس را گسترش می دهند.
             </>
           }
         />

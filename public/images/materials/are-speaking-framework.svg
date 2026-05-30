@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">A-R-E speaking framework</title>
+  <desc id="desc">A visual framework for building spoken answers with Answer, Reason, and Example.</desc>
+  <rect width="1280" height="720" rx="34" fill="#06111f"/>
+  <circle cx="220" cy="192" r="160" fill="#fbbf24" opacity="0.08"/>
+  <circle cx="1040" cy="550" r="210" fill="#38bdf8" opacity="0.08"/>
+  <text x="70" y="92" fill="#fff" font-family="Manrope, Inter, Arial, sans-serif" font-size="44" font-weight="800">A-R-E Speaking Framework</text>
+  <text x="70" y="132" fill="#9fb0c4" font-family="Manrope, Inter, Arial, sans-serif" font-size="22">Use one direct answer, one reason, and one example.</text>
+  <g font-family="Manrope, Inter, Arial, sans-serif">
+    <g transform="translate(114 226)">
+      <rect width="302" height="310" rx="26" fill="#0f1d2d" stroke="#2a3b52"/>
+      <text x="40" y="76" fill="#fbbf24" font-size="64" font-weight="900">A</text>
+      <text x="40" y="124" fill="#fff" font-size="32" font-weight="800">Answer</text>
+      <text x="40" y="174" fill="#b8c5d7" font-size="20">Start directly.</text>
+      <text x="40" y="208" fill="#dbeafe" font-size="20" font-style="italic">Yes, I think...</text>
+    </g>
+    <g transform="translate(489 226)">
+      <rect width="302" height="310" rx="26" fill="#0f1d2d" stroke="#2a3b52"/>
+      <text x="40" y="76" fill="#fbbf24" font-size="64" font-weight="900">R</text>
+      <text x="40" y="124" fill="#fff" font-size="32" font-weight="800">Reason</text>
+      <text x="40" y="174" fill="#b8c5d7" font-size="20">Give one clear why.</text>
+      <text x="40" y="208" fill="#dbeafe" font-size="20" font-style="italic">because it helps...</text>
+    </g>
+    <g transform="translate(864 226)">
+      <rect width="302" height="310" rx="26" fill="#0f1d2d" stroke="#2a3b52"/>
+      <text x="40" y="76" fill="#fbbf24" font-size="64" font-weight="900">E</text>
+      <text x="40" y="124" fill="#fff" font-size="32" font-weight="800">Example</text>
+      <text x="40" y="174" fill="#b8c5d7" font-size="20">Make it concrete.</text>
+      <text x="40" y="208" fill="#dbeafe" font-size="20" font-style="italic">For example...</text>
+    </g>
+  </g>
+  <path d="M421 381h62M796 381h62" fill="none" stroke="#fbbf24" stroke-width="8" stroke-linecap="round"/>
+  <path d="m470 360 22 21-22 21M845 360l22 21-22 21" fill="none" stroke="#fbbf24" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="300" y="604" width="680" height="54" rx="14" fill="#0f1d2d" stroke="#26384f"/>
+  <text x="640" y="640" text-anchor="middle" fill="#e0f2fe" font-family="Manrope, Inter, Arial, sans-serif" font-size="22" font-weight="700">Direct answer beats memorized filler.</text>
+</svg>
