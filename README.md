@@ -2,7 +2,7 @@
 
 EduPocket is Ali Rad's public educational content hub: practical notes, teaching systems, AI experiments, language-learning frameworks, and audio lessons.
 
-The site is bilingual. Visitors can switch between English and Persian from the animated language slider in the header.
+The site is bilingual. Visitors can switch between English and Persian from the animated language slider in the header. It also includes an interactive English Lab for placement-style practice, skill drills, and lesson discovery.
 
 ## Official local path
 
@@ -50,12 +50,15 @@ Current Vercel production URL:
 https://edupocket-rho.vercel.app
 ```
 
+The custom domain `https://edupocket.org` is attached in Vercel. It will serve the site after the DNS record for the apex domain points to Vercel.
+
 ## Folder structure
 
 - `.git`: project history
 - `src/app`: routes, metadata, sitemap, robots, and page layouts
-- `src/components`: site, MDX, and audio components
+- `src/components`: site, MDX, audio, and English Lab components
 - `src/lib`: site config, content loaders, utilities
+- `src/lib/english-lab.ts`: English Lab sample tests, prompts, and skill data
 - `src/lib/i18n.ts`: shared bilingual labels, date formatting, and content metadata helpers
 - `src/types`: shared content types
 - `content/articles`: article MDX files
