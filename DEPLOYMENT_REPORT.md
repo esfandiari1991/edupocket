@@ -19,6 +19,7 @@ Previous local prototype/workspace was found at /Users/ali/Documents/Claude/Proj
 - Founder photo treatment using Ali Rad's supplied images.
 - Interactive English Lab route inspired by the learning structure of test-prep sites, with original EduPocket content and bilingual UI.
 - Responsive hardening for small mobile widths, MDX code blocks, RTL text, and animated contact CTAs.
+- Homepage alignment polish with a simplified section structure, stronger hero symmetry, and prominent collaboration CTAs.
 - Vercel production deployment first.
 - External DNS/hosting providers are out of scope for this pass.
 - Previous static prototype preserved under `legacy-static/`.
@@ -89,8 +90,9 @@ Visual QA screenshots were captured with Google Chrome headless/CDP because the 
   - Supplied founder images: passed
   - Missing-audio state: passed
   - MDX content rendering: passed
-  - Mobile/desktop responsive audit at 320, 360, 390, 768, 1024, and 1440 widths: passed
-  - English Lab desktop/mobile interaction states: passed
+- Mobile/desktop responsive audit at 320, 360, 390, 768, 1024, and 1440 widths: passed
+- English Lab desktop/mobile interaction states: passed
+- Homepage alignment and overflow audit at 320, 390, 768, 1024, and 1440 widths in English and Persian: passed
 
 ## GitHub status
 
@@ -100,6 +102,7 @@ Visual QA screenshots were captured with Google Chrome headless/CDP because the 
 - Latest bilingual production commit: `4a34915`
 - English Lab commit: `6e8bca9`
 - Latest responsive hardening commit: `610d67d`
+- Homepage alignment and collaboration CTA commit: `3b54d9b`
 - Vercel GitHub integration: connected during Vercel project linking.
 
 ## Vercel status
@@ -107,7 +110,7 @@ Visual QA screenshots were captured with Google Chrome headless/CDP because the 
 - Project: `arads-projects-dad3a535/edupocket`
 - Deploy command: `vercel --prod --yes`
 - Build status: passed
-- Latest inspect URL: `https://vercel.com/arads-projects-dad3a535/edupocket/CacCHn7PFbzfp3cG4bxYTQJTAEYF`
+- Latest inspect URL: `https://vercel.com/arads-projects-dad3a535/edupocket/6wS6EhjDjiKH1X8zVxxarrccXAK5`
 - Deployment status: Ready
 - Production environment variable: `NEXT_PUBLIC_SITE_URL=https://edupocket.org`
 - Note: the first Vercel deploy attempt failed because the local folder name contains uppercase letters and Vercel project names must be lowercase. The project was linked explicitly as `edupocket`, then production deployment succeeded.
@@ -115,7 +118,7 @@ Visual QA screenshots were captured with Google Chrome headless/CDP because the 
 ## Production URL
 
 - Stable production alias: `https://edupocket-rho.vercel.app`
-- Latest immutable production deployment URL: `https://edupocket-8bpw6dzb7-arads-projects-dad3a535.vercel.app`
+- Latest immutable production deployment URL: `https://edupocket-59n2udogi-arads-projects-dad3a535.vercel.app`
 - Custom domain aliases added in Vercel: `https://edupocket.org`, `https://www.edupocket.org`
 - Custom domain DNS status: pending DNS update by the domain owner.
 - Generated deployment URLs currently return Vercel authentication (`401`) when visited directly. The public Vercel project alias below was verified and is the shareable live URL until custom DNS is updated.
