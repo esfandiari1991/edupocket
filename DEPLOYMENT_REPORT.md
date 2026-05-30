@@ -2,7 +2,7 @@
 
 ## Status
 
-Production build complete, committed, pushed to GitHub, deployed to Vercel, and verified live on the public Vercel project alias.
+Production build complete, committed, pushed to GitHub, deployed to Vercel, and verified live on the public Vercel project alias. Latest pass adds the polished motion system requested after the initial production deployment.
 
 ## Local path
 
@@ -20,6 +20,7 @@ Previous local prototype/workspace was found at /Users/ali/Documents/Claude/Proj
 - Interactive English Lab route inspired by the learning structure of test-prep sites, with original EduPocket content and bilingual UI.
 - Responsive hardening for small mobile widths, MDX code blocks, RTL text, and animated contact CTAs.
 - Homepage alignment polish with a simplified section structure, stronger hero symmetry, and prominent collaboration CTAs.
+- Polished motion system across the hero, CTAs, content cards, upcoming states, English Lab controls, and MDX media.
 - Vercel production deployment first.
 - External DNS/hosting providers are out of scope for this pass.
 - Previous static prototype preserved under `legacy-static/`.
@@ -55,6 +56,7 @@ vercel domains inspect www.edupocket.org
 dig +short edupocket.org
 dig +short www.edupocket.org
 /usr/bin/curl -I -L
+Google Chrome headless/CDP screenshots and viewport audits
 ```
 
 Visual QA screenshots were captured with Google Chrome headless/CDP because the Browser/Kapture extension did not provide usable screenshot and tab-management access in this session.
@@ -65,6 +67,7 @@ Visual QA screenshots were captured with Google Chrome headless/CDP because the 
 - TypeScript check: passed
 - Production build: passed
 - Responsive audit: passed across 108 page/language/viewport states with zero horizontal overflow failures after fixes
+- Motion QA: passed with reduced-motion handling, true 390px mobile emulation, and zero horizontal overflow in English and Persian
 
 ## Local verification
 
@@ -83,6 +86,11 @@ Visual QA screenshots were captured with Google Chrome headless/CDP because the 
   - Homepage desktop English screenshot: `/tmp/edupocket-home-en.png`
   - Homepage desktop Persian screenshot: `/tmp/edupocket-home-fa.png`
   - Homepage mobile Persian screenshot: `/tmp/edupocket-home-mobile-fa-final.png`
+  - Latest motion homepage desktop screenshot: `/tmp/edupocket-cdp-home-1440-en.png`
+  - Latest motion homepage mobile English screenshot: `/tmp/edupocket-cdp-home-390-en.png`
+  - Latest motion homepage mobile Persian screenshot: `/tmp/edupocket-cdp-home-390-fa.png`
+  - Latest motion English Lab desktop screenshot: `/tmp/edupocket-cdp-lab-1440-en.png`
+  - Latest motion English Lab mobile screenshot: `/tmp/edupocket-cdp-lab-390-en.png`
   - About Persian screenshot: `/tmp/edupocket-about-fa.png`
   - Podcast Persian screenshot: `/tmp/edupocket-podcast-fa.png`
   - Language toggle state: passed
@@ -103,6 +111,8 @@ Visual QA screenshots were captured with Google Chrome headless/CDP because the 
 - English Lab commit: `6e8bca9`
 - Latest responsive hardening commit: `610d67d`
 - Homepage alignment and collaboration CTA commit: `3b54d9b`
+- Original media materials commit: `eb80f85`
+- Latest motion system commit: `755f409`
 - Vercel GitHub integration: connected during Vercel project linking.
 
 ## Vercel status
@@ -110,7 +120,7 @@ Visual QA screenshots were captured with Google Chrome headless/CDP because the 
 - Project: `arads-projects-dad3a535/edupocket`
 - Deploy command: `vercel --prod --yes`
 - Build status: passed
-- Latest inspect URL: `https://vercel.com/arads-projects-dad3a535/edupocket/BVh7AS4DkqKGX9udu9obTKtRiXcg`
+- Latest inspect URL: `https://vercel.com/arads-projects-dad3a535/edupocket/2L8nFFd6K9SucKagh65HgPFoSZsB`
 - Deployment status: Ready
 - Production environment variable: `NEXT_PUBLIC_SITE_URL=https://edupocket.org`
 - Note: the first Vercel deploy attempt failed because the local folder name contains uppercase letters and Vercel project names must be lowercase. The project was linked explicitly as `edupocket`, then production deployment succeeded.
@@ -118,7 +128,7 @@ Visual QA screenshots were captured with Google Chrome headless/CDP because the 
 ## Production URL
 
 - Stable production alias: `https://edupocket-rho.vercel.app`
-- Latest immutable production deployment URL: `https://edupocket-3078wkge6-arads-projects-dad3a535.vercel.app`
+- Latest immutable production deployment URL: `https://edupocket-ifu9vr68b-arads-projects-dad3a535.vercel.app`
 - Custom domain aliases added in Vercel: `https://edupocket.org`, `https://www.edupocket.org`
 - Custom domain DNS status: pending DNS update by the domain owner.
 - Generated deployment URLs currently return Vercel authentication (`401`) when visited directly. The public Vercel project alias below was verified and is the shareable live URL until custom DNS is updated.
@@ -143,7 +153,7 @@ Canonical sitemap/robots output was verified through the Vercel alias and now po
 
 Custom domain check before DNS update:
 
-- `https://edupocket.org/` currently resolves to `5.144.130.116` and serves a LiteSpeed directory index, not the Vercel app.
+- `https://edupocket.org/` currently resolves to `5.144.130.116`; the homepage returns `200`, but subroutes like `/articles` return `404`, so it is not serving the Vercel app correctly yet.
 - `https://www.edupocket.org/` currently resolves through the same non-Vercel apex target.
 - `vercel domains inspect edupocket.org` reports the domain is attached to the Vercel project but not configured properly until DNS is updated.
 
