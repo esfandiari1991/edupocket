@@ -19,6 +19,7 @@ export const siteConfig = {
   author: "Ali Esfandiari Rad",
   shortAuthor: "Ali Rad",
   url: productionUrl(),
+  canonicalUrl: "https://edupocket.org",
   contactEmail: "aliesfandiari@outlook.com",
   contact: {
     telegram: {
@@ -61,6 +62,20 @@ export const siteConfig = {
     "Mini Apps",
     "Book Summaries",
     "Podcasts",
+  ],
+  seoKeywords: [
+    "EduPocket",
+    "Ali Esfandiari Rad",
+    "Ali Rad",
+    "English coaching",
+    "AI learning systems",
+    "Persian English learning",
+    "IELTS TOEFL lessons",
+    "study systems",
+    "micro lessons",
+    "education technology",
+    "language learning",
+    "Blue Rose Academy",
   ],
   nav: [
     { href: "/", label: "Home", faLabel: "خانه" },

@@ -130,6 +130,58 @@ html[data-lang="en"] .lang-fa {
   opacity: 1;
 }
 
+.language-toggle-unlock {
+  overflow: hidden;
+}
+
+.language-toggle-glide {
+  z-index: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.045);
+  background:
+    linear-gradient(90deg, rgba(251, 191, 36, 0.08), rgba(125, 211, 252, 0.1), rgba(251, 191, 36, 0.08)),
+    rgba(2, 6, 23, 0.26);
+}
+
+.language-toggle-glide::after {
+  position: absolute;
+  inset: 0;
+  width: 42%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  content: "";
+  transform: translateX(-115%);
+  animation: unlock-glide 2.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.motion-logo-mark {
+  position: relative;
+  transition:
+    filter 180ms ease,
+    transform 180ms ease;
+}
+
+.motion-logo-mark::after {
+  position: absolute;
+  inset: -4px;
+  z-index: -1;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.38), rgba(125, 211, 252, 0.2));
+  content: "";
+  opacity: 0;
+  filter: blur(10px);
+  transition: opacity 180ms ease;
+}
+
+.group:hover .motion-logo-mark {
+  filter: saturate(1.08);
+  transform: translateY(-1px) rotate(-2deg);
+}
+
+.group:hover .motion-logo-mark::after {
+  opacity: 1;
+}
+
 .motion-hero-shell {
   position: relative;
 }
@@ -149,6 +201,25 @@ html[data-lang="en"] .lang-fa {
   content: "";
   opacity: 0.85;
   animation: hero-ambient-sweep 13s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.motion-hero-shell::after {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    linear-gradient(90deg, transparent 0%, rgba(125, 211, 252, 0.06) 18%, transparent 36%),
+    repeating-linear-gradient(115deg, transparent 0 4.5rem, rgba(255, 255, 255, 0.035) 4.5rem 4.55rem, transparent 4.55rem 8.5rem);
+  background-position:
+    -80% 0,
+    0 0;
+  background-size:
+    180% 100%,
+    auto;
+  content: "";
+  opacity: 0.6;
+  animation: hero-depth-shift 18s ease-in-out infinite;
   pointer-events: none;
 }
 
@@ -215,6 +286,76 @@ html[data-lang="en"] .lang-fa {
   pointer-events: none;
 }
 
+.motion-hero-frame {
+  isolation: isolate;
+}
+
+.motion-hero-frame::after {
+  position: absolute;
+  inset: 0.7rem;
+  z-index: 3;
+  border: 1px solid rgba(251, 191, 36, 0.18);
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, rgba(251, 191, 36, 0.36), transparent 30%, transparent 70%, rgba(125, 211, 252, 0.28)) top left / 100% 1px no-repeat,
+    linear-gradient(180deg, rgba(125, 211, 252, 0.3), transparent 34%, transparent 68%, rgba(251, 191, 36, 0.24)) top left / 1px 100% no-repeat;
+  content: "";
+  opacity: 0.72;
+  animation: frame-breathe 4.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.motion-signal-note {
+  animation: note-float 6.2s ease-in-out infinite;
+  backdrop-filter: blur(16px);
+}
+
+.motion-signal-note::before {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.72), rgba(125, 211, 252, 0.5), transparent);
+  content: "";
+  opacity: 0.9;
+  transform: translateX(-100%);
+  animation: micro-tile-line 3.6s ease-in-out infinite;
+}
+
+.motion-signal-dot {
+  box-shadow: 0 0 0 rgba(251, 191, 36, 0.24);
+  animation: signal-dot 2.4s ease-in-out infinite;
+}
+
+.motion-section-band {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.motion-section-band::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    linear-gradient(118deg, transparent 0%, transparent 48%, rgba(251, 191, 36, 0.045) 54%, transparent 62%),
+    linear-gradient(90deg, transparent, rgba(125, 211, 252, 0.045), transparent);
+  background-position:
+    -120% 0,
+    120% 0;
+  background-size:
+    180% 100%,
+    180% 100%;
+  content: "";
+  opacity: 0.82;
+  animation: section-band-sweep 14s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.motion-section-band > * {
+  position: relative;
+  z-index: 1;
+}
+
 .motion-button-pop {
   position: relative;
   overflow: hidden;
@@ -241,6 +382,30 @@ html[data-lang="en"] .lang-fa {
 
 .motion-button-pop:hover {
   transform: translateY(-2px) scale(1.01);
+}
+
+.motion-social-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.motion-social-button::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.48), rgba(125, 211, 252, 0.4), transparent);
+  content: "";
+  opacity: 0;
+  transform: translateX(-45%);
+  transition:
+    opacity 180ms ease,
+    transform 260ms ease;
+  pointer-events: none;
+}
+
+.motion-social-button:hover::after {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .motion-button-pop:disabled,
@@ -384,6 +549,11 @@ html[data-lang="fa"] .motion-path::after {
   opacity: 1;
 }
 
+.motion-card:hover .motion-card-icon,
+.motion-upcoming:hover .motion-card-icon {
+  box-shadow: 0 0 0 7px rgba(251, 191, 36, 0.055);
+}
+
 .motion-lab-stage {
   position: relative;
   isolation: isolate;
@@ -525,6 +695,30 @@ html[data-lang="fa"] .motion-path::after {
     transform 180ms ease;
 }
 
+.motion-upcoming::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    repeating-linear-gradient(135deg, transparent 0 1.2rem, rgba(255, 255, 255, 0.028) 1.2rem 1.25rem, transparent 1.25rem 2.4rem),
+    linear-gradient(90deg, transparent, rgba(125, 211, 252, 0.04), rgba(251, 191, 36, 0.045), transparent);
+  background-position:
+    0 0,
+    -120% 0;
+  background-size:
+    auto,
+    220% 100%;
+  content: "";
+  opacity: 0.75;
+  animation: upcoming-field 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.motion-upcoming > * {
+  position: relative;
+  z-index: 1;
+}
+
 .motion-upcoming:hover {
   border-color: rgba(251, 191, 36, 0.36);
   background-color: rgba(15, 23, 42, 0.5);
@@ -537,11 +731,68 @@ html[data-lang="fa"] .motion-path::after {
   animation: locked-gradient 4.8s ease-in-out infinite;
 }
 
+.motion-contact-panel {
+  isolation: isolate;
+}
+
+.motion-contact-panel::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.08) 47%, transparent 58%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 5.5rem);
+  background-position:
+    -130% 0,
+    0 0;
+  background-size:
+    190% 100%,
+    auto;
+  content: "";
+  opacity: 0.72;
+  animation: contact-glide 9s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.motion-contact-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.motion-portrait-card {
+  transform: translateZ(0);
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.motion-portrait-card::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(125deg, transparent 0%, transparent 44%, rgba(255, 255, 255, 0.16) 50%, transparent 58%, transparent 100%);
+  content: "";
+  opacity: 0;
+  transform: translateX(-120%);
+  animation: portrait-scan 6.8s ease-in-out 1.4s infinite;
+  pointer-events: none;
+}
+
+.motion-contact-panel:hover .motion-portrait-card {
+  border-color: rgba(251, 191, 36, 0.32);
+  box-shadow: 0 24px 76px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
 .prose-edupocket img {
   transition:
     border-color 180ms ease,
     box-shadow 180ms ease,
     transform 180ms ease;
+}
+
+.motion-view {
+  transform: translateZ(0);
 }
 
 .prose-edupocket img:hover {
@@ -577,6 +828,39 @@ html[data-lang="fa"] .motion-path::after {
   }
 }
 
+@keyframes unlock-glide {
+  0%,
+  28% {
+    opacity: 0;
+    transform: translateX(-115%);
+  }
+
+  42% {
+    opacity: 1;
+  }
+
+  76%,
+  100% {
+    opacity: 0;
+    transform: translateX(252%);
+  }
+}
+
+@keyframes hero-depth-shift {
+  0%,
+  100% {
+    background-position:
+      -90% 0,
+      0 0;
+  }
+
+  50% {
+    background-position:
+      110% 0,
+      3rem 0;
+  }
+}
+
 @keyframes accent-sweep {
   to {
     transform: scaleX(1);
@@ -591,6 +875,43 @@ html[data-lang="fa"] .motion-path::after {
 
   50% {
     transform: translateY(-10px);
+  }
+}
+
+@keyframes frame-breathe {
+  0%,
+  100% {
+    opacity: 0.52;
+    transform: scale(0.995);
+  }
+
+  50% {
+    opacity: 0.86;
+    transform: scale(1);
+  }
+}
+
+@keyframes note-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+@keyframes signal-dot {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.22);
+    transform: scale(0.88);
+  }
+
+  50% {
+    box-shadow: 0 0 0 0.42rem rgba(251, 191, 36, 0);
+    transform: scale(1);
   }
 }
 
@@ -609,6 +930,21 @@ html[data-lang="fa"] .motion-path::after {
   100% {
     opacity: 0;
     transform: translateX(44%) rotate(8deg);
+  }
+}
+
+@keyframes section-band-sweep {
+  0%,
+  100% {
+    background-position:
+      -130% 0,
+      120% 0;
+  }
+
+  50% {
+    background-position:
+      130% 0,
+      -120% 0;
   }
 }
 
@@ -637,6 +973,54 @@ html[data-lang="fa"] .motion-path::after {
   }
 
   to {
+    opacity: 0;
+    transform: translateX(120%);
+  }
+}
+
+@keyframes upcoming-field {
+  0%,
+  100% {
+    background-position:
+      0 0,
+      -120% 0;
+  }
+
+  50% {
+    background-position:
+      2.4rem 0,
+      120% 0;
+  }
+}
+
+@keyframes contact-glide {
+  0%,
+  100% {
+    background-position:
+      -130% 0,
+      0 0;
+  }
+
+  50% {
+    background-position:
+      130% 0,
+      3rem 0;
+  }
+}
+
+@keyframes portrait-scan {
+  0%,
+  60% {
+    opacity: 0;
+    transform: translateX(-120%);
+  }
+
+  70% {
+    opacity: 0.48;
+  }
+
+  86%,
+  100% {
     opacity: 0;
     transform: translateX(120%);
   }
@@ -739,6 +1123,26 @@ html[data-lang="fa"] .motion-path::after {
 
   to {
     background-position: center 72px;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .motion-view {
+    animation: view-rise both;
+    animation-range: entry 4% cover 28%;
+    animation-timeline: view();
+  }
+
+  @keyframes view-rise {
+    from {
+      opacity: 0.35;
+      transform: translateY(18px) scale(0.985);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
   }
 }
 
@@ -941,16 +1345,27 @@ html[data-lang="fa"] .prose-edupocket td {
   }
 
   .motion-hero-shell::before,
+  .motion-hero-shell::after,
+  .language-toggle-glide::after,
+  .motion-logo-mark::after,
   .motion-hero-card::before,
+  .motion-hero-frame::after,
+  .motion-signal-note::before,
+  .motion-section-band::before,
   .motion-button-pop::after,
+  .motion-social-button::after,
   .motion-route span:first-child::after,
   .motion-card::before,
   .motion-lab-stage::after,
-  .motion-micro-tile::after {
+  .motion-micro-tile::after,
+  .motion-upcoming::before,
+  .motion-contact-panel::before,
+  .motion-portrait-card::after {
     display: none !important;
   }
 
   .motion-hero-card,
+  .motion-signal-note,
   .motion-button-pop,
   .motion-card,
   .motion-upcoming,
@@ -958,7 +1373,9 @@ html[data-lang="fa"] .prose-edupocket td {
   .motion-module-button,
   .motion-chip,
   .motion-answer-option,
-  .motion-question-card {
+  .motion-question-card,
+  .motion-portrait-card,
+  .motion-view {
     transform: none !important;
   }
 }

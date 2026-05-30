@@ -28,10 +28,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: lesson.title,
     description: lesson.description,
+    alternates: {
+      canonical: `/lessons/${lesson.slug}`,
+    },
     openGraph: {
       title: lesson.title,
       description: lesson.description,
       type: "article",
+      url: `/lessons/${lesson.slug}`,
       publishedTime: lesson.date,
       modifiedTime: lesson.updated,
       tags: lesson.tags,

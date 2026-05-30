@@ -92,10 +92,10 @@ export default function HomePage() {
     <>
       <Hero />
 
-      <section className="border-b border-white/10 bg-[#050b16] py-14 sm:py-16">
+      <section className="motion-section-band border-b border-white/10 bg-[#050b16] py-14 sm:py-16">
         <Container>
           <div className="grid gap-6 lg:grid-cols-12 lg:items-stretch">
-            <div className="motion-card flex flex-col justify-between rounded-[8px] border border-amber-200/20 bg-[linear-gradient(135deg,rgba(251,191,36,0.16),rgba(56,189,248,0.1)_55%,rgba(255,255,255,0.04))] p-5 shadow-[0_28px_100px_rgba(0,0,0,0.24)] sm:p-7 lg:col-span-5">
+            <div className="motion-card motion-view flex flex-col justify-between rounded-[8px] border border-amber-200/20 bg-[linear-gradient(135deg,rgba(251,191,36,0.16),rgba(56,189,248,0.1)_55%,rgba(255,255,255,0.04))] p-5 shadow-[0_28px_100px_rgba(0,0,0,0.24)] sm:p-7 lg:col-span-5">
               <div>
                 <h2 className="max-w-xl text-3xl font-semibold leading-tight text-white sm:text-5xl">
                   <LocalizedText en="English Lab is the main interactive door." fa="English Lab ورودی اصلی و تعاملی سایت است." />
@@ -122,9 +122,9 @@ export default function HomePage() {
                 const Icon = item.icon;
 
                 return (
-                  <div key={item.title.en} className="motion-card rounded-[8px] border border-white/10 bg-white/[0.045] p-5">
+                  <div key={item.title.en} className="motion-card motion-view rounded-[8px] border border-white/10 bg-white/[0.045] p-5">
                     <div className="flex items-center gap-3">
-                      <span className="flex size-10 items-center justify-center rounded-[8px] bg-amber-200/10 text-amber-200">
+                      <span className="motion-card-icon flex size-10 items-center justify-center rounded-[8px] bg-amber-200/10 text-amber-200">
                         <Icon aria-hidden="true" className="size-5" />
                       </span>
                       <h3 className="font-semibold text-white">
@@ -142,7 +142,7 @@ export default function HomePage() {
         </Container>
       </section>
 
-      <section className="border-b border-white/10 py-16">
+      <section className="motion-section-band border-b border-white/10 py-16">
         <Container>
           <div className="grid gap-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
             <div>
@@ -168,8 +168,8 @@ export default function HomePage() {
                 const Icon = item.icon;
 
                 return (
-                  <article key={item.title.en} className="motion-card rounded-[8px] border border-white/10 bg-white/[0.045] p-5">
-                    <span className="flex size-11 items-center justify-center rounded-[8px] border border-amber-300/20 bg-amber-300/10 text-amber-200">
+                  <article key={item.title.en} className="motion-card motion-view rounded-[8px] border border-white/10 bg-white/[0.045] p-5">
+                    <span className="motion-card-icon flex size-11 items-center justify-center rounded-[8px] border border-amber-300/20 bg-amber-300/10 text-amber-200">
                       <Icon aria-hidden="true" className="size-5" />
                     </span>
                     <h3 className="mt-5 text-base font-semibold leading-6 text-white">
@@ -186,7 +186,7 @@ export default function HomePage() {
         </Container>
       </section>
 
-      <section className="border-b border-white/10 bg-[#050b16] py-16">
+      <section className="motion-section-band border-b border-white/10 bg-[#050b16] py-16">
         <Container>
           <SectionHeading
             title={<LocalizedText en="Useful now, not crowded." fa="همین حالا مفید، نه شلوغ." />}
@@ -211,7 +211,7 @@ export default function HomePage() {
         </Container>
       </section>
 
-      <section className="py-16">
+      <section className="motion-section-band py-16">
         <Container>
           <SectionHeading
             title={<LocalizedText en="Coming soon" fa="به زودی" />}
@@ -225,7 +225,7 @@ export default function HomePage() {
         </Container>
       </section>
 
-      <section className="border-t border-white/10 bg-[#050b16] py-16">
+      <section className="motion-section-band border-t border-white/10 bg-[#050b16] py-16">
         <Container>
           <ContactPanel context="general" />
         </Container>

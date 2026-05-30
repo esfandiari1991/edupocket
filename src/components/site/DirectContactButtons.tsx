@@ -50,12 +50,14 @@ export function DirectContactButtons({
 }: DirectContactButtonsProps) {
   const isHero = variant === "hero";
   const isFooter = variant === "footer";
+  const isStackedHero = isHero && showSecondary;
 
   return (
     <div
       className={cn(
-        "flex min-w-0 flex-col gap-3",
-        isHero ? "sm:flex-row sm:flex-wrap sm:items-stretch" : "sm:flex-row sm:flex-wrap",
+        "min-w-0 gap-3",
+        isStackedHero ? "grid sm:grid-cols-3" : "flex flex-col sm:flex-row sm:flex-wrap",
+        isHero && !isStackedHero ? "sm:items-stretch" : "",
         className,
       )}
     >
@@ -65,7 +67,7 @@ export function DirectContactButtons({
         rel="noopener noreferrer"
         className={cn(
           "motion-button-pop group relative isolate inline-flex min-h-14 min-w-0 items-center justify-between gap-3 overflow-hidden rounded-[8px] border border-amber-100/70 bg-gradient-to-r from-amber-300 via-amber-200 to-sky-200 px-4 py-3 text-start font-semibold text-slate-950 shadow-[0_22px_70px_rgba(251,191,36,0.28)] transition hover:-translate-y-0.5 hover:shadow-[0_28px_90px_rgba(251,191,36,0.34)] focus:outline-none focus:ring-2 focus:ring-amber-100",
-          isHero ? "sm:min-w-[18rem] sm:px-5" : "w-full sm:w-auto",
+          isStackedHero ? "w-full sm:col-span-3 sm:px-5" : isHero ? "sm:min-w-[18rem] sm:px-5" : "w-full sm:w-auto",
           isFooter ? "sm:w-full" : "",
         )}
       >
@@ -96,7 +98,8 @@ export function DirectContactButtons({
                 rel={item.key === "email" ? undefined : "noopener noreferrer"}
                 className={cn(
                   "inline-flex min-h-12 min-w-0 items-center justify-center gap-2 rounded-[8px] border border-white/12 bg-white/[0.045] px-4 py-2.5 text-sm font-semibold text-slate-100 transition hover:border-amber-300/50 hover:bg-white/[0.07] hover:text-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-300/60",
-                  isHero ? "sm:min-w-36" : "w-full sm:w-auto",
+                  "motion-social-button",
+                  isStackedHero ? "w-full" : isHero ? "sm:min-w-36" : "w-full sm:w-auto",
                   isFooter ? "sm:w-full sm:justify-start" : "",
                 )}
               >

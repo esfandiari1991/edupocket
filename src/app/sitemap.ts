@@ -4,30 +4,41 @@ import { siteConfig } from "@/lib/site";
 import { slugify } from "@/lib/utils";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = siteConfig.url.replace(/\/$/, "");
-  const staticRoutes = ["", "/articles", "/lessons", "/english-lab", "/podcasts", "/about"].map((route) => ({
+  const base = siteConfig.canonicalUrl.replace(/\/$/, "");
+  const staticLastModified = new Date("2026-05-30");
+  const staticRoutes: MetadataRoute.Sitemap = ["", "/articles", "/lessons", "/english-lab", "/podcasts", "/about"].map((route) => ({
     url: `${base}${route}`,
-    lastModified: new Date(),
+    lastModified: staticLastModified,
+    changeFrequency: route === "" ? "weekly" : "monthly",
+    priority: route === "" ? 1 : route === "/english-lab" ? 0.9 : 0.8,
   }));
 
-  const articles = getAllArticles().map((item) => ({
+  const articles: MetadataRoute.Sitemap = getAllArticles().map((item) => ({
     url: `${base}/articles/${item.slug}`,
     lastModified: new Date(item.updated ?? item.date),
+    changeFrequency: "monthly",
+    priority: 0.7,
   }));
 
-  const lessons = getAllLessons().map((item) => ({
+  const lessons: MetadataRoute.Sitemap = getAllLessons().map((item) => ({
     url: `${base}/lessons/${item.slug}`,
     lastModified: new Date(item.updated ?? item.date),
+    changeFrequency: "monthly",
+    priority: 0.72,
   }));
 
-  const podcasts = getAllPodcasts().map((item) => ({
+  const podcasts: MetadataRoute.Sitemap = getAllPodcasts().map((item) => ({
     url: `${base}/podcasts/${item.slug}`,
     lastModified: new Date(item.updated ?? item.date),
+    changeFrequency: "monthly",
+    priority: 0.68,
   }));
 
-  const tags = getAllTags().map((tag) => ({
+  const tags: MetadataRoute.Sitemap = getAllTags().map((tag) => ({
     url: `${base}/tags/${slugify(tag)}`,
-    lastModified: new Date(),
+    lastModified: staticLastModified,
+    changeFrequency: "monthly",
+    priority: 0.45,
   }));
 
   return [...staticRoutes, ...articles, ...lessons, ...podcasts, ...tags];

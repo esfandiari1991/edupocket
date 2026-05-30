@@ -10,6 +10,14 @@ import { SectionHeading } from "@/components/site/SectionHeading";
 export const metadata: Metadata = {
   title: "Articles",
   description: "Practical EduPocket articles about AI learning, teaching systems, study habits, and technology.",
+  alternates: {
+    canonical: "/articles",
+  },
+  openGraph: {
+    title: "EduPocket Articles",
+    description: "Practical EduPocket articles about AI learning, teaching systems, study habits, and technology.",
+    url: "/articles",
+  },
 };
 
 export default function ArticlesPage() {

@@ -10,6 +10,14 @@ import { SectionHeading } from "@/components/site/SectionHeading";
 export const metadata: Metadata = {
   title: "Lessons",
   description: "EduPocket micro-lessons for English, IELTS, TOEFL, study skills, AI learning, and practical frameworks.",
+  alternates: {
+    canonical: "/lessons",
+  },
+  openGraph: {
+    title: "EduPocket Lessons",
+    description: "EduPocket micro-lessons for English, IELTS, TOEFL, study skills, AI learning, and practical frameworks.",
+    url: "/lessons",
+  },
 };
 
 export default function LessonsPage() {

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { DirectContactButtons } from "@/components/site/DirectContactButtons";
 import { LocalizedText } from "@/components/site/LocalizedText";
 import { cn } from "@/lib/utils";
@@ -51,11 +52,11 @@ export function ContactPanel({ context = "general", className }: ContactPanelPro
   return (
     <section
       className={cn(
-        "relative overflow-hidden rounded-[8px] border border-amber-200/20 bg-[linear-gradient(135deg,rgba(251,191,36,0.16),rgba(14,165,233,0.1)_48%,rgba(255,255,255,0.045))] p-5 shadow-[0_28px_90px_rgba(0,0,0,0.22)] sm:p-6 lg:p-8",
+        "motion-contact-panel motion-view relative overflow-hidden rounded-[8px] border border-amber-200/20 bg-[linear-gradient(135deg,rgba(251,191,36,0.16),rgba(14,165,233,0.1)_48%,rgba(255,255,255,0.045))] p-5 shadow-[0_28px_90px_rgba(0,0,0,0.22)] sm:p-6 lg:p-8",
         className,
       )}
     >
-      <div className="grid gap-7 lg:grid-cols-[1fr_1fr] lg:items-center">
+      <div className="grid gap-7 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
         <div>
           <p className="text-sm font-semibold text-amber-200">
             <LocalizedText en="Collaboration" fa="همکاری" />
@@ -67,11 +68,28 @@ export function ContactPanel({ context = "general", className }: ContactPanelPro
             <LocalizedText en={selected.text.en} fa={selected.text.fa} />
           </p>
         </div>
-        <DirectContactButtons
-          variant="hero"
-          primaryLabel={{ en: "Collaborate with me", fa: "همکاری با من" }}
-          primarySubLabel={{ en: "Fastest response on Telegram", fa: "سریع ترین پاسخ در تلگرام" }}
-        />
+        <div className="grid min-w-0 gap-4 sm:grid-cols-[11rem_1fr] sm:items-stretch">
+          <div className="motion-portrait-card relative min-h-52 overflow-hidden rounded-[8px] border border-white/10 bg-slate-950/50 shadow-[0_18px_56px_rgba(0,0,0,0.22)] sm:min-h-[11rem]">
+            <Image
+              src="/images/ali-rad-friendly.jpg"
+              alt="Ali Rad smiling"
+              width={1024}
+              height={1024}
+              className="h-full min-h-52 w-full object-cover object-[50%_42%] brightness-110 saturate-[1.04] sm:min-h-[11rem]"
+              sizes="(min-width: 1024px) 176px, (min-width: 640px) 176px, 100vw"
+            />
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/72 to-transparent px-3 pb-3 pt-10">
+              <p className="text-xs font-semibold text-amber-100">
+                <LocalizedText en="Direct reply" fa="پاسخ مستقیم" />
+              </p>
+            </div>
+          </div>
+          <DirectContactButtons
+            variant="hero"
+            primaryLabel={{ en: "Collaborate with me", fa: "همکاری با من" }}
+            primarySubLabel={{ en: "Fastest response on Telegram", fa: "سریع ترین پاسخ در تلگرام" }}
+          />
+        </div>
       </div>
     </section>
   );

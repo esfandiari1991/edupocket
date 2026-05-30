@@ -23,6 +23,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: `Tag: ${label}`,
     description: `EduPocket content tagged ${label}.`,
+    alternates: {
+      canonical: `/tags/${slugify(label)}`,
+    },
+    openGraph: {
+      title: `EduPocket content tagged ${label}`,
+      description: `EduPocket content tagged ${label}.`,
+      url: `/tags/${slugify(label)}`,
+    },
   };
 }
 

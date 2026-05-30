@@ -99,7 +99,7 @@ Each content file should include Persian fields (`faTitle`, `faDescription`, and
 
 ## Production URL later
 
-The app can use `NEXT_PUBLIC_SITE_URL` for canonical metadata and sitemap URLs. Set it in Vercel if the production URL changes.
+Canonical metadata and sitemap URLs point to `https://edupocket.org`. Use `NEXT_PUBLIC_SITE_URL` only if the official public domain changes later.
 
 ## Future upgrade ideas
 

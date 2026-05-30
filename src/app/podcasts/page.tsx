@@ -11,6 +11,14 @@ import { SectionHeading } from "@/components/site/SectionHeading";
 export const metadata: Metadata = {
   title: "Podcasts",
   description: "EduPocket audio lessons and podcast notes for learning systems, English, AI, and teaching.",
+  alternates: {
+    canonical: "/podcasts",
+  },
+  openGraph: {
+    title: "EduPocket Podcasts",
+    description: "EduPocket audio lessons and podcast notes for learning systems, English, AI, and teaching.",
+    url: "/podcasts",
+  },
 };
 
 export default function PodcastsPage() {

@@ -30,10 +30,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: episode.title,
     description: episode.description,
+    alternates: {
+      canonical: `/podcasts/${episode.slug}`,
+    },
     openGraph: {
       title: episode.title,
       description: episode.description,
       type: "article",
+      url: `/podcasts/${episode.slug}`,
       publishedTime: episode.date,
       modifiedTime: episode.updated,
       tags: episode.tags,

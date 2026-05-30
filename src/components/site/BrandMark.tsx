@@ -1,13 +1,13 @@
 import Link from "next/link";
-import { BookOpen } from "lucide-react";
+import { EduPocketMark } from "@/components/site/EduPocketMark";
 import { siteConfig } from "@/lib/site";
 import { LocalizedText } from "@/components/site/LocalizedText";
 
 export function BrandMark() {
   return (
     <Link href="/" className="group inline-flex items-center gap-3" aria-label="EduPocket home">
-      <span className="flex size-10 items-center justify-center rounded-[8px] border border-amber-300/40 bg-amber-400 text-slate-950 shadow-[0_0_32px_rgba(251,191,36,0.22)]">
-        <BookOpen aria-hidden="true" className="size-5" strokeWidth={2.2} />
+      <span className="motion-logo-mark flex size-11 items-center justify-center rounded-[8px] shadow-[0_0_32px_rgba(251,191,36,0.24)]">
+        <EduPocketMark className="size-11" />
       </span>
       <span className="leading-none">
         <span className="block text-lg font-semibold text-white transition group-hover:text-amber-100">

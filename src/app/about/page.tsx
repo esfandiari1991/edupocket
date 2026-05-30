@@ -9,6 +9,14 @@ import { SectionHeading } from "@/components/site/SectionHeading";
 export const metadata: Metadata = {
   title: "About Ali Rad",
   description: "Learn about Ali Rad, the teacher and builder behind EduPocket.",
+  alternates: {
+    canonical: "/about",
+  },
+  openGraph: {
+    title: "About Ali Rad",
+    description: "Learn about Ali Rad, the teacher and builder behind EduPocket.",
+    url: "/about",
+  },
 };
 
 const strengths = [

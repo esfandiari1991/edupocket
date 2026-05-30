@@ -34,14 +34,15 @@ export function LanguageToggle() {
 
   return (
     <div
-      className="language-toggle group relative inline-grid min-w-[8.2rem] grid-cols-2 items-center rounded-[8px] border border-white/10 bg-white/[0.055] p-1 text-xs font-semibold shadow-[0_14px_44px_rgba(0,0,0,0.18)] sm:min-w-[9.7rem]"
+      className="language-toggle language-toggle-unlock group relative inline-grid min-w-[13.75rem] grid-cols-2 items-center rounded-[8px] border border-white/10 bg-white/[0.055] p-1 text-xs font-semibold shadow-[0_14px_44px_rgba(0,0,0,0.18)] sm:min-w-[15.25rem]"
       dir="ltr"
       aria-label="Language"
     >
+      <span aria-hidden="true" className="language-toggle-glide absolute inset-y-1 left-1 right-1 rounded-[6px]" />
       <span
         aria-hidden="true"
         className={cn(
-          "absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] rounded-[6px] bg-amber-400 shadow-[0_12px_30px_rgba(251,191,36,0.24)] transition-transform duration-300 ease-out",
+          "absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] rounded-[6px] bg-amber-400 shadow-[0_12px_34px_rgba(251,191,36,0.36)] transition-transform duration-500 ease-[cubic-bezier(0.2,0.82,0.2,1)]",
           language === "fa" && "translate-x-full",
         )}
       />

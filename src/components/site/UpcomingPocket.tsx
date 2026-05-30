@@ -24,11 +24,11 @@ export function UpcomingPocket({ title, description, icon: Icon, note }: Upcomin
   return (
     <article
       data-state="upcoming"
-      className="motion-upcoming relative overflow-hidden rounded-[8px] border border-dashed border-slate-500/35 bg-slate-900/35 p-5 text-slate-400 shadow-none"
+      className="motion-upcoming motion-view relative overflow-hidden rounded-[8px] border border-dashed border-slate-500/35 bg-slate-900/35 p-5 text-slate-400 shadow-none"
     >
       <div data-motion-bar="true" className="absolute inset-x-0 top-0 h-1 bg-[linear-gradient(90deg,rgba(148,163,184,0.18),rgba(251,191,36,0.28),rgba(96,165,250,0.18),rgba(148,163,184,0.18))]" />
       <div className="flex items-start justify-between gap-4">
-        <span className="flex size-10 items-center justify-center rounded-[8px] border border-slate-500/25 bg-white/[0.025] text-slate-300">
+        <span className="motion-card-icon flex size-10 items-center justify-center rounded-[8px] border border-slate-500/25 bg-white/[0.025] text-slate-300">
           <Icon aria-hidden="true" className="size-5" />
         </span>
         <span className="inline-flex shrink-0 items-center gap-1.5 rounded-[6px] border border-amber-200/20 bg-amber-200/[0.08] px-2 py-1 text-xs font-semibold text-amber-100">

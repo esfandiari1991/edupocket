@@ -398,8 +398,8 @@ export function EnglishLabExperience() {
                 </p>
                 <p className="mt-2 text-sm leading-6 text-slate-300">
                   <LocalizedText
-                    en="Use this as a sample, not a final certificate. For a personal plan, message Ali with your score and goal."
-                    fa="این فقط یک نمونه است، نه مدرک نهایی. برای برنامه شخصی، امتیاز و هدفت را برای علی بفرست."
+                    en="Use this as a sample, not a final certificate. For a personal plan, message me with your score and goal."
+                    fa="این فقط یک نمونه است، نه مدرک نهایی. برای برنامه شخصی، امتیاز و هدفت را برای من بفرست."
                   />
                 </p>
               </div>

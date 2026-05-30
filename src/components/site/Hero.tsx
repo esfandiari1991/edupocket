@@ -79,15 +79,28 @@ export function Hero() {
 
           <div className="motion-reveal motion-delay-2 relative min-w-0 lg:col-span-5">
             <div className="absolute inset-x-6 inset-y-10 bg-amber-300/10 blur-3xl" aria-hidden="true" />
-            <div className="motion-hero-card relative overflow-hidden rounded-[8px] border border-white/10 bg-white/[0.045] p-3 shadow-[0_36px_100px_rgba(0,0,0,0.34)]">
-              <Image
-                src="/images/ali-rad-learning.jpg"
-                alt="Ali Rad studying and building learning systems"
-                width={752}
-                height={1360}
-                priority
-                className="h-[25rem] w-full rounded-[6px] object-cover object-[50%_34%] sm:h-[34rem] lg:h-[38rem]"
-              />
+            <div className="motion-hero-card motion-hero-frame relative overflow-hidden rounded-[8px] border border-white/10 bg-white/[0.045] p-3 shadow-[0_36px_100px_rgba(0,0,0,0.34)]">
+              <div className="relative overflow-hidden rounded-[6px]">
+                <Image
+                  src="/images/ali-rad-learning.jpg"
+                  alt="Ali Rad studying and building learning systems"
+                  width={752}
+                  height={1360}
+                  priority
+                  className="h-[25rem] w-full object-cover object-[50%_34%] sm:h-[34rem] lg:h-[38rem]"
+                />
+                <div className="motion-signal-note pointer-events-none absolute left-4 top-4 hidden max-w-48 rounded-[8px] border border-white/12 bg-slate-950/62 p-3 shadow-[0_18px_54px_rgba(0,0,0,0.3)] sm:block">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-amber-100">
+                    <span className="motion-signal-dot size-2 rounded-full bg-amber-300" aria-hidden="true" />
+                    <LocalizedText en="Focus -> feedback -> fluency" fa="تمرکز -> بازخورد -> تسلط" />
+                  </div>
+                  <div className="mt-3 grid grid-cols-3 gap-1.5" aria-hidden="true">
+                    <span className="h-1 rounded-full bg-amber-200/80" />
+                    <span className="h-1 rounded-full bg-sky-200/70" />
+                    <span className="h-1 rounded-full bg-white/40" />
+                  </div>
+                </div>
+              </div>
               <div className="mt-3 grid gap-3 sm:grid-cols-2">
                 <div className="rounded-[8px] border border-white/10 bg-slate-950/70 p-4">
                   <p className="text-xs font-semibold uppercase text-amber-200">
