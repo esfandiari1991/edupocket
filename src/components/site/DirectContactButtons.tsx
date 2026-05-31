@@ -21,8 +21,8 @@ const secondaryLinks = [
   {
     key: "instagram",
     icon: Camera,
-    en: "Instagram",
-    fa: "اینستاگرام",
+    en: "insta",
+    fa: "insta",
     href: siteConfig.contact.instagram.href,
   },
   {
@@ -56,7 +56,7 @@ export function DirectContactButtons({
     <div
       className={cn(
         "min-w-0 gap-3",
-        isStackedHero ? "grid sm:grid-cols-3" : "flex flex-col sm:flex-row sm:flex-wrap",
+        isStackedHero ? "grid grid-cols-1 min-[520px]:grid-cols-3" : "flex flex-col sm:flex-row sm:flex-wrap",
         isHero && !isStackedHero ? "sm:items-stretch" : "",
         className,
       )}
@@ -67,7 +67,7 @@ export function DirectContactButtons({
         rel="noopener noreferrer"
         className={cn(
           "motion-button-pop group relative isolate inline-flex min-h-14 min-w-0 items-center justify-between gap-3 overflow-hidden rounded-[8px] border border-amber-100/70 bg-gradient-to-r from-amber-300 via-amber-200 to-sky-200 px-4 py-3 text-start font-semibold text-slate-950 shadow-[0_22px_70px_rgba(251,191,36,0.28)] transition hover:-translate-y-0.5 hover:shadow-[0_28px_90px_rgba(251,191,36,0.34)] focus:outline-none focus:ring-2 focus:ring-amber-100",
-          isStackedHero ? "w-full sm:col-span-3 sm:px-5" : isHero ? "sm:min-w-[18rem] sm:px-5" : "w-full sm:w-auto",
+          isStackedHero ? "w-full min-[520px]:col-span-3 min-[520px]:min-h-16 min-[520px]:px-6" : isHero ? "sm:min-w-[18rem] sm:px-5" : "w-full sm:w-auto",
           isFooter ? "sm:w-full" : "",
         )}
       >
@@ -76,10 +76,10 @@ export function DirectContactButtons({
           <Send aria-hidden="true" className="size-5 rtl:rotate-180" />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-base leading-5">
+          <span className={cn("block text-base leading-5", !isStackedHero && "truncate")}>
             <LocalizedText en={primaryLabel.en} fa={primaryLabel.fa} />
           </span>
-          <span className="mt-1 block truncate text-xs font-semibold text-slate-700">
+          <span className={cn("mt-1 block text-xs font-semibold text-slate-700", !isStackedHero && "truncate")}>
             <LocalizedText en={primarySubLabel.en} fa={primarySubLabel.fa} />
           </span>
         </span>
@@ -99,7 +99,7 @@ export function DirectContactButtons({
                 className={cn(
                   "inline-flex min-h-12 min-w-0 items-center justify-center gap-2 rounded-[8px] border border-white/12 bg-white/[0.045] px-4 py-2.5 text-sm font-semibold text-slate-100 transition hover:border-amber-300/50 hover:bg-white/[0.07] hover:text-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-300/60",
                   "motion-social-button",
-                  isStackedHero ? "w-full" : isHero ? "sm:min-w-36" : "w-full sm:w-auto",
+                  isStackedHero ? "w-full min-[520px]:min-h-12" : isHero ? "sm:min-w-36" : "w-full sm:w-auto",
                   isFooter ? "sm:w-full sm:justify-start" : "",
                 )}
               >

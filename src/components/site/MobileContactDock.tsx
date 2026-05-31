@@ -24,7 +24,7 @@ export function MobileContactDock() {
       >
         <Camera aria-hidden="true" className="size-4 text-amber-200" />
         <span>
-          <LocalizedText en={`Instagram ${siteConfig.contact.instagram.handle}`} fa={`اینستاگرام ${siteConfig.contact.instagram.handle}`} />
+          <LocalizedText en="insta" fa="insta" />
         </span>
       </a>
     </div>

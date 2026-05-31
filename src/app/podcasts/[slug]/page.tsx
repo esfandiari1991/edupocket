@@ -7,6 +7,7 @@ import { commonText, formatDateFa, itemBody, itemDescription, itemTitle, podcast
 import { formatDate } from "@/lib/utils";
 import { AudioTranscript } from "@/components/audio/AudioTranscript";
 import { ContactPanel } from "@/components/site/ContactPanel";
+import { ContentStructuredData } from "@/components/site/ContentStructuredData";
 import { EduPocketPlayer } from "@/components/audio/EduPocketPlayer";
 import { Container } from "@/components/site/Container";
 import { FeaturedGrid } from "@/components/site/FeaturedGrid";
@@ -30,6 +31,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: episode.title,
     description: episode.description,
+    keywords: episode.tags,
+    authors: [{ name: "Ali Esfandiari Rad", url: "/about" }],
     alternates: {
       canonical: `/podcasts/${episode.slug}`,
     },
@@ -41,6 +44,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       publishedTime: episode.date,
       modifiedTime: episode.updated,
       tags: episode.tags,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: episode.title,
+      description: episode.description,
     },
   };
 }
@@ -57,7 +65,9 @@ export default async function PodcastPage({ params }: PageProps) {
   const language = podcastLanguage(episode);
 
   return (
-    <Container className="py-14">
+    <>
+      <ContentStructuredData episode={episode} />
+      <Container className="py-14">
       <Link href="/podcasts" className="inline-flex items-center gap-2 text-sm font-semibold text-amber-200 hover:text-amber-100">
         <ArrowLeft aria-hidden="true" className="size-4" />
         <LocalizedText en={commonText.backToPodcasts.en} fa={commonText.backToPodcasts.fa} />
@@ -117,6 +127,7 @@ export default async function PodcastPage({ params }: PageProps) {
           emptyDescription={<LocalizedText en="More connected audio lessons will appear as EduPocket grows." fa="با رشد EduPocket، درس های صوتی مرتبط بیشتری اینجا می آیند." />}
         />
       </section>
-    </Container>
+      </Container>
+    </>
   );
 }

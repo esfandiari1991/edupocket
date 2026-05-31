@@ -14,9 +14,20 @@ const routes = [
 export function Hero() {
   return (
     <section className="motion-hero-shell isolate overflow-hidden border-b border-white/10 bg-[linear-gradient(180deg,#06111f_0%,#071522_52%,#050b16_100%)]">
+      <div className="motion-spark-field" aria-hidden="true">
+        <span className="motion-spark motion-spark-one" />
+        <span className="motion-spark motion-spark-two" />
+        <span className="motion-spark motion-spark-three" />
+        <span className="motion-spark motion-spark-four" />
+      </div>
       <Container className="py-12 sm:py-16 lg:py-20">
         <div className="grid gap-10 lg:grid-cols-12 lg:items-center">
           <div className="relative z-10 min-w-0 lg:col-span-7">
+            <div className="motion-learning-orbit" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </div>
             <h1 className="motion-reveal motion-hero-title type-display max-w-4xl text-[2.35rem] font-semibold leading-[1.08] text-white sm:text-5xl lg:text-6xl">
               <LocalizedText
                 en={
@@ -79,6 +90,11 @@ export function Hero() {
 
           <div className="motion-reveal motion-delay-2 relative min-w-0 lg:col-span-5">
             <div className="absolute inset-x-6 inset-y-10 bg-amber-300/10 blur-3xl" aria-hidden="true" />
+            <div className="motion-orbit-rails" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </div>
             <div className="motion-hero-card motion-hero-frame relative overflow-hidden rounded-[8px] border border-white/10 bg-white/[0.045] p-3 shadow-[0_36px_100px_rgba(0,0,0,0.34)]">
               <div className="relative overflow-hidden rounded-[6px]">
                 <Image
@@ -89,6 +105,12 @@ export function Hero() {
                   priority
                   className="h-[25rem] w-full object-cover object-[50%_34%] sm:h-[34rem] lg:h-[38rem]"
                 />
+                <div className="motion-photo-grid" aria-hidden="true">
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                </div>
                 <div className="motion-signal-note pointer-events-none absolute left-4 top-4 hidden max-w-48 rounded-[8px] border border-white/12 bg-slate-950/62 p-3 shadow-[0_18px_54px_rgba(0,0,0,0.3)] sm:block">
                   <div className="flex items-center gap-2 text-xs font-semibold text-amber-100">
                     <span className="motion-signal-dot size-2 rounded-full bg-amber-300" aria-hidden="true" />

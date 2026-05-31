@@ -6,6 +6,7 @@ import { getAllLessons, getLessonBySlug, getRelatedLessons } from "@/lib/content
 import { commonText, formatDateFa, formatReadingTimeFa, itemBody, itemDescription, itemTitle, lessonLevel, lessonSkill } from "@/lib/i18n";
 import { formatDate } from "@/lib/utils";
 import { ContactPanel } from "@/components/site/ContactPanel";
+import { ContentStructuredData } from "@/components/site/ContentStructuredData";
 import { Container } from "@/components/site/Container";
 import { FeaturedGrid } from "@/components/site/FeaturedGrid";
 import { LocalizedText } from "@/components/site/LocalizedText";
@@ -28,6 +29,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: lesson.title,
     description: lesson.description,
+    keywords: lesson.tags,
+    authors: [{ name: "Ali Esfandiari Rad", url: "/about" }],
     alternates: {
       canonical: `/lessons/${lesson.slug}`,
     },
@@ -39,6 +42,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       publishedTime: lesson.date,
       modifiedTime: lesson.updated,
       tags: lesson.tags,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: lesson.title,
+      description: lesson.description,
     },
   };
 }
@@ -56,7 +64,9 @@ export default async function LessonPage({ params }: PageProps) {
   const level = lessonLevel(lesson);
 
   return (
-    <Container className="py-14">
+    <>
+      <ContentStructuredData lesson={lesson} />
+      <Container className="py-14">
       <Link href="/lessons" className="inline-flex items-center gap-2 text-sm font-semibold text-amber-200 hover:text-amber-100">
         <ArrowLeft aria-hidden="true" className="size-4" />
         <LocalizedText en={commonText.backToLessons.en} fa={commonText.backToLessons.fa} />
@@ -112,6 +122,7 @@ export default async function LessonPage({ params }: PageProps) {
           emptyDescription={<LocalizedText en="More connected micro-lessons will appear as EduPocket grows." fa="با رشد EduPocket، درس های مرتبط بیشتری اینجا می آیند." />}
         />
       </section>
-    </Container>
+      </Container>
+    </>
   );
 }

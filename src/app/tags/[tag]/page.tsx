@@ -23,6 +23,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: `Tag: ${label}`,
     description: `EduPocket content tagged ${label}.`,
+    keywords: [label, "EduPocket", "AI learning", "English learning", "study systems"],
     alternates: {
       canonical: `/tags/${slugify(label)}`,
     },
@@ -30,6 +31,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: `EduPocket content tagged ${label}`,
       description: `EduPocket content tagged ${label}.`,
       url: `/tags/${slugify(label)}`,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `Tag: ${label} | EduPocket`,
+      description: `EduPocket content tagged ${label}.`,
     },
   };
 }
@@ -43,6 +49,7 @@ export default async function TagPage({ params }: PageProps) {
   return (
     <Container className="py-16">
       <SectionHeading
+        level={1}
         title={<LocalizedText en={`Tag: ${localizedLabel.en}`} fa={`برچسب: ${localizedLabel.fa}`} />}
         description={<LocalizedText en="Connected articles, micro-lessons, and podcast episodes from the EduPocket library." fa="مقاله ها، درس های کوتاه و اپیزودهای مرتبط از کتابخانه EduPocket." />}
         action={<DirectContactButtons showSecondary={false} />}

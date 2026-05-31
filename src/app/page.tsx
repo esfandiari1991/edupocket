@@ -157,8 +157,7 @@ export default function HomePage() {
               </p>
               <DirectContactButtons
                 variant="hero"
-                showSecondary={false}
-                className="mt-7"
+                className="mt-7 max-w-2xl"
                 primaryLabel={{ en: "Collaborate with me", fa: "همکاری با من" }}
                 primarySubLabel={{ en: "English, AI, education projects", fa: "انگلیسی، AI، پروژه آموزشی" }}
               />

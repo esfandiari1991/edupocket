@@ -37,10 +37,21 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   keywords: [...siteConfig.seoKeywords],
-  authors: [{ name: siteConfig.author }],
+  authors: [{ name: siteConfig.author, url: "/about" }],
   creator: siteConfig.author,
   publisher: "Blue Rose Academy",
   category: "Education",
+  referrer: "origin-when-cross-origin",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  appleWebApp: {
+    capable: true,
+    title: siteConfig.name,
+    statusBarStyle: "black-translucent",
+  },
   alternates: {
     canonical: "/",
     languages: {

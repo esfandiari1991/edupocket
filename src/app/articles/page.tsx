@@ -10,6 +10,7 @@ import { SectionHeading } from "@/components/site/SectionHeading";
 export const metadata: Metadata = {
   title: "Articles",
   description: "Practical EduPocket articles about AI learning, teaching systems, study habits, and technology.",
+  keywords: ["AI learning articles", "study systems", "teaching frameworks", "education technology"],
   alternates: {
     canonical: "/articles",
   },
@@ -17,6 +18,11 @@ export const metadata: Metadata = {
     title: "EduPocket Articles",
     description: "Practical EduPocket articles about AI learning, teaching systems, study habits, and technology.",
     url: "/articles",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Articles | EduPocket",
+    description: "Practical EduPocket articles about AI learning, teaching systems, study habits, and technology.",
   },
 };
 
@@ -26,6 +32,7 @@ export default function ArticlesPage() {
   return (
     <Container className="py-16">
       <SectionHeading
+        level={1}
         title={<LocalizedText en="Articles" fa="مقاله ها" />}
         description={<LocalizedText en="Readable, practical notes for AI-assisted learning, teaching frameworks, study systems, and technology." fa="یادداشت های خواندنی و کاربردی درباره یادگیری با هوش مصنوعی، چارچوب های تدریس، سیستم های مطالعه و تکنولوژی." />}
         action={<DirectContactButtons showSecondary={false} />}

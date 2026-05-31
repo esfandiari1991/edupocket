@@ -6,6 +6,7 @@ import { getAllArticles, getArticleBySlug, getRelatedArticles } from "@/lib/cont
 import { articleCategory, commonText, formatDateFa, formatReadingTimeFa, itemBody, itemDescription, itemTitle } from "@/lib/i18n";
 import { formatDate } from "@/lib/utils";
 import { ContactPanel } from "@/components/site/ContactPanel";
+import { ContentStructuredData } from "@/components/site/ContentStructuredData";
 import { Container } from "@/components/site/Container";
 import { FeaturedGrid } from "@/components/site/FeaturedGrid";
 import { LocalizedText } from "@/components/site/LocalizedText";
@@ -28,6 +29,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: article.title,
     description: article.description,
+    keywords: article.tags,
+    authors: [{ name: "Ali Esfandiari Rad", url: "/about" }],
     alternates: {
       canonical: `/articles/${article.slug}`,
     },
@@ -60,7 +63,9 @@ export default async function ArticlePage({ params }: PageProps) {
   const category = articleCategory(article);
 
   return (
-    <Container className="py-14">
+    <>
+      <ContentStructuredData article={article} />
+      <Container className="py-14">
       <Link href="/articles" className="inline-flex items-center gap-2 text-sm font-semibold text-amber-200 hover:text-amber-100">
         <ArrowLeft aria-hidden="true" className="size-4" />
         <LocalizedText en={commonText.backToArticles.en} fa={commonText.backToArticles.fa} />
@@ -113,6 +118,7 @@ export default async function ArticlePage({ params }: PageProps) {
           emptyDescription={<LocalizedText en="More connected reading will appear as EduPocket grows." fa="با رشد EduPocket، مطالعه های مرتبط بیشتری اینجا می آیند." />}
         />
       </section>
-    </Container>
+      </Container>
+    </>
   );
 }

@@ -49,16 +49,18 @@ export function EduPocketPlayer({ title, titleFa, audioSrc, audioAvailable = tru
     audio.muted = muted;
   }, [volume, muted]);
 
-  function togglePlay() {
+  async function togglePlay() {
     const audio = audioRef.current;
     if (!audio || error) return;
 
     if (audio.paused) {
-      void audio.play();
-      setPlaying(true);
+      try {
+        await audio.play();
+      } catch {
+        setPlaying(false);
+      }
     } else {
       audio.pause();
-      setPlaying(false);
     }
   }
 
@@ -102,6 +104,8 @@ export function EduPocketPlayer({ title, titleFa, audioSrc, audioAvailable = tru
         preload="metadata"
         onLoadedMetadata={(event) => setDuration(event.currentTarget.duration)}
         onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
+        onPlay={() => setPlaying(true)}
+        onPause={() => setPlaying(false)}
         onEnded={() => setPlaying(false)}
         onError={() => {
           setPlaying(false);

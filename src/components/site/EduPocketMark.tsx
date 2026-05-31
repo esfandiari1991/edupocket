@@ -13,17 +13,31 @@ export function EduPocketMark({ className }: EduPocketMarkProps) {
       className={cn("h-10 w-10", className)}
       xmlns="http://www.w3.org/2000/svg"
     >
-      <rect x="16" y="16" width="224" height="224" rx="44" className="fill-amber-400" />
+      <defs>
+        <linearGradient id="edupocket-mark-gold" x1="36" x2="216" y1="28" y2="224" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#FFE98A" />
+          <stop offset="0.48" stopColor="#FBBF24" />
+          <stop offset="1" stopColor="#BAE6FD" />
+        </linearGradient>
+        <linearGradient id="edupocket-mark-paper" x1="78" x2="180" y1="78" y2="170" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#FFF7D6" />
+          <stop offset="1" stopColor="#BEEBFF" />
+        </linearGradient>
+      </defs>
+      <rect x="15" y="15" width="226" height="226" rx="48" fill="url(#edupocket-mark-gold)" />
+      <rect x="30" y="30" width="196" height="196" rx="36" className="fill-slate-950" />
       <path
-        d="M64 72C84 61 103 63 128 80C153 63 172 61 192 72V172C171 161 151 164 128 181C105 164 85 161 64 172V72Z"
-        className="fill-slate-950"
+        d="M61 73C81 60 104 62 128 78C152 62 175 60 195 73V168C173 157 151 162 128 179C105 162 83 157 61 168V73Z"
+        fill="url(#edupocket-mark-paper)"
       />
-      <path d="M78 91C94 84 108 88 122 99V153C108 142 94 138 78 144V91Z" className="fill-amber-100" />
-      <path d="M178 91C162 84 148 88 134 99V153C148 142 162 138 178 144V91Z" className="fill-sky-200" />
-      <path d="M128 82V182" className="stroke-amber-400" strokeWidth="7" strokeLinecap="round" />
-      <path d="M93 113H113M143 113H163M93 133H110M146 133H163" className="stroke-slate-950" strokeWidth="8" strokeLinecap="round" />
-      <circle cx="194" cy="69" r="8" className="fill-slate-950" />
-      <path d="M194 43V55M194 83V95M168 69H180M208 69H220" className="stroke-slate-950" strokeWidth="8" strokeLinecap="round" />
+      <path d="M128 78V180" className="stroke-slate-950" strokeWidth="8" strokeLinecap="round" />
+      <path d="M84 96H112M84 118H108M84 140H116" className="stroke-slate-950" strokeWidth="9" strokeLinecap="round" />
+      <path d="M144 98C158 90 171 89 185 96M144 121C159 113 171 113 185 120M144 144C159 136 171 136 185 143" className="stroke-slate-950" strokeWidth="9" strokeLinecap="round" />
+      <path d="M64 168C86 157 106 162 128 179C150 162 170 157 192 168" className="stroke-amber-400" strokeWidth="9" strokeLinecap="round" />
+      <path d="M64 188H192" className="stroke-sky-200" strokeWidth="9" strokeLinecap="round" />
+      <circle cx="198" cy="58" r="7" className="fill-amber-300" />
+      <path d="M198 38V47M198 69V78M178 58H187M209 58H218" className="stroke-amber-300" strokeWidth="7" strokeLinecap="round" />
+      <path d="M52 204C77 215 178 215 204 204" className="stroke-amber-300" strokeWidth="8" strokeLinecap="round" opacity="0.9" />
     </svg>
   );
 }

@@ -11,6 +11,7 @@ import { SectionHeading } from "@/components/site/SectionHeading";
 export const metadata: Metadata = {
   title: "Podcasts",
   description: "EduPocket audio lessons and podcast notes for learning systems, English, AI, and teaching.",
+  keywords: ["education podcast", "audio lessons", "AI learning podcast", "English learning audio"],
   alternates: {
     canonical: "/podcasts",
   },
@@ -18,6 +19,11 @@ export const metadata: Metadata = {
     title: "EduPocket Podcasts",
     description: "EduPocket audio lessons and podcast notes for learning systems, English, AI, and teaching.",
     url: "/podcasts",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Podcasts | EduPocket",
+    description: "EduPocket audio lessons and podcast notes for learning systems, English, AI, and teaching.",
   },
 };
 
@@ -28,6 +34,7 @@ export default function PodcastsPage() {
   return (
     <Container className="py-16">
       <SectionHeading
+        level={1}
         title={<LocalizedText en="Podcasts" fa="پادکست ها" />}
         description={<LocalizedText en="Podcast notes, transcripts, and practical study prompts. Episodes without audio are marked clearly until the files are attached." fa="یادداشت پادکست، راهنمای شنیدن و تمرین های کاربردی. اپیزودهایی که هنوز فایل صوتی ندارند، شفاف با وضعیت به زودی مشخص شده اند." />}
         action={<DirectContactButtons showSecondary={false} />}

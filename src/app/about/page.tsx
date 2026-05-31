@@ -9,6 +9,7 @@ import { SectionHeading } from "@/components/site/SectionHeading";
 export const metadata: Metadata = {
   title: "About Ali Rad",
   description: "Learn about Ali Rad, the teacher and builder behind EduPocket.",
+  keywords: ["Ali Esfandiari Rad", "Ali Rad", "English teacher", "AI learning-system builder", "online tutor"],
   alternates: {
     canonical: "/about",
   },
@@ -16,6 +17,11 @@ export const metadata: Metadata = {
     title: "About Ali Rad",
     description: "Learn about Ali Rad, the teacher and builder behind EduPocket.",
     url: "/about",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About Ali Rad | EduPocket",
+    description: "Learn about Ali Rad, the teacher and builder behind EduPocket.",
   },
 };
 
@@ -56,6 +62,7 @@ export default function AboutPage() {
   return (
     <Container className="py-16">
       <SectionHeading
+        level={1}
         title={<LocalizedText en="About Ali Rad" fa="درباره علی راد" />}
         description={
           <LocalizedText
