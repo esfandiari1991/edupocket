@@ -1,26 +1,16 @@
 import Link from "next/link";
-import { ArrowRight, BookMarked, BrainCircuit, FlaskConical, GraduationCap, Handshake, Microscope, Sparkles } from "lucide-react";
-import { commonText } from "@/lib/i18n";
-import { getFeaturedArticles, getFeaturedLessons, getFeaturedPodcasts } from "@/lib/content";
+import { ArrowRight, BrainCircuit, FlaskConical, Handshake, Sparkles } from "lucide-react";
+import { EvaBookletGateway } from "@/components/eva/EvaBookletGateway";
 import { Container } from "@/components/site/Container";
-import { ContactPanel } from "@/components/site/ContactPanel";
-import { ContentCard } from "@/components/site/ContentCard";
 import { DirectContactButtons } from "@/components/site/DirectContactButtons";
 import { Hero } from "@/components/site/Hero";
 import { LocalizedText } from "@/components/site/LocalizedText";
-import { SectionHeading } from "@/components/site/SectionHeading";
-import { UpcomingPocket } from "@/components/site/UpcomingPocket";
 
 const labHighlights = [
   {
     title: { en: "Placement sample", fa: "نمونه تعیین سطح" },
     text: { en: "Quick questions, instant scoring, and clear next steps.", fa: "سوال های کوتاه، امتیاز فوری و قدم بعدی واضح." },
     icon: FlaskConical,
-  },
-  {
-    title: { en: "Expert learning loops", fa: "چرخه های یادگیری حرفه ای" },
-    text: { en: "Short cycles inspired by deliberate practice: focus, feedback, and one next move.", fa: "چرخه های کوتاه شبیه تمرین سنجیده: تمرکز، بازخورد و فقط یک قدم بعدی." },
-    icon: Microscope,
   },
   {
     title: { en: "AI-augmented review", fa: "مرور تقویت شده با AI" },
@@ -35,14 +25,6 @@ const labHighlights = [
 ];
 
 const workModes = [
-  {
-    title: { en: "Private English coaching", fa: "کوچینگ خصوصی انگلیسی" },
-    text: {
-      en: "Level diagnosis, speaking feedback, exam habits, and a realistic weekly practice loop.",
-      fa: "تشخیص سطح، بازخورد اسپیکینگ، عادت های آزمونی و یک روتین هفتگی واقعی.",
-    },
-    icon: GraduationCap,
-  },
   {
     title: { en: "AI learning systems", fa: "سیستم یادگیری با AI" },
     text: {
@@ -61,36 +43,11 @@ const workModes = [
   },
 ];
 
-const comingSoon = [
-  {
-    title: { en: "Book summaries", fa: "خلاصه کتاب ها" },
-    description: { en: "Consciousness, quantum physics, self-development, and big ideas.", fa: "آگاهی، فیزیک کوانتوم، رشد فردی و ایده های بزرگ." },
-    note: { en: "No empty page yet", fa: "هنوز صفحه باز ندارد" },
-    icon: BookMarked,
-  },
-  {
-    title: { en: "Mini educational apps", fa: "مینی اپ های آموزشی" },
-    description: { en: "Small tools for practice, recall, planning, and learning loops.", fa: "ابزارهای کوچک برای تمرین، یادآوری، برنامه ریزی و چرخه های یادگیری." },
-    note: { en: "Prototype in the lab", fa: "نمونه اولیه در حال ساخت" },
-    icon: Sparkles,
-  },
-  {
-    title: { en: "Deep knowledge pockets", fa: "پاکت های دانش عمیق" },
-    description: { en: "Connected notes that turn difficult ideas into usable maps.", fa: "یادداشت های متصل که ایده های سخت را به نقشه های قابل استفاده تبدیل می کنند." },
-    note: { en: "Roadmap pocket", fa: "در نقشه راه" },
-    icon: BrainCircuit,
-  },
-];
-
 export default function HomePage() {
-  const featuredArticles = getFeaturedArticles().slice(0, 3);
-  const featuredLessons = getFeaturedLessons().slice(0, 3);
-  const featuredPodcasts = getFeaturedPodcasts().slice(0, 3);
-  const featured = [...featuredArticles.slice(0, 1), ...featuredLessons.slice(0, 1), ...featuredPodcasts.slice(0, 1)];
-
   return (
     <>
       <Hero />
+      <EvaBookletGateway compact />
 
       <section className="motion-section-band border-b border-white/10 bg-[#050b16] py-14 sm:py-16">
         <Container>
@@ -117,7 +74,7 @@ export default function HomePage() {
               </Link>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2 lg:col-span-7">
+            <div className="grid gap-3 lg:col-span-7">
               {labHighlights.map((item) => {
                 const Icon = item.icon;
 
@@ -144,7 +101,7 @@ export default function HomePage() {
 
       <section className="motion-section-band border-b border-white/10 py-16">
         <Container>
-          <div className="grid gap-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
+          <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
             <div>
               <h2 className="text-3xl font-semibold leading-tight text-white sm:text-4xl">
                 <LocalizedText en="Ways to work with me." fa="راه های همکاری با من." />
@@ -162,7 +119,7 @@ export default function HomePage() {
                 primarySubLabel={{ en: "English, AI, education projects", fa: "انگلیسی، AI، پروژه آموزشی" }}
               />
             </div>
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-2">
               {workModes.map((item) => {
                 const Icon = item.icon;
 
@@ -182,51 +139,6 @@ export default function HomePage() {
               })}
             </div>
           </div>
-        </Container>
-      </section>
-
-      <section className="motion-section-band border-b border-white/10 bg-[#050b16] py-16">
-        <Container>
-          <SectionHeading
-            title={<LocalizedText en="Useful now, not crowded." fa="همین حالا مفید، نه شلوغ." />}
-            description={
-              <LocalizedText
-                en="Only the strongest live content is surfaced here. Deeper libraries remain in their own pages."
-                fa="اینجا فقط قوی ترین محتواهای آماده دیده می شوند. کتابخانه های کامل در صفحه های خودشان هستند."
-              />
-            }
-            action={
-              <Link href="/articles" className="inline-flex items-center gap-2 text-sm font-semibold text-amber-200 hover:text-amber-100">
-                <LocalizedText en={commonText.viewAll.en} fa={commonText.viewAll.fa} />
-                <ArrowRight aria-hidden="true" className="size-4 rtl:rotate-180" />
-              </Link>
-            }
-          />
-          <div className="grid gap-4 lg:grid-cols-3">
-            {featured.map((item) => (
-              <ContentCard key={`${item.kind}-${item.slug}`} item={item} />
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      <section className="motion-section-band py-16">
-        <Container>
-          <SectionHeading
-            title={<LocalizedText en="Coming soon" fa="به زودی" />}
-            description={<LocalizedText en="Roadmap ideas stay visible, polished, and clearly marked until they are ready." fa="ایده های آینده تا زمان آماده شدن، شفاف، مرتب و چشم نواز در نقشه راه می مانند." />}
-          />
-          <div className="grid gap-4 md:grid-cols-3">
-            {comingSoon.map((item) => (
-              <UpcomingPocket key={item.title.en} title={item.title} description={item.description} note={item.note} icon={item.icon} />
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      <section className="motion-section-band border-t border-white/10 bg-[#050b16] py-16">
-        <Container>
-          <ContactPanel context="general" />
         </Container>
       </section>
     </>

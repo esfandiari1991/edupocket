@@ -6,11 +6,11 @@ import { slugify } from "@/lib/utils";
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = siteConfig.canonicalUrl.replace(/\/$/, "");
   const staticLastModified = new Date("2026-05-30");
-  const staticRoutes: MetadataRoute.Sitemap = ["", "/articles", "/lessons", "/english-lab", "/podcasts", "/about"].map((route) => ({
+  const staticRoutes: MetadataRoute.Sitemap = ["", "/articles", "/lessons", "/english-lab", "/eva-digital-booklet", "/podcasts", "/about"].map((route) => ({
     url: `${base}${route}`,
     lastModified: staticLastModified,
     changeFrequency: route === "" ? "weekly" : "monthly",
-    priority: route === "" ? 1 : route === "/english-lab" ? 0.9 : 0.8,
+    priority: route === "" ? 1 : route === "/english-lab" ? 0.9 : route === "/eva-digital-booklet" ? 0.82 : 0.8,
   }));
 
   const articles: MetadataRoute.Sitemap = getAllArticles().map((item) => ({

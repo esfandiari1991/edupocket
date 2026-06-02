@@ -103,6 +103,7 @@ export function Hero() {
                   width={752}
                   height={1360}
                   priority
+                  unoptimized
                   className="h-[25rem] w-full object-cover object-[50%_34%] sm:h-[34rem] lg:h-[38rem]"
                 />
                 <div className="motion-photo-grid" aria-hidden="true">

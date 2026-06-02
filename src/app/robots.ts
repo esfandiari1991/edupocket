@@ -5,10 +5,13 @@ export default function robots(): MetadataRoute.Robots {
   const base = siteConfig.canonicalUrl.replace(/\/$/, "");
 
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-    },
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/eva-digital-booklet/studio", "/eva-digital-booklet/login", "/eva-digital-booklet/logout"],
+      },
+    ],
     sitemap: `${base}/sitemap.xml`,
   };
 }

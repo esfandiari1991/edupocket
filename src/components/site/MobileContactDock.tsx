@@ -1,8 +1,16 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import { Camera, Send } from "lucide-react";
 import { siteConfig } from "@/lib/site";
 import { LocalizedText } from "@/components/site/LocalizedText";
 
 export function MobileContactDock() {
+  const pathname = usePathname();
+  const hideDock = pathname === "/" || pathname.startsWith("/eva-digital-booklet");
+
+  if (hideDock) return null;
+
   return (
     <div className="fixed inset-x-3 bottom-3 z-50 grid gap-2 sm:hidden">
       <a

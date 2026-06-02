@@ -1,24 +1,27 @@
 #!/usr/bin/env node
 const baseUrl = process.env.BASE_URL ?? "http://localhost:3000";
-const routes = [
-  "/",
-  "/articles",
-  "/lessons",
-  "/english-lab",
-  "/podcasts",
-  "/about",
-  "/articles/getting-started-with-ai-learning",
-  "/lessons/the-a-r-e-speaking-framework",
-  "/podcasts/how-to-learn-with-ai-without-becoming-lazy",
+const checks = [
+  { route: "/", statuses: [200] },
+  { route: "/articles", statuses: [200] },
+  { route: "/lessons", statuses: [200] },
+  { route: "/english-lab", statuses: [200] },
+  { route: "/eva-digital-booklet", statuses: [200] },
+  { route: "/eva-digital-booklet/studio", statuses: [307, 308], redirect: "manual" },
+  { route: "/podcasts", statuses: [200] },
+  { route: "/about", statuses: [200] },
+  { route: "/articles/getting-started-with-ai-learning", statuses: [200] },
+  { route: "/lessons/the-a-r-e-speaking-framework", statuses: [200] },
+  { route: "/podcasts/how-to-learn-with-ai-without-becoming-lazy", statuses: [200] },
 ];
 
 let failed = false;
 
-for (const route of routes) {
+for (const check of checks) {
+  const { route, statuses, redirect = "follow" } = check;
   const url = new URL(route, baseUrl).toString();
   try {
-    const response = await fetch(url, { method: "GET" });
-    const ok = response.status >= 200 && response.status < 400;
+    const response = await fetch(url, { method: "GET", redirect });
+    const ok = statuses.includes(response.status);
     console.log(`${ok ? "OK" : "FAIL"} ${response.status} ${url}`);
     if (!ok) failed = true;
   } catch (error) {
