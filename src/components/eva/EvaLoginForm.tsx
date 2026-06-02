@@ -32,8 +32,11 @@ export function EvaLoginForm({ error }: EvaLoginFormProps) {
         id="eva-passcode"
         name="passcode"
         type="password"
-        autoComplete="current-password"
+        autoComplete="off"
+        autoCapitalize="none"
+        spellCheck={false}
         required
+        suppressHydrationWarning
         className="mt-2 min-h-12 w-full rounded-[8px] border border-white/10 bg-slate-950/80 px-4 text-sm text-white outline-none transition placeholder:text-slate-600 focus:border-amber-300/60 focus:ring-2 focus:ring-amber-300/20"
         placeholder="••••••••"
       />
@@ -57,4 +60,3 @@ export function EvaLoginForm({ error }: EvaLoginFormProps) {
     </form>
   );
 }
-

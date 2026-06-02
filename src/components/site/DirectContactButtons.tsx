@@ -46,7 +46,7 @@ export function DirectContactButtons({
   className,
   showSecondary = true,
   primaryLabel = { en: "Message me directly", fa: "پیام مستقیم به من" },
-  primarySubLabel = { en: siteConfig.contact.telegram.handle, fa: siteConfig.contact.telegram.handle },
+  primarySubLabel = { en: "Telegram / direct message", fa: "تلگرام / پیام مستقیم" },
 }: DirectContactButtonsProps) {
   const isHero = variant === "hero";
   const isFooter = variant === "footer";

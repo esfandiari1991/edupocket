@@ -79,6 +79,8 @@ export const siteConfig = {
     "education technology",
     "language learning",
     "Blue Rose Academy",
+    "Eva Digital Booklet",
+    "digital English booklet",
   ],
   nav: [
     { href: "/", label: "Home", faLabel: "خانه" },

@@ -9,6 +9,7 @@ export function StructuredData() {
   const sameAs = [siteConfig.contact.telegram.href, siteConfig.contact.instagram.href, siteConfig.contact.bale.href];
   const logo = `${base}/icons/edupocket-mark.svg`;
   const primaryPages = [
+    { name: "Eva Digital Booklet", url: `${base}/eva-digital-booklet`, description: "EduPocket's first digital product: private IELTS and TOEFL-style reading and writing practice." },
     { name: "English Lab", url: `${base}/english-lab`, description: "Interactive English practice for grammar, vocabulary, reading, listening, writing, exams, and level checks." },
     { name: "Articles", url: `${base}/articles`, description: "Practical notes about AI learning, teaching systems, study habits, and technology." },
     { name: "Lessons", url: `${base}/lessons`, description: "Short micro-lessons for English, IELTS, TOEFL, study skills, and AI learning." },

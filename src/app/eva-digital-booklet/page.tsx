@@ -1,22 +1,73 @@
 import type { Metadata } from "next";
 import { EvaBookletGateway } from "@/components/eva/EvaBookletGateway";
+import { evaPublicOffer } from "@/lib/eva-public";
+import { siteConfig } from "@/lib/site";
+
+function safeJson(data: unknown) {
+  return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
+function EvaProductStructuredData() {
+  const base = siteConfig.canonicalUrl;
+  const pageUrl = `${base}/eva-digital-booklet`;
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "@id": `${pageUrl}#product`,
+    name: "Eva Digital Booklet",
+    description: evaPublicOffer.description.en,
+    image: `${base}/images/eva/eva-digital-booklet-study.jpg`,
+    url: pageUrl,
+    brand: {
+      "@type": "Brand",
+      name: siteConfig.name,
+    },
+    category: "Digital educational booklet",
+    audience: [
+      { "@type": "Audience", audienceType: "IELTS learners" },
+      { "@type": "Audience", audienceType: "TOEFL learners" },
+      { "@type": "Audience", audienceType: "English writing learners" },
+    ],
+    offers: {
+      "@type": "Offer",
+      url: pageUrl,
+      price: "4.99",
+      priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
+      seller: {
+        "@id": `${base}/#organization`,
+      },
+    },
+  };
+
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJson(data) }} />;
+}
 
 export const metadata: Metadata = {
   title: "Eva Digital Booklet",
-  description: "A private EduPocket digital booklet gateway for structured IELTS and TOEFL-style reading and writing practice.",
-  keywords: ["Eva Digital Booklet", "IELTS writing practice", "TOEFL reading practice", "private English booklet", "EduPocket"],
+  description: "EduPocket's first digital product: a private Eva Digital Booklet gateway for structured IELTS and TOEFL-style reading and writing practice.",
+  keywords: ["Eva Digital Booklet", "IELTS writing practice", "TOEFL reading practice", "private English booklet", "EduPocket", "digital English booklet"],
   alternates: {
     canonical: "/eva-digital-booklet",
   },
   openGraph: {
     title: "Eva Digital Booklet | EduPocket",
-    description: "A quiet private study portal for structured IELTS/TOEFL-style reading and writing practice.",
+    description: "EduPocket's first digital product: structured reading and writing practice in a private study portal.",
     url: "/eva-digital-booklet",
+    images: [
+      {
+        url: "/images/eva/eva-digital-booklet-study.jpg",
+        width: 1200,
+        height: 900,
+        alt: "Eva Digital Booklet study portal",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Eva Digital Booklet | EduPocket",
-    description: "A quiet private study portal for structured IELTS/TOEFL-style reading and writing practice.",
+    description: "EduPocket's first digital product: structured reading and writing practice in a private study portal.",
+    images: ["/images/eva/eva-digital-booklet-study.jpg"],
   },
 };
 
@@ -27,6 +78,10 @@ type EvaBookletPageProps = {
 export default async function EvaBookletPage({ searchParams }: EvaBookletPageProps) {
   const params = await searchParams;
 
-  return <EvaBookletGateway loginError={params.error} />;
+  return (
+    <>
+      <EvaProductStructuredData />
+      <EvaBookletGateway loginError={params.error} />
+    </>
+  );
 }
-

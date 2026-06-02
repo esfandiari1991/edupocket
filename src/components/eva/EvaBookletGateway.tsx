@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, LockKeyhole, MessageCircle, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, CheckCircle2, KeyRound, LockKeyhole, MessageCircle, ShieldCheck, Sparkles } from "lucide-react";
 import { Container } from "@/components/site/Container";
 import { EvaLoginForm } from "@/components/eva/EvaLoginForm";
 import { LocalizedText } from "@/components/site/LocalizedText";
@@ -61,6 +61,11 @@ export function EvaBookletGateway({ compact = false, loginError }: EvaBookletGat
                 <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
                   <LocalizedText en={evaPublicOffer.description.en} fa={evaPublicOffer.description.fa} />
                 </p>
+                {!compact ? (
+                  <p className="mt-3 max-w-xl text-xs font-semibold leading-5 text-amber-100/80">
+                    <LocalizedText en="Public preview. Private chapters stay protected." fa="پیش نمایش عمومی است؛ فصل ها خصوصی می مانند." />
+                  </p>
+                ) : null}
                 <div className="mt-6 flex flex-wrap gap-2">
                   {evaPublicOffer.included.map((item) => (
                     <span key={item.en} className="inline-flex items-center gap-2 rounded-[8px] border border-white/10 bg-white/[0.04] px-3 py-2 text-sm font-semibold text-slate-200">
@@ -77,7 +82,7 @@ export function EvaBookletGateway({ compact = false, loginError }: EvaBookletGat
                 </p>
                 <p className="mt-2 text-5xl font-semibold text-amber-100">{evaPublicOffer.price}</p>
                 <p className="mt-2 text-xs leading-5 text-slate-400">
-                  <LocalizedText en="Manual access. No online checkout." fa="دسترسی دستی. پرداخت آنلاین داخل سایت ندارد." />
+                  <LocalizedText en="Manual access through Telegram." fa="دسترسی دستی از طریق تلگرام." />
                 </p>
                 <a
                   href={siteConfig.contact.telegram.href}
@@ -88,25 +93,50 @@ export function EvaBookletGateway({ compact = false, loginError }: EvaBookletGat
                   <MessageCircle aria-hidden="true" className="size-4" />
                   <LocalizedText en="Message on Telegram" fa="پیام در تلگرام" />
                 </a>
+                <div className="mt-4 grid gap-2">
+                  {evaPublicOffer.updates.map((item, index) => (
+                    <div key={item.en} className="flex items-start gap-2 text-xs leading-5 text-slate-300">
+                      {index === 2 ? <LockKeyhole aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-amber-200" /> : <Sparkles aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-amber-200" />}
+                      <span>
+                        <LocalizedText en={item.en} fa={item.fa} />
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
-            <div className="grid gap-3 md:grid-cols-3">
-              {evaPublicOffer.updates.map((item, index) => (
-                <div
-                  key={item.en}
-                  className={cn(
-                    "rounded-[8px] border p-4 text-sm leading-6",
-                    index === 2 ? "border-amber-200/25 bg-amber-200/8 text-amber-100" : "border-white/10 bg-white/[0.035] text-slate-300",
-                  )}
-                >
-                  <div className="mb-3 flex size-9 items-center justify-center rounded-[8px] bg-white/[0.045] text-amber-200">
-                    {index === 2 ? <LockKeyhole aria-hidden="true" className="size-4" /> : <Sparkles aria-hidden="true" className="size-4" />}
-                  </div>
-                  <LocalizedText en={item.en} fa={item.fa} />
-                </div>
-              ))}
-            </div>
+            {!compact ? (
+              <div className="grid gap-3 md:grid-cols-3">
+                {evaPublicOffer.accessSteps.map((item, index) => {
+                  const icons = [MessageCircle, KeyRound, BookOpen];
+                  const Icon = icons[index] ?? ShieldCheck;
+
+                  return (
+                    <div key={item.en} className="rounded-[8px] border border-white/10 bg-white/[0.035] p-4 text-sm leading-6 text-slate-300">
+                      <div className="mb-3 flex items-center justify-between gap-3">
+                        <span className="flex size-9 items-center justify-center rounded-[8px] bg-amber-200/10 text-amber-200">
+                          <Icon aria-hidden="true" className="size-4" />
+                        </span>
+                        <span className="text-xs font-semibold text-slate-500">0{index + 1}</span>
+                      </div>
+                      <LocalizedText en={item.en} fa={item.fa} />
+                    </div>
+                  );
+                })}
+              </div>
+            ) : null}
+
+            {!compact ? (
+              <div className="flex flex-wrap gap-2">
+                {evaPublicOffer.trustSignals.map((item) => (
+                  <span key={item.en} className="inline-flex items-center gap-2 rounded-[8px] border border-white/10 bg-slate-950/38 px-3 py-2 text-xs font-semibold text-slate-300">
+                    <ShieldCheck aria-hidden="true" className="size-3.5 text-sky-200" />
+                    <LocalizedText en={item.en} fa={item.fa} />
+                  </span>
+                ))}
+              </div>
+            ) : null}
 
             {compact ? (
               <Link
