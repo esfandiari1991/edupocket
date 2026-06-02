@@ -116,7 +116,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en" dir="ltr" data-lang="en" suppressHydrationWarning>
-      <body className={`${manrope.variable} ${ibmPlexSansArabic.variable} ${vazirmatn.variable}`}>
+      <body className={`${manrope.variable} ${ibmPlexSansArabic.variable} ${vazirmatn.variable}`} suppressHydrationWarning>
         <LanguageBootScript />
         <StructuredData />
         <Navbar />

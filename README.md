@@ -4,6 +4,20 @@ EduPocket is Ali Rad's public educational content hub: practical notes, teaching
 
 The site is bilingual. Visitors can switch between English and Persian from the animated language slider in the header. It also includes an interactive English Lab for placement-style practice, skill drills, and lesson discovery.
 
+## Eva Digital Booklet
+
+The Eva Digital Booklet is EduPocket's first private digital-product portal. The public route is a premium gateway at `/eva-digital-booklet`; the study studio is protected at `/eva-digital-booklet/studio`.
+
+The studio content is generated from the full Eva workbook into `src/lib/eva-booklet.generated.json` and loaded through server-side code. It is not stored in `public/`.
+
+Local preview passcode in development:
+
+```text
+eva-local-preview
+```
+
+The Eva portal branch is local review only until final approval. Do not deploy, tag, push, or change Vercel/domain settings for this branch without explicit approval.
+
 ## Official local path
 
 ```text
@@ -64,6 +78,8 @@ The custom domain `https://edupocket.org` is attached in Vercel. It will serve t
 - `src/app`: routes, metadata, sitemap, robots, and page layouts
 - `src/components`: site, MDX, audio, and English Lab components
 - `src/lib`: site config, content loaders, utilities
+- `src/lib/eva-booklet.generated.json`: private generated Eva booklet database
+- `src/lib/eva-private-content.ts`: server-only Eva booklet access layer
 - `src/lib/english-lab.ts`: English Lab sample tests, prompts, and skill data
 - `src/lib/i18n.ts`: shared bilingual labels, date formatting, and content metadata helpers
 - `src/types`: shared content types
@@ -74,7 +90,7 @@ The custom domain `https://edupocket.org` is attached in Vercel. It will serve t
 - `public/covers`: future cover artwork
 - `public/icons`: icon assets
 - `public/images`: visual assets
-- `scripts`: content creation and route verification scripts
+- `scripts`: content creation, route verification, and Eva booklet import scripts
 - `legacy-static`: preserved previous static prototype
 
 ## Add content

@@ -73,6 +73,56 @@ Previous local prototype/workspace was found at /Users/ali/Documents/Claude/Proj
 - Twitter image route: `/twitter-image`
 - Manifest route: `/manifest.webmanifest`
 
+## Local Eva Digital Booklet portal
+
+- Branch: `codex/eva-digital-booklet-portal`
+- Status: local review only.
+- Deployment status for this branch: not deployed.
+- Vercel/domain/DNS status for this branch: unchanged.
+- Approval gate: production deployment happens only after final explicit approval.
+- Public gateway route: `/eva-digital-booklet`.
+- Protected studio route: `/eva-digital-booklet/studio`.
+- Development passcode fallback: `eva-local-preview`.
+- Private data location: `src/lib/eva-booklet.generated.json`, loaded through `src/lib/eva-private-content.ts`.
+- Private content public exposure: not stored in `public/`; unauthenticated `/eva-digital-booklet/studio` returns `307` to `/eva-digital-booklet`.
+- Import script: `scripts/import-eva-booklet.mjs`.
+- Imported content coverage:
+  - 298 workbook pages
+  - 12 chapters
+  - 590 answer fields
+  - 233 checkbox items
+  - 125 vocabulary cards
+  - 10 chapter reading labs
+  - 20 enrichment pages
+  - 12 chapter language labs
+- Product structure added:
+  - learning stacks
+  - chapter buttons
+  - page buttons
+  - skill filters
+  - page search
+  - related-page jumps
+  - local page completion
+  - local page notes
+  - Markdown export per page
+- Local QA on 2026-06-03:
+  - `pnpm lint`: passed
+  - `pnpm check`: passed
+  - `pnpm build`: passed
+  - `BASE_URL=http://localhost:3001 pnpm verify:routes`: passed
+  - wrong passcode redirects to `/eva-digital-booklet?error=passcode`
+  - correct development passcode sets a scoped `edupocket_eva_session` cookie
+  - public gateway leak check found no private workbook page text
+  - desktop and mobile Chrome/CDP viewport checks showed no horizontal overflow
+- Local QA screenshots:
+  - `/Users/ali/.codex/tmp/eva-booklet-real-data-qa/gateway-desktop.png`
+  - `/Users/ali/.codex/tmp/eva-booklet-real-data-qa/studio-desktop-foundation.png`
+  - `/Users/ali/.codex/tmp/eva-booklet-real-data-qa/studio-desktop-language-stack.png`
+  - `/Users/ali/.codex/tmp/eva-booklet-real-data-qa/studio-search-translation.png`
+  - `/Users/ali/.codex/tmp/eva-booklet-real-data-qa/studio-mobile.png`
+  - `/Users/ali/.codex/tmp/eva-booklet-real-data-qa/studio-mobile-scrolled.png`
+  - `/Users/ali/.codex/tmp/eva-booklet-real-data-qa/studio-mobile-content.png`
+
 ## Environment
 
 - Date/time: 2026-06-02 21:22:53 EEST

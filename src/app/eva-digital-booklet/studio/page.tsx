@@ -5,7 +5,7 @@ import { LogOut } from "lucide-react";
 import { Container } from "@/components/site/Container";
 import { EvaStudioExperience } from "@/components/eva/EvaStudioExperience";
 import { evaSessionCookieName, isValidEvaSessionToken } from "@/lib/eva-auth";
-import { evaChapters } from "@/lib/eva-private-content";
+import { evaBooklet } from "@/lib/eva-private-content";
 
 export const dynamic = "force-dynamic";
 
@@ -41,7 +41,7 @@ export default async function EvaBookletStudioPage() {
           </button>
         </form>
       </div>
-      <EvaStudioExperience chapters={evaChapters} />
+      <EvaStudioExperience booklet={evaBooklet} />
     </Container>
   );
 }
