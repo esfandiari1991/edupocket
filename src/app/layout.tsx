@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
-import { IBM_Plex_Sans_Arabic, Manrope, Vazirmatn } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { siteConfig } from "@/lib/site";
 import { Footer } from "@/components/site/Footer";
@@ -9,21 +9,27 @@ import { MobileContactDock } from "@/components/site/MobileContactDock";
 import { Navbar } from "@/components/site/Navbar";
 import { StructuredData } from "@/components/site/StructuredData";
 
-const manrope = Manrope({
-  subsets: ["latin"],
+const manrope = localFont({
+  src: "../assets/fonts/manrope-latin.woff2",
+  weight: "200 800",
   display: "swap",
   variable: "--font-latin",
 });
 
-const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
-  subsets: ["arabic"],
-  weight: ["400", "500", "600", "700"],
+const ibmPlexSansArabic = localFont({
+  src: [
+    { path: "../assets/fonts/ibm-plex-sans-arabic-400.woff2", weight: "400", style: "normal" },
+    { path: "../assets/fonts/ibm-plex-sans-arabic-500.woff2", weight: "500", style: "normal" },
+    { path: "../assets/fonts/ibm-plex-sans-arabic-600.woff2", weight: "600", style: "normal" },
+    { path: "../assets/fonts/ibm-plex-sans-arabic-700.woff2", weight: "700", style: "normal" },
+  ],
   display: "swap",
   variable: "--font-persian-display",
 });
 
-const vazirmatn = Vazirmatn({
-  subsets: ["arabic"],
+const vazirmatn = localFont({
+  src: "../assets/fonts/vazirmatn-arabic.woff2",
+  weight: "100 900",
   display: "swap",
   variable: "--font-persian",
 });

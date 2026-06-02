@@ -25,11 +25,11 @@ export default async function EvaBookletStudioPage() {
   if (!isValidEvaSessionToken(token)) redirect("/eva-digital-booklet");
 
   return (
-    <Container className="py-10 sm:py-12">
-      <div className="mb-6 flex flex-col gap-4 border-b border-white/10 pb-5 sm:flex-row sm:items-center sm:justify-between">
+    <Container className="py-8 sm:py-12">
+      <div className="mb-5 flex flex-col gap-4 border-b border-white/10 pb-5 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm font-semibold text-amber-200">Private access</p>
-          <h1 className="mt-2 text-3xl font-semibold leading-tight text-white sm:text-4xl">Eva Digital Booklet Studio</h1>
+          <h1 className="mt-2 text-2xl font-semibold leading-tight text-white sm:text-4xl">Eva Digital Booklet Studio</h1>
         </div>
         <form action="/eva-digital-booklet/logout" method="post">
           <button
@@ -45,4 +45,3 @@ export default async function EvaBookletStudioPage() {
     </Container>
   );
 }
-
