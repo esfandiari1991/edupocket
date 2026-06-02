@@ -10,6 +10,12 @@
   --accent: #fbbf24;
 }
 
+@property --eva-frame-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -879,33 +885,42 @@ html[data-lang="fa"] .motion-path::after {
 }
 
 .eva-premium-frame {
+  --eva-frame-angle: 0deg;
   position: relative;
   isolation: isolate;
-}
-
-.eva-premium-frame::before {
-  position: absolute;
-  inset: -1px;
-  z-index: 0;
-  padding: 1px;
-  border-radius: 9px;
-  background: conic-gradient(from 0deg, transparent 0 24%, rgba(251, 191, 36, 0.9) 30%, transparent 38% 100%);
-  content: "";
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  pointer-events: none;
-  animation: eva-frame-trace 8.5s linear infinite;
+  border-color: transparent;
+  background:
+    radial-gradient(circle at 9% 8%, rgba(250, 204, 21, 0.09), transparent 15rem) padding-box,
+    radial-gradient(circle at 92% 92%, rgba(125, 211, 252, 0.065), transparent 16rem) padding-box,
+    linear-gradient(135deg, rgba(24, 34, 29, 0.97), rgba(10, 34, 45, 0.96) 42%, rgba(8, 18, 31, 0.97)) padding-box,
+    conic-gradient(
+        from var(--eva-frame-angle),
+        rgba(251, 191, 36, 0.42) 0 14%,
+        rgba(255, 238, 168, 0.96) 22%,
+        rgba(186, 230, 253, 0.42) 29%,
+        rgba(251, 191, 36, 0.22) 38% 56%,
+        rgba(251, 191, 36, 0.74) 66%,
+        rgba(255, 247, 214, 0.9) 73%,
+        rgba(125, 211, 252, 0.3) 79%,
+        rgba(251, 191, 36, 0.34) 100%
+      )
+      border-box;
+  box-shadow:
+    0 0 0 1px rgba(250, 204, 21, 0.2),
+    0 28px 100px rgba(0, 0, 0, 0.28),
+    0 0 68px rgba(251, 191, 36, 0.105);
+  animation: eva-frame-gold 8.8s linear infinite;
 }
 
 .eva-premium-frame::after {
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: linear-gradient(110deg, transparent 0%, rgba(251, 191, 36, 0.08) 48%, transparent 62%);
+  background:
+    radial-gradient(circle at 9% 8%, rgba(250, 204, 21, 0.13), transparent 14rem),
+    radial-gradient(circle at 92% 92%, rgba(125, 211, 252, 0.075), transparent 16rem);
   content: "";
-  opacity: 0.78;
+  opacity: 0.82;
   pointer-events: none;
 }
 
@@ -1361,9 +1376,9 @@ html[data-lang="fa"] .motion-path::after {
   }
 }
 
-@keyframes eva-frame-trace {
+@keyframes eva-frame-gold {
   to {
-    transform: rotate(360deg);
+    --eva-frame-angle: 360deg;
   }
 }
 
@@ -1857,8 +1872,10 @@ html[data-lang="fa"] .prose-edupocket td {
   .motion-chip,
   .motion-answer-option,
   .motion-question-card,
+  .eva-premium-frame,
   .motion-portrait-card,
   .motion-view {
+    animation: none !important;
     transform: none !important;
   }
 }
