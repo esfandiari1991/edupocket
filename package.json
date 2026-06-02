@@ -1,6 +1,6 @@
 {
   "name": "edupocket",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "packageManager": "pnpm@10.28.2",
   "scripts": {
@@ -37,5 +37,10 @@
     "eslint-config-next": "latest",
     "tailwindcss": "latest",
     "typescript": "latest"
+  },
+  "pnpm": {
+    "overrides": {
+      "postcss": "8.5.15"
+    }
   }
 }

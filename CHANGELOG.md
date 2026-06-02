@@ -2,6 +2,11 @@
 
 All notable EduPocket production changes are tracked here.
 
+## 1.0.2 - 2026-06-02
+
+- Added a package-manager override to keep `postcss` on the patched `8.5.15` release.
+- Re-ran production domain checks for `edupocket.org` and `www.edupocket.org`.
+
 ## 1.0.1 - 2026-05-31
 
 - Added stronger EduPocket brand motion, hero visual signals, and a refreshed SVG mark.

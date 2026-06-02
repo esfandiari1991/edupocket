@@ -2,7 +2,7 @@
 
 ## Status
 
-Production build complete, committed, pushed to GitHub, deployed to Vercel, and verified live on the public Vercel project alias. Latest pass adds the final logo system, smoother unlock-style language slider, stronger tasteful motion, corrected collaboration CTA layout, and SEO hardening.
+Production build complete, committed, pushed to GitHub, deployed to Vercel, and verified live on the custom domain. Latest pass verifies `edupocket.org` and `www.edupocket.org`, confirms SSL, and adds a package-manager override for the patched `postcss` release.
 
 ## Local path
 
@@ -62,7 +62,7 @@ Previous local prototype/workspace was found at /Users/ali/Documents/Claude/Proj
 - Latest immutable deployment URL: `https://edupocket-ax22178bj-arads-projects-dad3a535.vercel.app` (Vercel authentication returns `401` on direct generated deployment URLs).
 - Verified public production alias: `https://edupocket-rho.vercel.app`.
 - Live route checks on `https://edupocket-rho.vercel.app`: `/`, `/articles`, `/lessons`, `/podcasts`, `/about`, `/english-lab`, `/sitemap.xml`, and `/robots.txt` returned `200`.
-- Custom domain status remains an external DNS handoff: Vercel aliased `edupocket.org` and `www.edupocket.org`, but the domain still needs DNS to point fully at Vercel before subroutes resolve there.
+- Custom domain status: `edupocket.org` and `www.edupocket.org` now resolve to Vercel and all required subroutes return `200`.
 
 ## Latest brand and SEO assets
 
@@ -75,7 +75,7 @@ Previous local prototype/workspace was found at /Users/ali/Documents/Claude/Proj
 
 ## Environment
 
-- Date/time: 2026-05-31 00:47:27 EEST
+- Date/time: 2026-06-02 21:22:53 EEST
 - Node: v25.5.0
 - npm: 11.8.0
 - pnpm: 10.28.2
@@ -100,11 +100,16 @@ vercel domains add edupocket.org
 vercel domains add www.edupocket.org
 vercel --prod --yes
 BASE_URL=https://edupocket-rho.vercel.app pnpm verify:routes
+BASE_URL=https://edupocket.org pnpm verify:routes
+BASE_URL=https://www.edupocket.org pnpm verify:routes
+pnpm audit --prod
 vercel inspect https://edupocket-ax22178bj-arads-projects-dad3a535.vercel.app
 vercel domains inspect edupocket.org
 vercel domains inspect www.edupocket.org
 dig +short edupocket.org
 dig +short www.edupocket.org
+/usr/bin/openssl s_client -servername edupocket.org -connect edupocket.org:443
+/usr/bin/openssl s_client -servername www.edupocket.org -connect www.edupocket.org:443
 /usr/bin/curl -I -L
 Google Chrome headless/CDP screenshots and viewport audits
 ```
@@ -121,6 +126,7 @@ Visual QA screenshots were captured with Google Chrome headless/CDP because the 
 - Motion QA: passed with reduced-motion handling, true 390px mobile emulation, and zero horizontal overflow in English and Persian
 - Language slider QA: passed with a longer unlock-style track, real drag interaction, desktop and 390px mobile checks, and no overflow
 - SEO routes: `/opengraph-image`, `/twitter-image`, `/manifest.webmanifest`, `/sitemap.xml`, and `/robots.txt` returned `200`
+- Security audit: passed with `No known vulnerabilities found`
 
 ## Local verification
 
@@ -175,6 +181,7 @@ Visual QA screenshots were captured with Google Chrome headless/CDP because the 
 - Latest contact copy commit: `50779cc`
 - Latest logo, animation, and SEO commit: `2251660`
 - Latest language slider interaction commit: `efe6464`
+- Latest domain and security verification release: `v1.0.2`
 - Vercel GitHub integration: connected during Vercel project linking.
 
 ## Vercel status
@@ -189,16 +196,37 @@ Visual QA screenshots were captured with Google Chrome headless/CDP because the 
 
 ## Production URL
 
-- Stable production alias: `https://edupocket-rho.vercel.app`
+- Stable production URL: `https://edupocket.org`
+- Verified `www` URL: `https://www.edupocket.org`
+- Stable Vercel alias: `https://edupocket-rho.vercel.app`
 - Latest immutable production deployment URL: `https://edupocket-kieazkufu-arads-projects-dad3a535.vercel.app`
 - Custom domain aliases added in Vercel: `https://edupocket.org`, `https://www.edupocket.org`
-- Custom domain DNS status: pending DNS update by the domain owner.
-- Generated deployment URLs currently return Vercel authentication (`401`) when visited directly. The public Vercel project alias below was verified and is the shareable live URL until custom DNS is updated.
+- Custom domain DNS status: verified on Vercel nameservers.
+- Generated deployment URLs may return Vercel authentication (`401`) when visited directly. The custom domain and public Vercel alias are verified and shareable.
 
 ## Live verification
 
-Verified with HTTP HEAD checks:
+Verified with route checks:
 
+- `200` `https://edupocket.org/`
+- `200` `https://edupocket.org/articles`
+- `200` `https://edupocket.org/lessons`
+- `200` `https://edupocket.org/english-lab`
+- `200` `https://edupocket.org/podcasts`
+- `200` `https://edupocket.org/about`
+- `200` `https://edupocket.org/articles/getting-started-with-ai-learning`
+- `200` `https://edupocket.org/lessons/the-a-r-e-speaking-framework`
+- `200` `https://edupocket.org/podcasts/how-to-learn-with-ai-without-becoming-lazy`
+- `200` `https://edupocket.org/sitemap.xml`
+- `200` `https://edupocket.org/robots.txt`
+- `200` `https://edupocket.org/opengraph-image`
+- `200` `https://edupocket.org/twitter-image`
+- `200` `https://www.edupocket.org/`
+- `200` `https://www.edupocket.org/articles`
+- `200` `https://www.edupocket.org/lessons`
+- `200` `https://www.edupocket.org/english-lab`
+- `200` `https://www.edupocket.org/podcasts`
+- `200` `https://www.edupocket.org/about`
 - `200` `https://edupocket-rho.vercel.app/`
 - `200` `https://edupocket-rho.vercel.app/english-lab`
 - `200` `https://edupocket-rho.vercel.app/articles`
@@ -217,23 +245,28 @@ Live language slider interaction was verified on `https://edupocket-rho.vercel.a
 
 Canonical sitemap/robots output was verified through the Vercel alias and now points to `https://edupocket.org` without path-breaking whitespace.
 
-Custom domain check before DNS update:
+Custom domain check after DNS update:
 
-- `https://edupocket.org/` currently resolves to `5.144.130.116`; the homepage returns `200`, but subroutes like `/articles` return `404`, so it is not serving the Vercel app correctly yet.
-- `https://www.edupocket.org/` currently resolves through the same non-Vercel apex target.
-- `vercel domains inspect edupocket.org` reports the domain is attached to the Vercel project but not configured properly until DNS is updated.
+- Superseded. DNS now resolves through Vercel and both apex plus `www` return required routes with `200`.
 
-Vercel is ready for the custom domain, but the domain's DNS must be pointed to Vercel before the full site resolves on `edupocket.org`.
+SSL check:
 
-## Custom domain handoff
+- Certificate subject: `CN=*.edupocket.org`
+- Issuer: Let's Encrypt `YR2`
+- Valid from: 2026-06-02
+- Valid until: 2026-08-31
+- Subject alternative names: `*.edupocket.org`, `edupocket.org`
 
-Vercel CLI added both `edupocket.org` and `www.edupocket.org` to the project. The owner must now update DNS with one of these options:
+## Custom domain status
 
-- Recommended record option from Vercel CLI: add `A edupocket.org 76.76.21.21` and `A www.edupocket.org 76.76.21.21`.
-- Nameserver option: change the domain nameservers to `ns1.vercel-dns.com` and `ns2.vercel-dns.com`.
+Vercel CLI shows the domain is attached to the project and using Vercel nameservers:
 
-After DNS propagation, rerun `vercel domains inspect edupocket.org`, `vercel domains inspect www.edupocket.org`, and live route checks on `https://edupocket.org`.
+- Domain: `edupocket.org`
+- Registrar: third party
+- Nameservers: Vercel
+- Project: `edupocket`
+- Latest production URL: `https://edupocket.org`
 
 ## Blockers
 
-Custom domain DNS is the only remaining external handoff step.
+No active production blockers found.
