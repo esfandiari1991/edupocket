@@ -125,9 +125,11 @@ export function LanguageToggle({ className }: LanguageToggleProps) {
         aria-pressed={language === "fa"}
         onClick={(event) => handleButtonClick("fa", event)}
         className={cn(
-          "relative z-10 min-h-10 rounded-[6px] px-2 transition sm:px-3",
+          "language-toggle-fa relative z-10 min-h-10 rounded-[6px] px-2 transition sm:px-3",
           language === "fa" ? "text-slate-950" : "text-slate-300 hover:text-white",
         )}
+        lang="fa"
+        dir="rtl"
       >
         فارسی
       </button>

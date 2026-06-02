@@ -228,6 +228,16 @@ html[data-lang="en"] .lang-fa {
   cursor: inherit;
 }
 
+.language-toggle-fa {
+  font-family:
+    var(--font-persian-display), var(--font-persian), var(--font-latin), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1;
+  text-rendering: optimizeLegibility;
+}
+
 .motion-logo-mark {
   position: relative;
   transition:
