@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, BookOpen, CheckCircle2, KeyRound, LockKeyhole, MessageCircle, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, CheckCircle2, FileText, KeyRound, Layers3, LockKeyhole, MessageCircle, PenLine, ShieldCheck, Sparkles } from "lucide-react";
 import { Container } from "@/components/site/Container";
 import { EvaLoginForm } from "@/components/eva/EvaLoginForm";
 import { LocalizedText } from "@/components/site/LocalizedText";
@@ -24,29 +24,64 @@ export function EvaBookletGateway({ compact = false, loginError }: EvaBookletGat
       )}
     >
       <Container>
-        <div className="eva-premium-frame motion-view grid gap-6 overflow-hidden rounded-[8px] border border-amber-200/20 bg-[linear-gradient(135deg,rgba(251,191,36,0.13),rgba(14,165,233,0.08)_42%,rgba(255,255,255,0.035))] p-4 shadow-[0_28px_100px_rgba(0,0,0,0.28)] sm:p-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-stretch lg:p-7">
-          <div className="relative min-h-[18rem] overflow-hidden rounded-[8px] border border-white/10 bg-slate-950/50 sm:min-h-[24rem] lg:min-h-full">
-            <Image
-              src="/images/eva/eva-digital-booklet-study.jpg"
-              alt="Eva studying in the digital booklet portal"
-              fill
-              priority
-              unoptimized
-              className="object-cover object-[50%_42%] saturate-[0.95]"
-              sizes="(min-width: 1024px) 43vw, 100vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/78 via-slate-950/8 to-transparent" />
-            <div className="absolute bottom-4 left-4 right-4 rounded-[8px] border border-white/10 bg-slate-950/68 p-3 backdrop-blur-md">
-              <p className="text-sm font-semibold text-amber-100">
-                <LocalizedText en="Reading + Writing Core" fa="هسته ریدینگ + رایتینگ" />
-              </p>
-              <p className="mt-1 text-xs leading-5 text-slate-300">
-                <LocalizedText en="A focused study portal, not a crowded course shelf." fa="یک پرتال متمرکز، نه قفسه شلوغ دوره ها." />
-              </p>
+        <div className="eva-premium-frame motion-view grid gap-6 overflow-hidden rounded-[8px] border border-amber-200/20 p-4 shadow-[0_28px_100px_rgba(0,0,0,0.28)] sm:p-6 lg:grid-cols-[0.72fr_1.28fr] lg:items-stretch lg:p-7">
+          <div className="relative order-2 min-h-[18rem] overflow-hidden rounded-[8px] border border-white/10 bg-[radial-gradient(circle_at_18%_16%,rgba(251,191,36,0.16),transparent_12rem),linear-gradient(145deg,rgba(6,17,31,0.74),rgba(15,31,39,0.82))] p-4 sm:min-h-[22rem] sm:p-5 lg:order-1 lg:min-h-full">
+            <div className="absolute inset-x-6 top-8 h-px bg-gradient-to-r from-transparent via-amber-200/46 to-transparent" />
+            <div className="absolute bottom-8 left-7 top-8 w-px bg-gradient-to-b from-amber-200/30 via-sky-200/18 to-transparent" />
+            <div className="relative flex h-full min-h-[16rem] flex-col justify-between gap-4">
+              <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_8rem] sm:items-start">
+                <div className="rounded-[8px] border border-amber-100/16 bg-slate-950/48 p-4 shadow-[0_20px_64px_rgba(0,0,0,0.22)] backdrop-blur-sm">
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="flex size-10 items-center justify-center rounded-[8px] bg-amber-200/10 text-amber-200">
+                      <Layers3 aria-hidden="true" className="size-5" />
+                    </span>
+                    <span className="text-xs font-semibold text-amber-100/72">01</span>
+                  </div>
+                  <p className="mt-5 text-sm font-semibold text-amber-100">
+                    <LocalizedText en="Digital booklet system" fa="سیستم جزوه دیجیتال" />
+                  </p>
+                  <p className="mt-2 text-xs leading-5 text-slate-300">
+                    <LocalizedText en="A private chapter map for serious reading and writing practice." fa="نقشه فصل های خصوصی برای تمرین جدی ریدینگ و رایتینگ." />
+                  </p>
+                </div>
+
+                <div className="relative mx-auto w-28 overflow-hidden rounded-[8px] border border-white/15 bg-slate-950/62 shadow-[0_18px_56px_rgba(0,0,0,0.32)] sm:mx-0 sm:w-32">
+                  <Image
+                    src="/images/eva/eva-digital-booklet-study.jpg"
+                    alt="Eva studying in the digital booklet portal"
+                    width={920}
+                    height={824}
+                    priority
+                    unoptimized
+                    className="aspect-[5/6] w-full object-cover object-[50%_38%] saturate-[0.96]"
+                    sizes="8rem"
+                  />
+                  <div className="absolute inset-0 rounded-[8px] ring-1 ring-inset ring-white/10" />
+                </div>
+              </div>
+
+              <div className="grid gap-2">
+                {[
+                  { icon: BookOpen, en: "Reading lab", fa: "لابراتوار ریدینگ" },
+                  { icon: PenLine, en: "Writing studio", fa: "استودیوی رایتینگ" },
+                  { icon: FileText, en: "Weekly updates", fa: "آپدیت های هفتگی" },
+                ].map((item) => {
+                  const Icon = item.icon;
+
+                  return (
+                    <div key={item.en} className="flex items-center gap-3 rounded-[8px] border border-white/10 bg-white/[0.035] px-3 py-2.5 text-xs font-semibold text-slate-300">
+                      <Icon aria-hidden="true" className="size-4 shrink-0 text-amber-200" />
+                      <span className="min-w-0">
+                        <LocalizedText en={item.en} fa={item.fa} />
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
-          <div className="grid gap-5">
+          <div className="order-1 grid gap-5 lg:order-2">
             <div className="grid gap-5 lg:grid-cols-[1fr_17rem]">
               <div>
                 {compact ? (
