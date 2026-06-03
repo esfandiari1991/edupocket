@@ -29,7 +29,7 @@ export function EvaBookletGateway({ compact = false, loginError }: EvaBookletGat
             <div className="absolute inset-x-6 top-8 h-px bg-gradient-to-r from-transparent via-amber-200/46 to-transparent" />
             <div className="absolute bottom-8 left-7 top-8 w-px bg-gradient-to-b from-amber-200/30 via-sky-200/18 to-transparent" />
             <div className="relative flex h-full min-h-[16rem] flex-col justify-between gap-4">
-              <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_8rem] sm:items-start">
+              <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_6.25rem] sm:items-start">
                 <div className="rounded-[8px] border border-amber-100/16 bg-slate-950/48 p-4 shadow-[0_20px_64px_rgba(0,0,0,0.22)] backdrop-blur-sm">
                   <div className="flex items-center justify-between gap-4">
                     <span className="flex size-10 items-center justify-center rounded-[8px] bg-amber-200/10 text-amber-200">
@@ -41,22 +41,28 @@ export function EvaBookletGateway({ compact = false, loginError }: EvaBookletGat
                     <LocalizedText en="Digital booklet system" fa="سیستم جزوه دیجیتال" />
                   </p>
                   <p className="mt-2 text-xs leading-5 text-slate-300">
-                    <LocalizedText en="A private chapter map for serious reading and writing practice." fa="نقشه فصل های خصوصی برای تمرین جدی ریدینگ و رایتینگ." />
+                    <LocalizedText en="A premium chapter map for serious reading and writing practice." fa="نقشه فصل های پریمیوم برای تمرین جدی ریدینگ و رایتینگ." />
                   </p>
                 </div>
 
-                <div className="relative mx-auto w-28 overflow-hidden rounded-[8px] border border-white/15 bg-slate-950/62 shadow-[0_18px_56px_rgba(0,0,0,0.32)] sm:mx-0 sm:w-32">
-                  <Image
-                    src="/images/eva/eva-digital-booklet-study.jpg"
-                    alt="Eva studying in the digital booklet portal"
-                    width={920}
-                    height={824}
-                    priority
-                    unoptimized
-                    className="aspect-[5/6] w-full object-cover object-[50%_38%] saturate-[0.96]"
-                    sizes="8rem"
-                  />
-                  <div className="absolute inset-0 rounded-[8px] ring-1 ring-inset ring-white/10" />
+                <div className="relative mx-auto w-20 sm:mx-0 sm:w-24">
+                  <div className="absolute -inset-1 rounded-[10px] bg-[conic-gradient(from_150deg,rgba(251,191,36,0.7),rgba(125,211,252,0.18),rgba(251,191,36,0.42),rgba(15,23,42,0.2))] opacity-70 blur-[2px]" />
+                  <div className="relative overflow-hidden rounded-[8px] border border-amber-100/18 bg-slate-950/70 shadow-[0_18px_48px_rgba(0,0,0,0.34)]">
+                    <Image
+                      src="/images/eva/eva-digital-booklet-study.jpg"
+                      alt="Premium member studying inside the Eva Digital Booklet portal"
+                      width={360}
+                      height={360}
+                      priority
+                      quality={90}
+                      className="aspect-square w-full object-cover object-[50%_36%] contrast-[1.04] saturate-[1.02]"
+                      sizes="8rem"
+                    />
+                    <div className="absolute inset-0 rounded-[8px] ring-1 ring-inset ring-white/12" />
+                  </div>
+                  <div className="relative mt-2 rounded-[6px] border border-white/10 bg-slate-950/52 px-2 py-1 text-center text-[10px] font-semibold leading-4 text-amber-100/80">
+                    <LocalizedText en="Premium learner" fa="زبان‌آموز پریمیوم" />
+                  </div>
                 </div>
               </div>
 
@@ -98,7 +104,7 @@ export function EvaBookletGateway({ compact = false, loginError }: EvaBookletGat
                 </p>
                 {!compact ? (
                   <p className="mt-3 max-w-xl text-xs font-semibold leading-5 text-amber-100/80">
-                    <LocalizedText en="Public preview. Private chapters stay protected." fa="پیش نمایش عمومی است؛ فصل ها خصوصی می مانند." />
+                    <LocalizedText en="Public preview. Premium chapters stay protected." fa="پیش نمایش عمومی است؛ فصل های پریمیوم محافظت می‌شوند." />
                   </p>
                 ) : null}
                 <div className="mt-6 flex flex-wrap gap-2">
