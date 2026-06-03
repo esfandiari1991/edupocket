@@ -1,4 +1,5 @@
 import type { EvaBooklet, EvaBookletPage } from "@/lib/eva-private-content";
+import { evaMaterialItems, evaSupplementalExamTasks } from "@/lib/eva-materials";
 import { evaGrammarModules, evaLexicalResource, evaQuizQuestions, evaReligiousModules } from "@/lib/eva-studio-curriculum";
 
 export type EvaUserId = "ali" | "eva" | "elham";
@@ -35,10 +36,12 @@ export type EvaLearningActivityKind =
   | "grammar"
   | "lexical"
   | "religious-context"
+  | "listening"
   | "translation"
   | "pronunciation"
   | "quiz"
   | "exam-mode"
+  | "teacher-feedback"
   | "review";
 
 export type EvaLearningActivity = {
@@ -111,6 +114,8 @@ export type EvaStoredStudioState = {
   activeLexicalId?: string;
   activeQuizTrack?: string;
   activeExamId?: string;
+  activeMaterialTrack?: string;
+  activeMaterialId?: string;
   done: Record<string, boolean>;
   moduleDone: Record<string, boolean>;
   notes: Record<string, string>;
@@ -313,6 +318,19 @@ function firstReadableText(page: EvaBookletPage) {
 }
 
 export function buildEvaLearningDatabase(booklet: EvaBooklet): EvaLearningDatabase {
+  const supplementalExamTasks: EvaExamTask[] = evaSupplementalExamTasks.map((task) => ({
+    id: task.id,
+    exam: task.exam as "IELTS" | "TOEFL",
+    skill: task.skill as "reading" | "writing",
+    title: task.title,
+    level: task.level,
+    timeLimitMinutes: task.timeLimitMinutes,
+    passage: task.passage,
+    prompt: task.prompt,
+    rubric: task.rubric,
+    questions: task.questions,
+  }));
+  const allExamTasks = [...evaExamModeTasks, ...supplementalExamTasks];
   const pageActivities: EvaLearningActivity[] = booklet.pages.map((page) => ({
     id: `activity-${page.id}`,
     kind: activityKindForPage(page),
@@ -352,7 +370,31 @@ export function buildEvaLearningDatabase(booklet: EvaBooklet): EvaLearningDataba
     trackableSignals: ["TTS listened", "TTS repeated", "shadowing", "pronunciation mastered"],
   }));
 
-  const examActivities: EvaLearningActivity[] = evaExamModeTasks.map((task) => ({
+  const materialActivities: EvaLearningActivity[] = evaMaterialItems.map((item) => ({
+    id: `material-${item.id}`,
+    kind:
+      item.track === "reading"
+        ? "reading"
+        : item.track === "writing"
+          ? "writing"
+          : item.track === "listening"
+            ? "listening"
+            : item.track === "pronunciation"
+              ? "pronunciation"
+              : "teacher-feedback",
+    title: item.title,
+    sourcePageIds: booklet.pages
+      .filter((page) => item.sourceTypeTargets.includes(page.type))
+      .slice(0, 14)
+      .map((page) => page.id),
+    skillTargets: [item.exam, item.skill, item.track, ...item.tags],
+    levelTargets: [item.level],
+    estimatedMinutes: item.timeLimitMinutes,
+    scoringMode: item.questions.length ? "answer-key" : item.track === "writing" || item.track === "teacher" ? "teacher-review" : "completion",
+    trackableSignals: ["material completion", "material question answers", "writing draft", "TTS listened", "TTS repeated", "review queue"],
+  }));
+
+  const examActivities: EvaLearningActivity[] = allExamTasks.map((task) => ({
     id: `exam-${task.id}`,
     kind: "exam-mode",
     title: task.title,
@@ -372,11 +414,21 @@ export function buildEvaLearningDatabase(booklet: EvaBooklet): EvaLearningDataba
     answerIndex: question.answerIndex,
   }));
 
-  const examQuestions = evaExamModeTasks.flatMap((task) =>
+  const examQuestions = allExamTasks.flatMap((task) =>
     task.questions.map((question) => ({
       id: question.id,
       activityId: `exam-${task.id}`,
       track: `${task.exam}-${task.skill}`,
+      prompt: question.prompt,
+      answerIndex: question.answerIndex,
+    })),
+  );
+
+  const materialQuestions = evaMaterialItems.flatMap((item) =>
+    item.questions.map((question) => ({
+      id: `material-${item.id}-${question.id}`,
+      activityId: `material-${item.id}`,
+      track: `${item.exam}-${item.skill}`,
       prompt: question.prompt,
       answerIndex: question.answerIndex,
     })),
@@ -403,7 +455,7 @@ export function buildEvaLearningDatabase(booklet: EvaBooklet): EvaLearningDataba
       speedDefault: 0.78,
       pronunciationFocus: item.pronunciationTip,
     })),
-    ...evaExamModeTasks
+    ...allExamTasks
       .filter((task) => task.passage)
       .map((task) => ({
         id: `tts-exam-${task.id}`,
@@ -413,6 +465,18 @@ export function buildEvaLearningDatabase(booklet: EvaBooklet): EvaLearningDataba
         locale: "en" as const,
         voiceHint: "exam-reader" as const,
         speedDefault: 0.9,
+      })),
+    ...evaMaterialItems
+      .filter((item) => item.ttsScript || item.passage || item.prompt)
+      .map((item) => ({
+        id: `tts-material-${item.id}`,
+        activityId: `material-${item.id}`,
+        title: `${item.title} material script`,
+        text: item.ttsScript ?? item.passage ?? item.prompt ?? item.summary,
+        locale: "en" as const,
+        voiceHint: item.track === "pronunciation" ? ("pronunciation-coach" as const) : item.track === "reading" ? ("exam-reader" as const) : ("calm-teacher" as const),
+        speedDefault: item.track === "pronunciation" ? 0.76 : item.track === "listening" ? 0.84 : 0.9,
+        pronunciationFocus: item.track === "pronunciation" ? item.summary : undefined,
       })),
   ];
 
@@ -461,10 +525,17 @@ export function buildEvaLearningDatabase(booklet: EvaBooklet): EvaLearningDataba
         type: "lexical-pronunciation",
         tags: item.tags,
       })),
+      ...evaMaterialItems.map((item) => ({
+        id: `item-${item.id}`,
+        activityId: `material-${item.id}`,
+        title: item.title,
+        type: `material-${item.track}`,
+        tags: [item.exam, item.skill, item.level, ...item.tags],
+      })),
     ],
-    activities: [...pageActivities, ...moduleActivities, ...lexicalActivities, ...examActivities],
-    questions: [...quizQuestions, ...examQuestions],
+    activities: [...pageActivities, ...moduleActivities, ...lexicalActivities, ...materialActivities, ...examActivities],
+    questions: [...quizQuestions, ...examQuestions, ...materialQuestions],
     ttsSegments,
-    examTasks: evaExamModeTasks,
+    examTasks: allExamTasks,
   };
 }

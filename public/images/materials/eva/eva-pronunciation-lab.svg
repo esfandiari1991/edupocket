@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">Eva Pronunciation Lab</title>
+  <desc id="desc">A visual model for listen, repeat, shadow, and master pronunciation practice.</desc>
+  <rect width="1280" height="720" rx="36" fill="#050b16"/>
+  <g opacity=".55">
+    <path d="M116 520 C238 436 292 610 416 520 S596 430 714 520 914 612 1048 512" fill="none" stroke="#38bdf8" stroke-width="7" stroke-linecap="round"/>
+    <path d="M116 470 C236 386 318 560 444 470 S608 368 734 470 922 560 1048 460" fill="none" stroke="#fbbf24" stroke-width="5" stroke-linecap="round"/>
+  </g>
+  <g font-family="Manrope, Inter, Arial, sans-serif">
+    <text x="86" y="104" fill="#ffffff" font-size="48" font-weight="850">Pronunciation Lab</text>
+    <text x="88" y="146" fill="#9fb0c4" font-size="22">Listen once. Repeat twice. Shadow in a sentence.</text>
+    <g transform="translate(110 232)">
+      <circle cx="118" cy="118" r="112" fill="#0d1726" stroke="#26384f"/>
+      <path d="M90 82 L90 154 L156 118 Z" fill="#fbbf24"/>
+      <text x="118" y="288" text-anchor="middle" fill="#ffffff" font-size="28" font-weight="850">Listen</text>
+      <text x="118" y="322" text-anchor="middle" fill="#9fb0c4" font-size="18">hear stress</text>
+    </g>
+    <g transform="translate(400 232)">
+      <circle cx="118" cy="118" r="112" fill="#0d1726" stroke="#26384f"/>
+      <path d="M74 118 C96 70 140 70 162 118 C140 166 96 166 74 118 Z" fill="none" stroke="#7dd3fc" stroke-width="12"/>
+      <text x="118" y="288" text-anchor="middle" fill="#ffffff" font-size="28" font-weight="850">Repeat</text>
+      <text x="118" y="322" text-anchor="middle" fill="#9fb0c4" font-size="18">control sound</text>
+    </g>
+    <g transform="translate(690 232)">
+      <circle cx="118" cy="118" r="112" fill="#0d1726" stroke="#26384f"/>
+      <path d="M66 128 C98 74 138 74 170 128" fill="none" stroke="#fbbf24" stroke-width="11" stroke-linecap="round"/>
+      <path d="M66 156 C98 104 138 104 170 156" fill="none" stroke="#38bdf8" stroke-width="9" stroke-linecap="round"/>
+      <text x="118" y="288" text-anchor="middle" fill="#ffffff" font-size="28" font-weight="850">Shadow</text>
+      <text x="118" y="322" text-anchor="middle" fill="#9fb0c4" font-size="18">match rhythm</text>
+    </g>
+    <g transform="translate(980 232)">
+      <circle cx="118" cy="118" r="112" fill="#0d1726" stroke="#26384f"/>
+      <path d="M72 121 L104 153 L168 85" fill="none" stroke="#fbbf24" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="118" y="288" text-anchor="middle" fill="#ffffff" font-size="28" font-weight="850">Master</text>
+      <text x="118" y="322" text-anchor="middle" fill="#9fb0c4" font-size="18">use in context</text>
+    </g>
+  </g>
+</svg>

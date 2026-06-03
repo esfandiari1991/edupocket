@@ -1,5 +1,6 @@
 "use client";
 
+import NextImage from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import {
   BarChart3,
@@ -14,9 +15,11 @@ import {
   Gauge,
   GraduationCap,
   Headphones,
+  LibraryBig,
   ListChecks,
   Layers3,
   LockKeyhole,
+  Mic2,
   NotebookPen,
   Play,
   PenLine,
@@ -41,6 +44,14 @@ import {
   type EvaStoredStudioState,
   type EvaUserId,
 } from "@/lib/eva-learning-db";
+import {
+  evaMaterialCollections,
+  evaMaterialItems,
+  evaMaterialSourcePolicy,
+  evaMaterialStats,
+  type EvaMaterialItem,
+  type EvaMaterialTrack,
+} from "@/lib/eva-materials";
 import {
   evaGrammarModules,
   evaLexicalResource,
@@ -184,13 +195,14 @@ const studyRoutes: StudyRoute[] = [
   },
 ];
 
-type PremiumTabId = "overview" | EvaStudioTrack | "quiz" | "exam" | "vault";
+type PremiumTabId = "overview" | EvaStudioTrack | "materials" | "quiz" | "exam" | "vault";
 
 const premiumTabs: Array<{ id: PremiumTabId; title: string; description: string }> = [
   { id: "overview", title: "Use model", description: "How the studio should be worked." },
   { id: "grammar", title: "Grammar Atlas", description: "10 accuracy chapters." },
   { id: "religious", title: "Religious Context", description: "10 meaning chapters." },
   { id: "lexical", title: "Pronunciation Lab", description: "Lexis, stress, IPA, and shadowing." },
+  { id: "materials", title: "Material Library", description: "Original packs and TTS scripts." },
   { id: "quiz", title: "Quiz & Review", description: "Track mastery signals." },
   { id: "exam", title: "Exam Mode", description: "Timed IELTS/TOEFL practice." },
   { id: "vault", title: "Writing Vault", description: "Saved drafts and teacher notes." },
@@ -286,6 +298,8 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
   const [activeLexicalId, setActiveLexicalId] = useState(evaLexicalResource[0]?.id ?? "");
   const [activeQuizTrack, setActiveQuizTrack] = useState<EvaStudioTrack>("grammar");
   const [activeExamId, setActiveExamId] = useState("ielts-reading-ministry-planning");
+  const [activeMaterialTrack, setActiveMaterialTrack] = useState<EvaMaterialTrack>("reading");
+  const [activeMaterialId, setActiveMaterialId] = useState(evaMaterialCollections[0]?.items[0]?.id ?? "");
   const [activeTeacherTargetId, setActiveTeacherTargetId] = useState<EvaUserId>("eva");
   const [skillFilter, setSkillFilter] = useState("All");
   const [query, setQuery] = useState("");
@@ -325,6 +339,8 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
           setActiveLexicalId(parsed.activeLexicalId ?? evaLexicalResource[0]?.id ?? "");
           setActiveQuizTrack((parsed.activeQuizTrack as EvaStudioTrack | undefined) ?? "grammar");
           setActiveExamId(parsed.activeExamId ?? learningDatabase.examTasks[0]?.id ?? "");
+          setActiveMaterialTrack((parsed.activeMaterialTrack as EvaMaterialTrack | undefined) ?? "reading");
+          setActiveMaterialId(parsed.activeMaterialId ?? evaMaterialCollections[0]?.items[0]?.id ?? "");
           setDone(parsed.done);
           setModuleDone(parsed.moduleDone);
           setNotes(parsed.notes);
@@ -367,6 +383,8 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
       activeLexicalId,
       activeQuizTrack,
       activeExamId,
+      activeMaterialTrack,
+      activeMaterialId,
       done,
       moduleDone,
       notes,
@@ -384,6 +402,8 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
   }, [
     activeChapterId,
     activeExamId,
+    activeMaterialId,
+    activeMaterialTrack,
     activeLaneId,
     activeLexicalId,
     activeModuleId,
@@ -523,20 +543,41 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
     [activeLexicalId],
   );
   const activeQuizQuestions = useMemo(() => evaQuizQuestions.filter((question) => question.track === activeQuizTrack), [activeQuizTrack]);
+  const activeMaterialCollection = useMemo(
+    () => evaMaterialCollections.find((collection) => collection.id === activeMaterialTrack) ?? evaMaterialCollections[0]!,
+    [activeMaterialTrack],
+  );
+  const activeMaterial = useMemo(() => {
+    const activeCollectionIds = new Set(activeMaterialCollection.items.map((item) => item.id));
+    if (!activeCollectionIds.has(activeMaterialId)) return activeMaterialCollection.items[0] ?? evaMaterialItems[0]!;
+    return evaMaterialItems.find((item) => item.id === activeMaterialId) ?? activeMaterialCollection.items[0] ?? evaMaterialItems[0]!;
+  }, [activeMaterialCollection, activeMaterialId]);
+  const materialTitleMap = useMemo(() => new Map(evaMaterialItems.map((item) => [item.id, item.title])), []);
   const answeredQuizQuestions = evaQuizQuestions.filter((question) => quizAnswers[question.id] !== undefined);
   const correctQuizQuestions = answeredQuizQuestions.filter((question) => quizAnswers[question.id] === question.answerIndex);
-  const reviewPageIds = Object.entries(reviewQueue)
+  const reviewItemIds = Object.entries(reviewQueue)
     .filter(([, queued]) => queued)
     .map(([pageId]) => pageId);
-  const reviewPages = reviewPageIds
+  const reviewMaterialItems = reviewItemIds
+    .map((itemId) => evaMaterialItems.find((item) => item.id === itemId))
+    .filter((item): item is EvaMaterialItem => Boolean(item));
+  const reviewPages = reviewItemIds
     .map((pageId) => booklet.pages.find((page) => page.id === pageId))
     .filter((page): page is EvaBookletPage => Boolean(page));
+  const reviewQueueCount = reviewPages.length + reviewMaterialItems.length;
   const completedPremiumModules = evaSkillModules.filter((module) => moduleDone[module.id]).length;
+  const completedMaterials = evaMaterialItems.filter((item) => done[item.id]).length;
+  const materialQuestionCount = evaMaterialItems.reduce((total, item) => total + item.questions.length, 0);
+  const materialCorrectCount = evaMaterialItems.reduce(
+    (total, item) => total + item.questions.filter((question) => examAnswers[`${item.id}:${question.id}`] === question.answerIndex).length,
+    0,
+  );
   const completedPronunciations = evaLexicalResource.filter((item) => pronunciationDone[item.id]).length;
   const studioMastery = Math.round(
     ((booklet.pages.filter((page) => done[page.id]).length / Math.max(booklet.pages.length, 1)) * 0.45 +
-      (completedPremiumModules / Math.max(evaSkillModules.length, 1)) * 0.25 +
-      (correctQuizQuestions.length / Math.max(evaQuizQuestions.length, 1)) * 0.2 +
+      (completedPremiumModules / Math.max(evaSkillModules.length, 1)) * 0.2 +
+      (completedMaterials / Math.max(evaMaterialItems.length, 1)) * 0.1 +
+      (correctQuizQuestions.length / Math.max(evaQuizQuestions.length, 1)) * 0.15 +
       (completedPronunciations / Math.max(evaLexicalResource.length, 1)) * 0.1) *
       100,
   );
@@ -588,6 +629,8 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
     for (const pageId of Object.keys(reviewQueue).filter((id) => reviewQueue[id])) {
       const page = booklet.pages.find((item) => item.id === pageId);
       page?.skillTags.slice(0, 5).forEach((skill) => add(skill));
+      const material = evaMaterialItems.find((item) => item.id === pageId);
+      material?.tags.slice(0, 4).forEach((skill) => add(skill));
     }
 
     for (const question of evaQuizQuestions) {
@@ -599,6 +642,13 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
       for (const question of task.questions) {
         const selected = examAnswers[`${task.id}:${question.id}`];
         if (selected !== undefined && selected !== question.answerIndex) add(`${task.exam} ${task.skill}`, 2);
+      }
+    }
+
+    for (const item of evaMaterialItems) {
+      for (const question of item.questions) {
+        const selected = examAnswers[`${item.id}:${question.id}`];
+        if (selected !== undefined && selected !== question.answerIndex) add(`${item.exam} ${item.skill}`, 2);
       }
     }
 
@@ -621,6 +671,12 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
   const writingVaultEntries = Object.entries(writingDrafts).filter(([, value]) => value.trim().length > 0);
   const activeExamAnswered = activeExamTask.questions.filter((question) => examAnswers[`${activeExamTask.id}:${question.id}`] !== undefined);
   const activeExamCorrect = activeExamTask.questions.filter((question) => answeredCorrectly(examAnswers[`${activeExamTask.id}:${question.id}`], question.answerIndex));
+  const activeMaterialAnswered = activeMaterial.questions.filter((question) => examAnswers[`${activeMaterial.id}:${question.id}`] !== undefined);
+  const activeMaterialCorrect = activeMaterial.questions.filter((question) => answeredCorrectly(examAnswers[`${activeMaterial.id}:${question.id}`], question.answerIndex));
+  const activeMaterialDraft = writingDrafts[activeMaterial.id] ?? "";
+  const activeMaterialTtsText = activeMaterial.ttsScript ?? activeMaterial.passage ?? activeMaterial.prompt ?? activeMaterial.summary;
+  const activeMaterialTtsKey = `tts-material-${activeMaterial.id}`;
+  const activeMaterialSourcePages = booklet.pages.filter((page) => activeMaterial.sourceTypeTargets.includes(page.type)).slice(0, 5);
   const currentStoredState = normalizeStoredState({
     activeStackId,
     activeChapterId,
@@ -631,6 +687,8 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
     activeLexicalId,
     activeQuizTrack,
     activeExamId,
+    activeMaterialTrack,
+    activeMaterialId,
     done,
     moduleDone,
     notes,
@@ -648,6 +706,8 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
   const nextIncompletePage = visiblePages.find((page) => !done[page.id] && page.id !== activePage.id) ?? booklet.pages.find((page) => !done[page.id]);
   const smartNextStep = reviewPages[0]
     ? { label: "Review weak page", text: reviewPages[0].title, action: () => choosePage(reviewPages[0]) }
+    : reviewMaterialItems[0]
+      ? { label: "Review weak material", text: reviewMaterialItems[0].title, action: () => chooseMaterial(reviewMaterialItems[0]) }
     : nextIncompletePage
       ? { label: "Continue source path", text: nextIncompletePage.title, action: () => choosePage(nextIncompletePage) }
       : activeQuizQuestions.find((question) => quizAnswers[question.id] === undefined)
@@ -744,6 +804,16 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
     if (nextPage) choosePage(nextPage);
   }
 
+  function chooseMaterial(item: EvaMaterialItem) {
+    setActivePremiumTab("materials");
+    setActiveMaterialTrack(item.track);
+    setActiveMaterialId(item.id);
+    const nextPage =
+      stackPages.find((page) => item.sourceTypeTargets.includes(page.type)) ??
+      booklet.pages.find((page) => item.sourceTypeTargets.includes(page.type));
+    if (nextPage) choosePage(nextPage);
+  }
+
   function speakStudioText(text: string, segmentId: string, repeat = false, rate = 0.82) {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
     window.speechSynthesis.cancel();
@@ -776,9 +846,21 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
     }
   }
 
+  function answerMaterialQuestion(questionId: string, answerIndex: number) {
+    const question = activeMaterial.questions.find((item) => item.id === questionId);
+    setExamAnswers((current) => ({ ...current, [`${activeMaterial.id}:${questionId}`]: answerIndex }));
+    if (question && answerIndex !== question.answerIndex) {
+      setReviewQueue((current) => ({ ...current, [activeMaterial.id]: true }));
+    }
+  }
+
   function updateActiveDraft(value: string) {
     setNotes((current) => ({ ...current, [activePage.id]: value }));
     setWritingDrafts((current) => ({ ...current, [activePage.id]: value }));
+  }
+
+  function updateMaterialDraft(value: string) {
+    setWritingDrafts((current) => ({ ...current, [activeMaterial.id]: value }));
   }
 
   function updateTeacherNote(targetId: EvaUserId, note: string) {
@@ -888,11 +970,12 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
           <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-800">
             <div className="h-full rounded-full bg-gradient-to-r from-amber-300 via-yellow-100 to-sky-300" style={{ width: `${coverage.percent}%` }} />
           </div>
-          <div className="mt-4 grid gap-2 sm:grid-cols-3">
+          <div className="mt-4 grid gap-2 sm:grid-cols-4">
             {[
               { label: "TTS segments", value: learningDatabase.ttsSegments.length },
               { label: "Exam tasks", value: learningDatabase.examTasks.length },
               { label: "Questions", value: learningDatabase.questions.length },
+              { label: "Material packs", value: evaMaterialStats.items },
             ].map((item) => (
               <div key={item.label} className="rounded-[8px] border border-white/10 bg-slate-950/32 p-3">
                 <p className="text-lg font-semibold text-white">{item.value}</p>
@@ -998,6 +1081,7 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
             {[
               { label: "Pages done", value: booklet.pages.filter((page) => done[page.id]).length, total: booklet.pages.length, icon: FileText },
               { label: "Modules", value: completedPremiumModules, total: evaSkillModules.length, icon: ListChecks },
+              { label: "Materials", value: completedMaterials, total: evaMaterialItems.length, icon: LibraryBig },
               { label: "Quiz correct", value: correctQuizQuestions.length, total: evaQuizQuestions.length, icon: BarChart3 },
               { label: "Pronounced", value: completedPronunciations, total: evaLexicalResource.length, icon: Headphones },
             ].map((item) => {
@@ -1017,7 +1101,7 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
           <div className="mt-3 rounded-[8px] border border-white/10 bg-slate-950/30 p-3">
             <p className="text-xs font-semibold uppercase text-slate-500">Review queue for {activeUser.displayName}</p>
             <p className="mt-2 text-sm leading-6 text-slate-300">
-              {reviewPages.length ? `${reviewPages.length} pages waiting for deliberate review.` : "No review pages yet. Add weak pages from the reader."}
+              {reviewQueueCount ? `${reviewQueueCount} items waiting for deliberate review.` : "No review items yet. Add weak pages or material tasks from the studio."}
             </p>
           </div>
         </aside>
@@ -1115,11 +1199,11 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
             </p>
           </div>
           <p className="text-sm font-semibold text-slate-500">
-            20 modules · {evaLexicalResource.length} pronunciation cards · {evaQuizQuestions.length} quiz checks · {learningDatabase.examTasks.length} exam tasks
+            20 modules · {evaMaterialStats.items} material packs · {evaLexicalResource.length} pronunciation cards · {learningDatabase.examTasks.length} exam tasks
           </p>
         </div>
 
-        <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-7">
+        <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8">
           {premiumTabs.map((tab) => {
             const active = activePremiumTab === tab.id;
 
@@ -1156,8 +1240,8 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
                 {[
                   ["Source", `${booklet.stats.pages} imported pages`],
                   ["Semantic lanes", `${semanticStudyLanes.length} lanes plus chapter path`],
-                  ["Premium layers", "Grammar / Religious / Lexical / Quiz"],
-                  ["Tracking", "page, module, quiz, pronunciation, review"],
+                  ["Premium layers", "Grammar / Religious / Lexical / Materials"],
+                  ["Tracking", "page, module, material, quiz, pronunciation, review"],
                 ].map(([label, value]) => (
                   <div key={label} className="flex items-center justify-between gap-3 rounded-[8px] border border-white/10 bg-white/[0.035] px-3 py-2 text-sm">
                     <span className="font-semibold text-slate-200">{label}</span>
@@ -1166,11 +1250,12 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
                 ))}
               </div>
             </div>
-            <div className="grid gap-2 sm:grid-cols-3">
+            <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
               {[
                 { title: "Grammar Atlas", value: evaGrammarModules.length, text: "Accuracy chapters with source-page jumps.", icon: GraduationCap },
                 { title: "Religious Context", value: evaReligiousModules.length, text: "Meaning, service, prayer, and translation chapters.", icon: Flame },
                 { title: "Lexical Resource", value: evaLexicalResource.length, text: "IPA, stress, collocations, and listen practice.", icon: Volume2 },
+                { title: "Material Library", value: evaMaterialStats.items, text: "Original IELTS/TOEFL-style packs and TTS scripts.", icon: LibraryBig },
               ].map((item) => {
                 const Icon = item.icon;
 
@@ -1178,7 +1263,17 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
                   <button
                     key={item.title}
                     type="button"
-                    onClick={() => setActivePremiumTab(item.title === "Grammar Atlas" ? "grammar" : item.title === "Religious Context" ? "religious" : "lexical")}
+                    onClick={() =>
+                      setActivePremiumTab(
+                        item.title === "Grammar Atlas"
+                          ? "grammar"
+                          : item.title === "Religious Context"
+                            ? "religious"
+                            : item.title === "Material Library"
+                              ? "materials"
+                              : "lexical",
+                      )
+                    }
                     className="rounded-[8px] border border-white/10 bg-slate-950/28 p-4 text-start transition hover:border-amber-300/35 focus:outline-none focus:ring-2 focus:ring-amber-300/50"
                   >
                     <Icon aria-hidden="true" className="size-5 text-amber-200" />
@@ -1401,6 +1496,306 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
                     ))}
                   </div>
                 </div>
+              </div>
+            </article>
+          </div>
+        ) : null}
+
+        {activePremiumTab === "materials" ? (
+          <div className="mt-4 grid gap-3 xl:grid-cols-[22rem_minmax(0,1fr)]">
+            <aside className="rounded-[8px] border border-white/10 bg-slate-950/30 p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h3 className="text-base font-semibold text-white">Material Library</h3>
+                  <p className="mt-1 text-sm leading-6 text-slate-400">Original study packs with answer keys, TTS scripts, and writing prompts.</p>
+                </div>
+                <LibraryBig aria-hidden="true" className="size-5 shrink-0 text-amber-200" />
+              </div>
+              <div className="mt-4 grid gap-2">
+                {evaMaterialCollections.map((collection) => {
+                  const active = collection.id === activeMaterialTrack;
+                  const completedInTrack = collection.items.filter((item) => done[item.id]).length;
+
+                  return (
+                    <button
+                      key={collection.id}
+                      type="button"
+                      onClick={() => {
+                        setActiveMaterialTrack(collection.id);
+                        setActiveMaterialId(collection.items[0]?.id ?? activeMaterial.id);
+                      }}
+                      className={cn(
+                        "rounded-[8px] border p-3 text-start transition focus:outline-none focus:ring-2 focus:ring-amber-300/50",
+                        active ? "border-amber-300/55 bg-amber-300/12 text-white" : "border-white/10 bg-white/[0.035] text-slate-300 hover:border-amber-300/35",
+                      )}
+                    >
+                      <span className="flex items-center justify-between gap-3">
+                        <span className="text-sm font-semibold">{collection.title}</span>
+                        <span className="rounded-[6px] border border-white/10 bg-slate-950/35 px-2 py-1 text-xs font-semibold text-amber-100">
+                          {completedInTrack}/{collection.items.length}
+                        </span>
+                      </span>
+                      <span className="mt-1 block text-xs leading-5 text-slate-500">{collection.description}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="mt-4 rounded-[8px] border border-sky-200/15 bg-sky-300/[0.055] p-3">
+                <p className="text-xs font-semibold uppercase text-sky-100">Library stats</p>
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  {[
+                    ["Questions", materialQuestionCount],
+                    ["Correct", materialCorrectCount],
+                    ["Writing", evaMaterialStats.writingPrompts],
+                    ["TTS", evaMaterialStats.ttsScripts],
+                  ].map(([label, value]) => (
+                    <div key={label} className="rounded-[8px] border border-white/10 bg-slate-950/30 p-2">
+                      <p className="text-sm font-semibold text-white">{value}</p>
+                      <p className="text-xs text-slate-500">{label}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </aside>
+
+            <article className="rounded-[8px] border border-white/10 bg-slate-950/30 p-4">
+              <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-start">
+                <div>
+                  <p className="text-xs font-semibold uppercase text-amber-200">
+                    {activeMaterial.exam} / {activeMaterial.skill} / {activeMaterial.level}
+                  </p>
+                  <h3 className="mt-2 text-2xl font-semibold leading-tight text-white">{activeMaterial.title}</h3>
+                  <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-300">{activeMaterial.summary}</p>
+                  <p className="mt-3 rounded-[8px] border border-amber-200/16 bg-amber-200/[0.06] p-3 text-sm leading-7 text-amber-50">
+                    {activeUser.locale === "fa" ? activeMaterial.localeNotes.fa : activeMaterial.localeNotes.en}
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { label: "Minutes", value: activeMaterial.timeLimitMinutes },
+                    { label: "Questions", value: activeMaterial.questions.length },
+                    { label: "Correct", value: activeMaterialCorrect.length },
+                    { label: "Answered", value: activeMaterialAnswered.length },
+                  ].map((item) => (
+                    <div key={item.label} className="rounded-[8px] border border-white/10 bg-white/[0.035] p-3">
+                      <p className="text-lg font-semibold text-white">{item.value}</p>
+                      <p className="text-xs leading-4 text-slate-500">{item.label}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-4 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => speakStudioText(activeMaterialTtsText, activeMaterialTtsKey, false, activeMaterial.track === "pronunciation" ? 0.76 : 0.86)}
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[8px] bg-amber-300 px-4 text-sm font-bold text-slate-950 transition hover:bg-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-100"
+                >
+                  <Volume2 aria-hidden="true" className="size-4" />
+                  Listen
+                </button>
+                <button
+                  type="button"
+                  onClick={() => speakStudioText(activeMaterialTtsText, activeMaterialTtsKey, true, activeMaterial.track === "pronunciation" ? 0.68 : 0.78)}
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[8px] border border-white/10 px-4 text-sm font-semibold text-slate-200 transition hover:border-sky-200/40 hover:text-sky-100 focus:outline-none focus:ring-2 focus:ring-sky-300/40"
+                >
+                  <Repeat2 aria-hidden="true" className="size-4" />
+                  Repeat
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setReviewQueue((current) => ({ ...current, [activeMaterial.id]: !current[activeMaterial.id] }))}
+                  className={cn(
+                    "inline-flex min-h-11 items-center justify-center gap-2 rounded-[8px] border px-4 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-sky-300/40",
+                    reviewQueue[activeMaterial.id] ? "border-sky-200 bg-sky-200 text-slate-950" : "border-white/10 text-slate-200 hover:border-sky-200/40 hover:text-sky-100",
+                  )}
+                >
+                  <Star aria-hidden="true" className="size-4" />
+                  {reviewQueue[activeMaterial.id] ? "In review" : "Add review"}
+                </button>
+                <label className="inline-flex min-h-11 cursor-pointer items-center justify-between gap-3 rounded-[8px] border border-white/10 px-4 text-sm font-semibold text-slate-200 transition hover:border-amber-300/40 hover:text-amber-100">
+                  <span>Material done</span>
+                  <input
+                    type="checkbox"
+                    checked={Boolean(done[activeMaterial.id])}
+                    onChange={(event) => setDone((current) => ({ ...current, [activeMaterial.id]: event.target.checked }))}
+                    className="sr-only"
+                  />
+                  <span className={cn("flex size-6 items-center justify-center rounded-[6px] border", done[activeMaterial.id] ? "border-amber-200 bg-amber-200 text-slate-950" : "border-white/20")}>
+                    {done[activeMaterial.id] ? <Check aria-hidden="true" className="size-4" /> : null}
+                  </span>
+                </label>
+              </div>
+
+              <div className="mt-5 grid gap-4 xl:grid-cols-[minmax(0,1fr)_20rem]">
+                <div className="grid gap-4">
+                  {activeMaterial.visualAsset ? (
+                    <div className="overflow-hidden rounded-[8px] border border-white/10 bg-slate-950/40">
+                      <NextImage
+                        src={activeMaterial.visualAsset}
+                        alt={`${activeMaterial.title} visual guide`}
+                        width={1280}
+                        height={720}
+                        className="h-auto w-full"
+                      />
+                    </div>
+                  ) : null}
+
+                  {activeMaterial.passage ? (
+                    <section className="rounded-[8px] border border-sky-200/15 bg-sky-300/[0.055] p-4">
+                      <h4 className="text-sm font-semibold text-sky-100">Reading passage</h4>
+                      <p className="mt-3 text-base leading-8 text-slate-200">{activeMaterial.passage}</p>
+                    </section>
+                  ) : null}
+
+                  {activeMaterial.ttsScript ? (
+                    <section className="rounded-[8px] border border-sky-200/15 bg-sky-300/[0.055] p-4">
+                      <div className="flex items-center gap-2 text-sm font-semibold text-sky-100">
+                        <Mic2 aria-hidden="true" className="size-4" />
+                        TTS / shadowing script
+                      </div>
+                      <p className="mt-3 text-base leading-8 text-slate-200">{activeMaterial.ttsScript}</p>
+                    </section>
+                  ) : null}
+
+                  {activeMaterial.prompt ? (
+                    <section className="rounded-[8px] border border-white/10 bg-white/[0.035] p-4">
+                      <h4 className="text-sm font-semibold text-white">Prompt</h4>
+                      <p className="mt-3 text-base leading-8 text-slate-200">{activeMaterial.prompt}</p>
+                    </section>
+                  ) : null}
+
+                  {activeMaterial.questions.length ? (
+                    <section className="rounded-[8px] border border-white/10 bg-white/[0.035] p-4">
+                      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                        <div>
+                          <h4 className="text-sm font-semibold text-white">Answer key practice</h4>
+                          <p className="mt-1 text-sm leading-6 text-slate-400">
+                            {activeMaterialCorrect.length}/{activeMaterial.questions.length} correct. Wrong answers enter the review engine.
+                          </p>
+                        </div>
+                        <span className="inline-flex items-center gap-2 rounded-[8px] border border-amber-200/18 bg-amber-200/[0.08] px-3 py-2 text-xs font-semibold text-amber-100">
+                          <Target aria-hidden="true" className="size-4" />
+                          Trackable
+                        </span>
+                      </div>
+                      <div className="mt-4 grid gap-3">
+                        {activeMaterial.questions.map((question, index) => {
+                          const answerKey = `${activeMaterial.id}:${question.id}`;
+                          const selected = examAnswers[answerKey];
+                          const answered = selected !== undefined;
+
+                          return (
+                            <div key={question.id} className="rounded-[8px] border border-white/10 bg-slate-950/30 p-4">
+                              <p className="text-sm font-semibold text-amber-200">
+                                {index + 1}. {question.type}
+                              </p>
+                              <h5 className="mt-2 text-base font-semibold leading-7 text-white">{question.prompt}</h5>
+                              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                                {question.options.map((option, optionIndex) => {
+                                  const correct = optionIndex === question.answerIndex;
+                                  const active = selected === optionIndex;
+
+                                  return (
+                                    <button
+                                      key={option}
+                                      type="button"
+                                      onClick={() => answerMaterialQuestion(question.id, optionIndex)}
+                                      className={cn(
+                                        "rounded-[8px] border p-3 text-start text-sm leading-6 transition focus:outline-none focus:ring-2 focus:ring-amber-300/50",
+                                        answered && correct
+                                          ? "border-emerald-300 bg-emerald-300/12 text-emerald-100"
+                                          : active
+                                            ? "border-rose-300 bg-rose-300/10 text-rose-100"
+                                            : "border-white/10 bg-slate-950/32 text-slate-300 hover:border-amber-300/35",
+                                      )}
+                                    >
+                                      {option}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                              {answered ? <p className="mt-3 text-sm leading-7 text-slate-300">{question.rationale}</p> : null}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </section>
+                  ) : null}
+
+                  {(activeMaterial.track === "writing" || activeMaterial.track === "teacher") ? (
+                    <section className="rounded-[8px] border border-white/10 bg-white/[0.035] p-4">
+                      <h4 className="text-sm font-semibold text-white">{activeMaterial.track === "teacher" ? "Teacher note draft" : "Writing response"}</h4>
+                      <textarea
+                        value={activeMaterialDraft}
+                        onChange={(event) => updateMaterialDraft(event.target.value)}
+                        className="mt-3 min-h-40 w-full resize-y rounded-[8px] border border-white/10 bg-slate-950/72 p-4 text-base leading-8 text-slate-100 outline-none transition placeholder:text-slate-600 focus:border-amber-300/50 focus:ring-2 focus:ring-amber-300/20"
+                        placeholder={activeMaterial.track === "teacher" ? "Adapt this feedback for Eva or Elham..." : "Write and save this response in the Writing Vault..."}
+                      />
+                      <p className="mt-2 text-sm leading-6 text-slate-400">Saved to {activeUser.displayName}&apos;s Writing Vault under this material.</p>
+                    </section>
+                  ) : null}
+                </div>
+
+                <aside className="grid content-start gap-3">
+                  <div className="rounded-[8px] border border-amber-200/16 bg-amber-200/[0.06] p-4">
+                    <h4 className="text-sm font-semibold text-amber-100">Routine</h4>
+                    <div className="mt-3 grid gap-2">
+                      {activeMaterial.routine.map((step, index) => (
+                        <div key={step} className="flex items-start gap-3 rounded-[8px] border border-white/10 bg-slate-950/30 p-3 text-sm leading-6 text-slate-300">
+                          <span className="flex size-7 shrink-0 items-center justify-center rounded-[6px] bg-amber-200/10 text-xs font-semibold text-amber-100">{index + 1}</span>
+                          <span>{step}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="rounded-[8px] border border-white/10 bg-white/[0.035] p-4">
+                    <h4 className="text-sm font-semibold text-white">Rubric</h4>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {activeMaterial.rubric.map((item) => (
+                        <span key={item} className="rounded-[8px] border border-white/10 bg-slate-950/35 px-3 py-2 text-xs font-semibold text-slate-200">
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="rounded-[8px] border border-white/10 bg-white/[0.035] p-4">
+                    <h4 className="text-sm font-semibold text-white">Related source pages</h4>
+                    <p className="mt-1 text-xs leading-5 text-slate-500">{activeMaterial.sourceUse}</p>
+                    <div className="mt-3 grid gap-2">
+                      {activeMaterialSourcePages.length ? (
+                        activeMaterialSourcePages.map((page) => (
+                          <button
+                            key={page.id}
+                            type="button"
+                            onClick={() => choosePage(page)}
+                            className="rounded-[8px] border border-white/10 bg-slate-950/30 p-3 text-start text-xs leading-5 text-slate-300 transition hover:border-amber-300/35 focus:outline-none focus:ring-2 focus:ring-amber-300/40"
+                          >
+                            <span className="font-semibold text-amber-100">P{String(page.page).padStart(3, "0")}</span> · {page.title}
+                          </button>
+                        ))
+                      ) : (
+                        <p className="rounded-[8px] border border-dashed border-slate-500/35 bg-slate-900/30 p-3 text-sm leading-6 text-slate-400">
+                          This material stands alone and can be used with the active page.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="rounded-[8px] border border-sky-200/15 bg-sky-300/[0.055] p-4">
+                    <h4 className="text-sm font-semibold text-sky-100">Source safety</h4>
+                    <div className="mt-3 grid gap-2">
+                      {evaMaterialSourcePolicy.slice(0, 3).map((item) => (
+                        <div key={item.label} className="rounded-[8px] border border-white/10 bg-slate-950/30 p-3">
+                          <p className="text-xs font-semibold text-white">{item.label}</p>
+                          <p className="mt-1 text-xs leading-5 text-slate-500">{item.note}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </aside>
               </div>
             </article>
           </div>
@@ -1647,7 +2042,8 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
                 {writingVaultEntries.length ? (
                   writingVaultEntries.slice(0, 12).map(([id, draft]) => {
                     const page = booklet.pages.find((item) => item.id === id);
-                    const title = page?.title ?? learningDatabase.examTasks.find((task) => `exam-${task.id}` === id)?.title ?? id;
+                    const material = evaMaterialItems.find((item) => item.id === id);
+                    const title = page?.title ?? materialTitleMap.get(id) ?? learningDatabase.examTasks.find((task) => `exam-${task.id}` === id)?.title ?? id;
 
                     return (
                       <button
@@ -1655,6 +2051,7 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
                         type="button"
                         onClick={() => {
                           if (page) choosePage(page);
+                          else if (material) chooseMaterial(material);
                           else setActivePremiumTab("exam");
                         }}
                         className="rounded-[8px] border border-white/10 bg-white/[0.035] p-4 text-start transition hover:border-amber-300/35 focus:outline-none focus:ring-2 focus:ring-amber-300/50"
@@ -2260,11 +2657,11 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
                 </article>
 
                 <aside className="rounded-[8px] border border-white/10 bg-white/[0.045] p-4 sm:p-5">
-                  {reviewPages.length ? (
+                  {reviewQueueCount ? (
                     <div className="mb-5 rounded-[8px] border border-sky-200/15 bg-sky-300/[0.055] p-3">
                       <div className="flex items-center justify-between gap-3">
                         <h2 className="text-sm font-semibold text-sky-100">Review queue</h2>
-                        <span className="text-xs font-semibold text-slate-500">{reviewPages.length}</span>
+                        <span className="text-xs font-semibold text-slate-500">{reviewQueueCount}</span>
                       </div>
                       <div className="mt-3 grid gap-2">
                         {reviewPages.slice(0, 4).map((page) => (
@@ -2277,6 +2674,20 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
                             <span>
                               <span className="block text-xs font-semibold text-sky-100">P{String(page.page).padStart(3, "0")}</span>
                               <span className="mt-1 block text-sm font-semibold leading-5 text-slate-200">{page.title}</span>
+                            </span>
+                            <Play aria-hidden="true" className="mt-1 size-4 shrink-0 text-slate-500 transition group-hover:text-sky-100" />
+                          </button>
+                        ))}
+                        {reviewMaterialItems.slice(0, Math.max(0, 4 - reviewPages.slice(0, 4).length)).map((item) => (
+                          <button
+                            key={item.id}
+                            type="button"
+                            onClick={() => chooseMaterial(item)}
+                            className="group flex items-start justify-between gap-3 rounded-[8px] border border-white/10 bg-slate-950/28 p-3 text-start transition hover:border-sky-200/35"
+                          >
+                            <span>
+                              <span className="block text-xs font-semibold text-sky-100">{item.exam} / {item.skill}</span>
+                              <span className="mt-1 block text-sm font-semibold leading-5 text-slate-200">{item.title}</span>
                             </span>
                             <Play aria-hidden="true" className="mt-1 size-4 shrink-0 text-slate-500 transition group-hover:text-sky-100" />
                           </button>

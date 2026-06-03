@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">Eva Reading Route</title>
+  <desc id="desc">A premium reading route for source pages, exam questions, evidence, and review.</desc>
+  <rect width="1280" height="720" rx="36" fill="#050b16"/>
+  <circle cx="1080" cy="120" r="210" fill="#fbbf24" opacity=".08"/>
+  <circle cx="170" cy="610" r="260" fill="#38bdf8" opacity=".07"/>
+  <path d="M150 376 C310 210 456 522 630 360 S960 240 1132 392" fill="none" stroke="#facc15" stroke-width="10" stroke-linecap="round"/>
+  <path d="M150 376 C310 210 456 522 630 360 S960 240 1132 392" fill="none" stroke="#fde68a" stroke-width="3" stroke-linecap="round" stroke-dasharray="22 22"/>
+  <g font-family="Manrope, Inter, Arial, sans-serif">
+    <text x="86" y="104" fill="#ffffff" font-size="48" font-weight="850">Eva Reading Route</text>
+    <text x="88" y="146" fill="#9fb0c4" font-size="22">Read for evidence, not only exposure.</text>
+    <g transform="translate(96 248)">
+      <rect width="218" height="176" rx="20" fill="#0d1726" stroke="#26384f"/>
+      <text x="28" y="52" fill="#fbbf24" font-size="20" font-weight="800">01 SOURCE</text>
+      <text x="28" y="94" fill="#ffffff" font-size="28" font-weight="800">Open page</text>
+      <text x="28" y="130" fill="#b8c5d7" font-size="18">Skim title, task,</text>
+      <text x="28" y="158" fill="#b8c5d7" font-size="18">and chapter context.</text>
+    </g>
+    <g transform="translate(398 428)">
+      <rect width="218" height="176" rx="20" fill="#0d1726" stroke="#26384f"/>
+      <text x="28" y="52" fill="#fbbf24" font-size="20" font-weight="800">02 EXAM</text>
+      <text x="28" y="94" fill="#ffffff" font-size="28" font-weight="800">Answer</text>
+      <text x="28" y="130" fill="#b8c5d7" font-size="18">Match meaning,</text>
+      <text x="28" y="158" fill="#b8c5d7" font-size="18">then prove it.</text>
+    </g>
+    <g transform="translate(690 216)">
+      <rect width="218" height="176" rx="20" fill="#0d1726" stroke="#26384f"/>
+      <text x="28" y="52" fill="#fbbf24" font-size="20" font-weight="800">03 EVIDENCE</text>
+      <text x="28" y="94" fill="#ffffff" font-size="28" font-weight="800">Save note</text>
+      <text x="28" y="130" fill="#b8c5d7" font-size="18">Write the reason,</text>
+      <text x="28" y="158" fill="#b8c5d7" font-size="18">not just the answer.</text>
+    </g>
+    <g transform="translate(966 386)">
+      <rect width="218" height="176" rx="20" fill="#0d1726" stroke="#26384f"/>
+      <text x="28" y="52" fill="#fbbf24" font-size="20" font-weight="800">04 REVIEW</text>
+      <text x="28" y="94" fill="#ffffff" font-size="28" font-weight="800">Return</text>
+      <text x="28" y="130" fill="#b8c5d7" font-size="18">Weak items become</text>
+      <text x="28" y="158" fill="#b8c5d7" font-size="18">the next step.</text>
+    </g>
+  </g>
+</svg>

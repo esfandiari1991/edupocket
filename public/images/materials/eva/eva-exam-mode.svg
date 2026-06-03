@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">Eva Exam Mode</title>
+  <desc id="desc">A visual model for timed IELTS and TOEFL style practice.</desc>
+  <rect width="1280" height="720" rx="36" fill="#050b16"/>
+  <g font-family="Manrope, Inter, Arial, sans-serif">
+    <text x="86" y="104" fill="#ffffff" font-size="48" font-weight="850">Exam Mode</text>
+    <text x="88" y="146" fill="#9fb0c4" font-size="22">Timed practice with answer keys, rationales, and review.</text>
+    <g transform="translate(96 224)">
+      <rect width="404" height="330" rx="28" fill="#0d1726" stroke="#26384f"/>
+      <text x="36" y="60" fill="#fbbf24" font-size="20" font-weight="800">READING</text>
+      <rect x="36" y="96" width="312" height="16" rx="8" fill="#e2e8f0" opacity=".82"/>
+      <rect x="36" y="132" width="332" height="16" rx="8" fill="#94a3b8" opacity=".55"/>
+      <rect x="36" y="168" width="262" height="16" rx="8" fill="#94a3b8" opacity=".42"/>
+      <rect x="36" y="230" width="146" height="42" rx="13" fill="#fbbf24"/>
+      <text x="70" y="258" fill="#0f172a" font-size="17" font-weight="850">ANSWER</text>
+    </g>
+    <g transform="translate(538 224)">
+      <rect width="204" height="330" rx="28" fill="#111f32" stroke="#26384f"/>
+      <circle cx="102" cy="122" r="70" fill="none" stroke="#fbbf24" stroke-width="12"/>
+      <path d="M102 122 L102 76" stroke="#fbbf24" stroke-width="10" stroke-linecap="round"/>
+      <path d="M102 122 L142 144" stroke="#7dd3fc" stroke-width="10" stroke-linecap="round"/>
+      <text x="102" y="244" text-anchor="middle" fill="#ffffff" font-size="32" font-weight="850">18 min</text>
+      <text x="102" y="284" text-anchor="middle" fill="#9fb0c4" font-size="18">focus window</text>
+    </g>
+    <g transform="translate(780 224)">
+      <rect width="404" height="330" rx="28" fill="#0d1726" stroke="#26384f"/>
+      <text x="36" y="60" fill="#7dd3fc" font-size="20" font-weight="800">REVIEW</text>
+      <rect x="36" y="96" width="306" height="54" rx="14" fill="#38bdf8" opacity=".12" stroke="#7dd3fc"/>
+      <rect x="36" y="174" width="306" height="54" rx="14" fill="#fbbf24" opacity=".13" stroke="#fbbf24"/>
+      <rect x="36" y="252" width="306" height="32" rx="12" fill="#111f32" stroke="#2b405a"/>
+      <text x="58" y="130" fill="#e0f2fe" font-size="18" font-weight="750">Rationale appears after answer</text>
+      <text x="58" y="208" fill="#fde68a" font-size="18" font-weight="750">Wrong items enter review</text>
+    </g>
+  </g>
+</svg>
