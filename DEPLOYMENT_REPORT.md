@@ -79,13 +79,22 @@ Previous local prototype/workspace was found at /Users/ali/Documents/Claude/Proj
 - Status: local review only.
 - Deployment status for this branch: not deployed.
 - Vercel/domain/DNS status for this branch: unchanged.
+- Vercel cleanup status: not performed; no hosted project or deployment was deleted.
 - Approval gate: production deployment happens only after final explicit approval.
 - Public gateway route: `/eva-digital-booklet`.
 - Protected studio route: `/eva-digital-booklet/studio`.
-- Development-only access fallback: `eva-local-preview`.
+- Development-only access fallbacks for `pnpm dev`: `ali-local-preview`, `eva-local-preview`, `elham-local-preview`.
+- Production-mode local QA uses `EVA_PORTAL_SESSION_SECRET` and `EVA_PORTAL_USER_PASSCODE_HASHES`.
+- Production access requirements: Postgres `EVA_DATABASE_URL` or `DATABASE_URL`, `EVA_PORTAL_SESSION_SECRET`, migrated Eva schema, and per-member passcode hashes saved in `eva_memberships`.
 - Private data location: `src/lib/eva-booklet.generated.json`, loaded through `src/lib/eva-private-content.ts`.
 - Private content public exposure: not stored in `public/`; unauthenticated `/eva-digital-booklet/studio` returns `307` to `/eva-digital-booklet`.
 - Import script: `scripts/import-eva-booklet.mjs`.
+- Production persistence migration: `db/0001_eva_portal.sql`.
+- Production persistence scripts:
+  - `pnpm eva:migrate`
+  - `pnpm eva:sync-content`
+  - `pnpm eva:hash-passcode "member-passcode"`
+  - `pnpm eva:set-passcode <ali|eva|elham> "member-passcode"`
 - Imported content coverage:
   - 298 workbook pages
   - 12 chapters
@@ -104,6 +113,10 @@ Previous local prototype/workspace was found at /Users/ali/Documents/Claude/Proj
   - related-page jumps
   - per-member page completion
   - per-member page notes
+  - server-backed progress snapshots when Postgres is configured
+  - server-backed quiz/writing responses when Postgres is configured
+  - server-backed review queue entries when Postgres is configured
+  - server-backed teacher notes when Postgres is configured
   - Markdown export per page
 - Local QA on 2026-06-03:
   - `pnpm lint`: passed
@@ -111,10 +124,17 @@ Previous local prototype/workspace was found at /Users/ali/Documents/Claude/Proj
   - `pnpm build`: passed
   - `BASE_URL=http://localhost:3001 pnpm verify:routes`: passed
   - wrong passcode redirects to `/eva-digital-booklet?error=passcode`
-  - correct development passcode sets a scoped `edupocket_eva_session` cookie
+  - production-mode local QA with `EVA_PORTAL_SESSION_SECRET` and `EVA_PORTAL_USER_PASSCODE_HASHES`: Ali, Eva, and Elham passcodes each open `/eva-digital-booklet/studio`
+  - authenticated `GET /eva-digital-booklet/state`: `200`
+  - unauthenticated `GET /eva-digital-booklet/state`: `401`
+  - `POST /eva-digital-booklet/state` without a configured database: `503`, as intended
   - public gateway leak check found no private workbook page text
-  - desktop and mobile Chrome/CDP viewport checks showed no horizontal overflow
+  - desktop and mobile Chrome screenshots reviewed after responsive nav/gateway tightening
 - Local QA screenshots:
+  - `/Users/ali/.codex/tmp/edupocket-final-qa/home-desktop-final.png`
+  - `/Users/ali/.codex/tmp/edupocket-final-qa/eva-gateway-desktop.png`
+  - `/Users/ali/.codex/tmp/edupocket-final-qa/eva-gateway-500w.png`
+  - `/Users/ali/.codex/tmp/edupocket-final-qa/eva-gateway-mobile-after-responsive.png`
   - `/Users/ali/.codex/tmp/eva-booklet-real-data-qa/gateway-desktop.png`
   - `/Users/ali/.codex/tmp/eva-booklet-real-data-qa/studio-desktop-foundation.png`
   - `/Users/ali/.codex/tmp/eva-booklet-real-data-qa/studio-desktop-language-stack.png`

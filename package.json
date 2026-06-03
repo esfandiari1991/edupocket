@@ -12,7 +12,11 @@
     "new:article": "node scripts/new-article.mjs",
     "new:lesson": "node scripts/new-lesson.mjs",
     "new:podcast": "node scripts/new-podcast.mjs",
-    "verify:routes": "node scripts/verify-routes.mjs"
+    "verify:routes": "node scripts/verify-routes.mjs",
+    "eva:migrate": "node scripts/eva-migrate.mjs",
+    "eva:sync-content": "node scripts/eva-sync-content.mjs",
+    "eva:hash-passcode": "node scripts/eva-hash-passcode.mjs",
+    "eva:set-passcode": "node scripts/eva-set-passcode.mjs"
   },
   "dependencies": {
     "@mdx-js/react": "latest",
@@ -21,6 +25,7 @@
     "lucide-react": "latest",
     "next": "latest",
     "next-mdx-remote": "latest",
+    "postgres": "^3.4.9",
     "react": "latest",
     "react-dom": "latest",
     "reading-time": "latest",

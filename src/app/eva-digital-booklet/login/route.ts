@@ -5,7 +5,7 @@ export async function POST(request: NextRequest) {
   const formData = await request.formData();
   const passcode = String(formData.get("passcode") ?? "");
   const gatewayUrl = new URL("/eva-digital-booklet", request.url);
-  const user = validateEvaPasscode(passcode);
+  const user = await validateEvaPasscode(passcode);
 
   if (!user) {
     gatewayUrl.searchParams.set("error", "passcode");

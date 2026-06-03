@@ -24,8 +24,8 @@ export function EvaBookletGateway({ compact = false, loginError }: EvaBookletGat
       )}
     >
       <Container>
-        <div className="eva-premium-frame motion-view grid gap-6 overflow-hidden rounded-[8px] border border-amber-200/20 p-4 shadow-[0_28px_100px_rgba(0,0,0,0.28)] sm:p-6 lg:grid-cols-[0.72fr_1.28fr] lg:items-stretch lg:p-7">
-          <div className="relative order-2 min-h-[18rem] overflow-hidden rounded-[8px] border border-white/10 bg-[radial-gradient(circle_at_18%_16%,rgba(251,191,36,0.16),transparent_12rem),linear-gradient(145deg,rgba(6,17,31,0.74),rgba(15,31,39,0.82))] p-4 sm:min-h-[22rem] sm:p-5 lg:order-1 lg:min-h-full">
+        <div className="eva-premium-frame motion-view grid min-w-0 gap-6 overflow-hidden rounded-[8px] border border-amber-200/20 p-4 shadow-[0_28px_100px_rgba(0,0,0,0.28)] sm:p-6 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:items-stretch lg:p-7">
+          <div className="relative order-2 min-h-[18rem] min-w-0 overflow-hidden rounded-[8px] border border-white/10 bg-[radial-gradient(circle_at_18%_16%,rgba(251,191,36,0.16),transparent_12rem),linear-gradient(145deg,rgba(6,17,31,0.74),rgba(15,31,39,0.82))] p-4 sm:min-h-[22rem] sm:p-5 lg:order-1 lg:min-h-full">
             <div className="absolute inset-x-6 top-8 h-px bg-gradient-to-r from-transparent via-amber-200/46 to-transparent" />
             <div className="absolute bottom-8 left-7 top-8 w-px bg-gradient-to-b from-amber-200/30 via-sky-200/18 to-transparent" />
             <div className="relative flex h-full min-h-[16rem] flex-col justify-between gap-4">
@@ -87,22 +87,22 @@ export function EvaBookletGateway({ compact = false, loginError }: EvaBookletGat
             </div>
           </div>
 
-          <div className="order-1 grid gap-5 lg:order-2">
-            <div className="grid gap-5 lg:grid-cols-[1fr_17rem]">
-              <div>
+          <div className="order-1 grid min-w-0 gap-5 lg:order-2">
+            <div className="grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1fr)_17rem]">
+              <div className="min-w-0">
                 <p className="mb-2 text-xs font-semibold uppercase text-amber-200/90">
                   <LocalizedText en="By Ali Rad, inside EduPocket" fa="از علی راد، داخل EduPocket" />
                 </p>
                 {compact ? (
-                  <h2 className={titleClassName}>
+                  <h2 className={cn(titleClassName, "break-words")}>
                     <LocalizedText en={evaPublicOffer.title.en} fa={evaPublicOffer.title.fa} />
                   </h2>
                 ) : (
-                  <h1 className={titleClassName}>
+                  <h1 className={cn(titleClassName, "break-words")}>
                     <LocalizedText en={evaPublicOffer.title.en} fa={evaPublicOffer.title.fa} />
                   </h1>
                 )}
-                <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
+                <p className="mt-4 max-w-2xl break-words text-sm leading-7 text-slate-300 sm:text-base">
                   <LocalizedText en={evaPublicOffer.description.en} fa={evaPublicOffer.description.fa} />
                 </p>
                 {!compact ? (
@@ -112,7 +112,7 @@ export function EvaBookletGateway({ compact = false, loginError }: EvaBookletGat
                 ) : null}
                 <div className="mt-6 flex flex-wrap gap-2">
                   {evaPublicOffer.included.map((item) => (
-                    <span key={item.en} className="inline-flex items-center gap-2 rounded-[8px] border border-white/10 bg-white/[0.04] px-3 py-2 text-sm font-semibold text-slate-200">
+                    <span key={item.en} className="inline-flex min-w-0 items-center gap-2 rounded-[8px] border border-white/10 bg-white/[0.04] px-3 py-2 text-sm font-semibold text-slate-200">
                       <CheckCircle2 aria-hidden="true" className="size-4 text-amber-200" />
                       <LocalizedText en={item.en} fa={item.fa} />
                     </span>

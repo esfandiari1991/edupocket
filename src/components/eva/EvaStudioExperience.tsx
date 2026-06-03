@@ -1,7 +1,7 @@
 "use client";
 
 import NextImage from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   BarChart3,
   BookOpen,
@@ -68,6 +68,7 @@ import { cn } from "@/lib/utils";
 type EvaStudioExperienceProps = {
   booklet: EvaBooklet;
   activeUser: EvaSeedUser;
+  persistenceMode: "database" | "development";
 };
 
 const legacyStorageKey = "edupocket-eva-studio-v1";
@@ -288,7 +289,7 @@ function recordCount(record: Record<string, unknown>) {
   return Object.values(record).filter(Boolean).length;
 }
 
-export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperienceProps) {
+export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: EvaStudioExperienceProps) {
   const [activeStackId, setActiveStackId] = useState(booklet.stacks[0]?.id ?? "");
   const [activeChapterId, setActiveChapterId] = useState(booklet.chapters[0]?.id ?? "");
   const [activePageId, setActivePageId] = useState(booklet.pages[0]?.id ?? "");
@@ -317,11 +318,74 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
   const [teacherNotes, setTeacherNotes] = useState<Record<string, string>>({});
   const [teacherSnapshots, setTeacherSnapshots] = useState<Record<EvaUserId, EvaStoredStudioState>>({ ali: normalizeStoredState(null), eva: normalizeStoredState(null), elham: normalizeStoredState(null) });
   const [hydrated, setHydrated] = useState(false);
+  const [syncStatus, setSyncStatus] = useState<"loading" | "synced" | "saving" | "error" | "development">(persistenceMode === "database" ? "loading" : "development");
   const learningDatabase = useMemo(() => buildEvaLearningDatabase(booklet), [booklet]);
   const storageKey = evaUserStorageKey(activeUser.id);
   const activeExamTask = learningDatabase.examTasks.find((task) => task.id === activeExamId) ?? learningDatabase.examTasks[0]!;
 
+  const applyStoredState = useCallback((parsed: EvaStoredStudioState) => {
+    setActiveStackId(parsed.activeStackId ?? booklet.stacks[0]?.id ?? "");
+    setActiveChapterId(parsed.activeChapterId ?? booklet.chapters[0]?.id ?? "");
+    setActivePageId(parsed.activePageId ?? booklet.pages[0]?.id ?? "");
+    setActiveLaneId(parsed.activeLaneId ?? chapterLane.id);
+    setActivePremiumTab((parsed.activePremiumTab as PremiumTabId | undefined) ?? "overview");
+    setActiveModuleId(parsed.activeModuleId ?? evaGrammarModules[0]?.id ?? "");
+    setActiveLexicalId(parsed.activeLexicalId ?? evaLexicalResource[0]?.id ?? "");
+    setActiveQuizTrack((parsed.activeQuizTrack as EvaStudioTrack | undefined) ?? "grammar");
+    setActiveExamId(parsed.activeExamId ?? learningDatabase.examTasks[0]?.id ?? "");
+    setActiveMaterialTrack((parsed.activeMaterialTrack as EvaMaterialTrack | undefined) ?? "reading");
+    setActiveMaterialId(parsed.activeMaterialId ?? evaMaterialCollections[0]?.items[0]?.id ?? "");
+    setDone(parsed.done);
+    setModuleDone(parsed.moduleDone);
+    setNotes(parsed.notes);
+    setWritingDrafts(parsed.writingDrafts);
+    setPronunciationDone(parsed.pronunciationDone);
+    setShadowingDone(parsed.shadowingDone);
+    setTtsListened(parsed.ttsListened);
+    setTtsRepeated(parsed.ttsRepeated);
+    setQuizAnswers(parsed.quizAnswers);
+    setExamAnswers(parsed.examAnswers);
+    setReviewQueue(parsed.reviewQueue);
+    setTeacherNotes(parsed.teacherNotes);
+  }, [booklet.chapters, booklet.pages, booklet.stacks, learningDatabase.examTasks]);
+
   useEffect(() => {
+    let cancelled = false;
+
+    if (persistenceMode === "database") {
+      void (async () => {
+        try {
+          const response = await fetch("/eva-digital-booklet/state", { cache: "no-store" });
+          if (!response.ok) throw new Error("State request failed.");
+          const payload = (await response.json()) as {
+            state?: Partial<EvaStoredStudioState>;
+            teacherSnapshots?: Record<EvaUserId, Partial<EvaStoredStudioState>> | null;
+          };
+          if (cancelled) return;
+
+          applyStoredState(normalizeStoredState(payload.state));
+
+          if (payload.teacherSnapshots) {
+            setTeacherSnapshots({
+              ali: normalizeStoredState(payload.teacherSnapshots.ali),
+              eva: normalizeStoredState(payload.teacherSnapshots.eva),
+              elham: normalizeStoredState(payload.teacherSnapshots.elham),
+            });
+          }
+
+          setSyncStatus("synced");
+        } catch {
+          if (!cancelled) setSyncStatus("error");
+        } finally {
+          if (!cancelled) setHydrated(true);
+        }
+      })();
+
+      return () => {
+        cancelled = true;
+      };
+    }
+
     const frame = window.requestAnimationFrame(() => {
       try {
         const stored = window.localStorage.getItem(storageKey);
@@ -330,29 +394,7 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
 
         if (target) {
           const parsed = normalizeStoredState(JSON.parse(target) as Partial<EvaStoredStudioState>);
-          setActiveStackId(parsed.activeStackId ?? booklet.stacks[0]?.id ?? "");
-          setActiveChapterId(parsed.activeChapterId ?? booklet.chapters[0]?.id ?? "");
-          setActivePageId(parsed.activePageId ?? booklet.pages[0]?.id ?? "");
-          setActiveLaneId(parsed.activeLaneId ?? chapterLane.id);
-          setActivePremiumTab((parsed.activePremiumTab as PremiumTabId | undefined) ?? "overview");
-          setActiveModuleId(parsed.activeModuleId ?? evaGrammarModules[0]?.id ?? "");
-          setActiveLexicalId(parsed.activeLexicalId ?? evaLexicalResource[0]?.id ?? "");
-          setActiveQuizTrack((parsed.activeQuizTrack as EvaStudioTrack | undefined) ?? "grammar");
-          setActiveExamId(parsed.activeExamId ?? learningDatabase.examTasks[0]?.id ?? "");
-          setActiveMaterialTrack((parsed.activeMaterialTrack as EvaMaterialTrack | undefined) ?? "reading");
-          setActiveMaterialId(parsed.activeMaterialId ?? evaMaterialCollections[0]?.items[0]?.id ?? "");
-          setDone(parsed.done);
-          setModuleDone(parsed.moduleDone);
-          setNotes(parsed.notes);
-          setWritingDrafts(parsed.writingDrafts);
-          setPronunciationDone(parsed.pronunciationDone);
-          setShadowingDone(parsed.shadowingDone);
-          setTtsListened(parsed.ttsListened);
-          setTtsRepeated(parsed.ttsRepeated);
-          setQuizAnswers(parsed.quizAnswers);
-          setExamAnswers(parsed.examAnswers);
-          setReviewQueue(parsed.reviewQueue);
-          setTeacherNotes(parsed.teacherNotes);
+          applyStoredState(parsed);
         }
 
         const snapshots = Object.fromEntries(
@@ -369,7 +411,7 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
     });
 
     return () => window.cancelAnimationFrame(frame);
-  }, [activeUser.id, booklet.chapters, booklet.pages, booklet.stacks, learningDatabase.examTasks, storageKey]);
+  }, [activeUser.id, applyStoredState, persistenceMode, storageKey]);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -398,6 +440,33 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
       reviewQueue,
       teacherNotes,
     });
+
+    if (persistenceMode === "database") {
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => {
+        setSyncStatus("saving");
+        void fetch("/eva-digital-booklet/state", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ state }),
+          signal: controller.signal,
+        })
+          .then((response) => {
+            if (!response.ok) throw new Error("State save failed.");
+            setSyncStatus("synced");
+          })
+          .catch((error: unknown) => {
+            if (error instanceof DOMException && error.name === "AbortError") return;
+            setSyncStatus("error");
+          });
+      }, 520);
+
+      return () => {
+        controller.abort();
+        window.clearTimeout(timeout);
+      };
+    }
+
     window.localStorage.setItem(storageKey, JSON.stringify(state));
   }, [
     activeChapterId,
@@ -411,12 +480,12 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
     activePremiumTab,
     activeQuizTrack,
     activeStackId,
-    activeUser.id,
     done,
     examAnswers,
     hydrated,
     moduleDone,
     notes,
+    persistenceMode,
     pronunciationDone,
     quizAnswers,
     reviewQueue,
@@ -713,6 +782,16 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
       : activeQuizQuestions.find((question) => quizAnswers[question.id] === undefined)
         ? { label: "Finish quiz track", text: quizTrackTitle(activeQuizTrack), action: () => setActivePremiumTab("quiz" as const) }
         : { label: "Open Writing Vault", text: `${writingVaultEntries.length} saved drafts`, action: () => setActivePremiumTab("vault" as const) };
+  const syncLabel =
+    persistenceMode === "database"
+      ? syncStatus === "saving"
+        ? "Saving member records"
+        : syncStatus === "error"
+          ? "Sync needs attention"
+          : syncStatus === "loading"
+            ? "Loading member records"
+            : "Server-synced records"
+      : "Production storage pending";
 
   function chooseStack(stack: EvaBookletStack) {
     const nextChapter = booklet.chapters.find((chapter) => stack.chapterIds.includes(chapter.id)) ?? booklet.chapters[0];
@@ -869,9 +948,25 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
       ...currentSnapshot,
       teacherNotes: { ...currentSnapshot.teacherNotes, [activePage.id]: note },
     });
-    window.localStorage.setItem(evaUserStorageKey(targetId), JSON.stringify(nextSnapshot));
     setTeacherSnapshots((current) => ({ ...current, [targetId]: nextSnapshot }));
     if (targetId === activeUser.id) setTeacherNotes(nextSnapshot.teacherNotes);
+
+    if (persistenceMode === "database") {
+      setSyncStatus("saving");
+      void fetch("/eva-digital-booklet/teacher-note", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ learnerUserId: targetId, pageId: activePage.id, note }),
+      })
+        .then((response) => {
+          if (!response.ok) throw new Error("Teacher note save failed.");
+          setSyncStatus("synced");
+        })
+        .catch(() => setSyncStatus("error"));
+      return;
+    }
+
+    window.localStorage.setItem(evaUserStorageKey(targetId), JSON.stringify(nextSnapshot));
   }
 
   function resetQuizTrack() {
@@ -926,6 +1021,19 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
               <span className="inline-flex items-center gap-2 rounded-[8px] border border-sky-200/15 bg-sky-300/[0.055] px-3 py-2 text-sm font-semibold text-sky-100">
                 <Database aria-hidden="true" className="size-4" />
                 {learningDatabase.entities.length} DB entities modeled
+              </span>
+              <span
+                className={cn(
+                  "inline-flex items-center gap-2 rounded-[8px] border px-3 py-2 text-sm font-semibold",
+                  persistenceMode === "database"
+                    ? syncStatus === "error"
+                      ? "border-rose-200/20 bg-rose-300/[0.07] text-rose-100"
+                      : "border-emerald-200/15 bg-emerald-300/[0.06] text-emerald-100"
+                    : "border-amber-200/20 bg-amber-200/[0.08] text-amber-100",
+                )}
+              >
+                <CircleCheck aria-hidden="true" className="size-4" />
+                {syncLabel}
               </span>
             </div>
           </div>

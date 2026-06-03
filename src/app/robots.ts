@@ -9,7 +9,13 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/eva-digital-booklet/studio", "/eva-digital-booklet/login", "/eva-digital-booklet/logout"],
+        disallow: [
+          "/eva-digital-booklet/studio",
+          "/eva-digital-booklet/login",
+          "/eva-digital-booklet/logout",
+          "/eva-digital-booklet/state",
+          "/eva-digital-booklet/teacher-note",
+        ],
       },
     ],
     sitemap: `${base}/sitemap.xml`,

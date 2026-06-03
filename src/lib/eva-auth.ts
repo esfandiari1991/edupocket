@@ -2,14 +2,15 @@ import "server-only";
 
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import { getEvaSeedUser, type EvaSeedUser, type EvaUserId } from "@/lib/eva-learning-db";
+import { getEvaUserByPasscode, isEvaPersistenceConfigured } from "@/lib/eva-persistence";
 
 export const evaSessionCookieName = "edupocket_eva_session";
 
 const sessionMaxAgeSeconds = 60 * 60 * 24 * 7;
 const localPreviewPasscodeHashes: Record<EvaUserId, string> = {
-  ali: "1ad5d3a395b20fc99740e04fcb251556f2116b28ca3c494e0a83faefe3d16f06",
-  eva: "1e45ae3938c047fb760f2ac40116cc6066cd9fee811795f5a20125fc653290a8",
-  elham: "df69fafb53a23cac8391b13af0352275ccbf60b83c3d2c5bbe9de82d3fb05b89",
+  ali: "24e412daf612d6390bc668b6cd0b2aaac77834cfe7f170e5f9d022a440ecd218",
+  eva: "d1fecebd074362f7b84011a33306fec02cc2c43e31cecc80012cbd595fdebe99",
+  elham: "e54847e6489b4ce2073548f85ce33af93fe0efe5b4b00e3e06bd2096e6b651c4",
 };
 
 function sha256(value: string) {
@@ -48,7 +49,7 @@ function sessionSecret() {
 }
 
 function allowsLocalPreviewPasscodes() {
-  return process.env.NODE_ENV !== "production" || sessionSecret() === "edupocket-local-eva-preview-session";
+  return process.env.NODE_ENV !== "production";
 }
 
 export function getEvaSessionCookieOptions() {
@@ -63,8 +64,10 @@ export function getEvaSessionCookieOptions() {
 
 export type EvaAuthenticatedUser = EvaSeedUser;
 
-export function validateEvaPasscode(passcode: string): EvaAuthenticatedUser | null {
+export async function validateEvaPasscode(passcode: string): Promise<EvaAuthenticatedUser | null> {
   const cleaned = passcode.trim();
+  if (isEvaPersistenceConfigured()) return getEvaUserByPasscode(cleaned);
+
   const cleanedHash = sha256(cleaned);
   const configuredHashes = configuredPasscodeHashes();
 

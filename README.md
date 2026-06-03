@@ -10,15 +10,49 @@ The Eva Digital Booklet is EduPocket's first private digital-product portal. The
 
 The studio content is generated from the full Eva workbook into `src/lib/eva-booklet.generated.json` and loaded through server-side code. It is not stored in `public/`.
 
-Development-only access passcode:
+The paid-product architecture uses:
+
+- Postgres-backed premium memberships
+- signed HTTP-only member sessions
+- server-backed progress snapshots
+- server-backed quiz/writing responses
+- server-backed review queue entries
+- server-backed teacher notes
+- browser-native TTS for listening and pronunciation scripts
+
+Development-only access passcodes for `pnpm dev` when no database is configured:
 
 ```text
+ali-local-preview
 eva-local-preview
+elham-local-preview
 ```
 
 The Eva portal branch is local review only until final approval. Do not deploy, tag, push, or change Vercel/domain settings for this branch without explicit approval.
 
-Production member access must use dedicated member credentials and server-backed storage before paid public launch. The development passcode is only for local branch review.
+Production member access must use dedicated member credentials and server-backed storage before paid public launch. The development passcodes are only for local branch review.
+
+For production-mode local QA with `next start`, set `EVA_PORTAL_SESSION_SECRET` and `EVA_PORTAL_USER_PASSCODE_HASHES` instead of relying on development passcodes.
+
+### Eva production setup
+
+Create a Postgres database, then set `EVA_DATABASE_URL` or `DATABASE_URL` and `EVA_PORTAL_SESSION_SECRET`.
+
+```bash
+pnpm eva:migrate
+pnpm eva:sync-content
+pnpm eva:set-passcode ali "private-ali-passcode"
+pnpm eva:set-passcode eva "private-eva-passcode"
+pnpm eva:set-passcode elham "private-elham-passcode"
+```
+
+To generate a hash without writing to the database:
+
+```bash
+pnpm eva:hash-passcode "member-passcode"
+```
+
+For Vercel production, add the same `EVA_DATABASE_URL` and `EVA_PORTAL_SESSION_SECRET` values to the Vercel project environment before deploying the Eva branch.
 
 ## Official local path
 
@@ -82,6 +116,7 @@ The custom domain `https://edupocket.org` is attached in Vercel. It will serve t
 - `src/lib`: site config, content loaders, utilities
 - `src/lib/eva-booklet.generated.json`: private generated Eva booklet database
 - `src/lib/eva-private-content.ts`: server-only Eva booklet access layer
+- `src/lib/eva-persistence.ts`: server-only Eva membership and progress persistence
 - `src/lib/english-lab.ts`: English Lab diagnostic tests, prompts, and skill data
 - `src/lib/i18n.ts`: shared bilingual labels, date formatting, and content metadata helpers
 - `src/types`: shared content types
@@ -93,6 +128,7 @@ The custom domain `https://edupocket.org` is attached in Vercel. It will serve t
 - `public/icons`: icon assets
 - `public/images`: visual assets
 - `scripts`: content creation, route verification, and Eva booklet import scripts
+- `db`: Postgres schema migrations for paid-product persistence
 - `legacy-static`: preserved previous static prototype
 
 ## Add content
