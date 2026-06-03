@@ -17,7 +17,7 @@ export function EvaLoginForm({ error }: EvaLoginFormProps) {
         </span>
         <div>
           <h2 className="text-base font-semibold text-white">
-            <LocalizedText en="Private access" fa="دسترسی خصوصی" />
+            <LocalizedText en="Premium member access" fa="دسترسی اعضای پریمیوم" />
           </h2>
           <p className="mt-1 text-xs leading-5 text-slate-400">
             <LocalizedText en="Only premium members have access to it." fa="فقط اعضای پریمیوم به آن دسترسی دارند." />
@@ -47,7 +47,7 @@ export function EvaLoginForm({ error }: EvaLoginFormProps) {
       ) : null}
       {hasConfigError ? (
         <p className="mt-3 text-sm leading-6 text-rose-200">
-          <LocalizedText en="Private access is not configured yet." fa="دسترسی خصوصی هنوز تنظیم نشده است." />
+          <LocalizedText en="Premium access is not configured yet." fa="دسترسی پریمیوم هنوز تنظیم نشده است." />
         </p>
       ) : null}
       <button
