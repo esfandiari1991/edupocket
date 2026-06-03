@@ -9,7 +9,7 @@ export function StructuredData() {
   const sameAs = [siteConfig.contact.telegram.href, siteConfig.contact.instagram.href, siteConfig.contact.bale.href];
   const logo = `${base}/icons/edupocket-mark.svg`;
   const primaryPages = [
-    { name: "Eva Digital Booklet by Ali Rad", url: `${base}/eva-digital-booklet`, description: "A premium study product by Ali Rad inside EduPocket: private IELTS and TOEFL-style reading and writing practice." },
+    { name: "Eva Digital Booklet by Ali Rad", url: `${base}/eva-digital-booklet`, description: "Ali Rad's first official digital study product inside EduPocket: private IELTS and TOEFL-style reading and writing practice." },
     { name: "English Lab", url: `${base}/english-lab`, description: "Interactive English practice for grammar, vocabulary, reading, listening, writing, exams, and level checks." },
     { name: "Articles", url: `${base}/articles`, description: "Practical notes about AI learning, teaching systems, study habits, and technology." },
     { name: "Lessons", url: `${base}/lessons`, description: "Short micro-lessons for English, IELTS, TOEFL, study skills, and AI learning." },

@@ -41,12 +41,12 @@ export function EvaBookletGateway({ compact = false, loginError }: EvaBookletGat
                     <LocalizedText en="Ali Rad's study system" fa="سیستم مطالعه علی راد" />
                   </p>
                   <p className="mt-2 text-xs leading-5 text-slate-300">
-                    <LocalizedText en="A premium chapter map organized through EduPocket." fa="نقشه فصل های پریمیوم که داخل EduPocket سازماندهی شده است." />
+                    <LocalizedText en="The first official digital release, organized through EduPocket." fa="اولین انتشار دیجیتال رسمی که داخل EduPocket سازماندهی شده است." />
                   </p>
                 </div>
 
-                <div className="relative mx-auto w-20 sm:mx-0 sm:w-24">
-                  <div className="absolute -inset-1 rounded-[10px] bg-[conic-gradient(from_150deg,rgba(251,191,36,0.7),rgba(125,211,252,0.18),rgba(251,191,36,0.42),rgba(15,23,42,0.2))] opacity-70 blur-[2px]" />
+                <div className="relative mx-auto w-20 overflow-hidden rounded-[10px] sm:mx-0 sm:w-24">
+                  <div className="absolute inset-0 rounded-[10px] bg-[conic-gradient(from_150deg,rgba(251,191,36,0.7),rgba(125,211,252,0.18),rgba(251,191,36,0.42),rgba(15,23,42,0.2))] opacity-70 blur-[2px]" />
                   <div className="relative overflow-hidden rounded-[8px] border border-amber-100/18 bg-slate-950/70 shadow-[0_18px_48px_rgba(0,0,0,0.34)]">
                     <Image
                       src="/images/eva/eva-digital-booklet-study.jpg"
