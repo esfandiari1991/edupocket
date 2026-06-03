@@ -107,7 +107,7 @@ export function EvaBookletGateway({ compact = false, loginError }: EvaBookletGat
                 </p>
                 {!compact ? (
                   <p className="mt-3 max-w-xl text-xs font-semibold leading-5 text-amber-100/80">
-                    <LocalizedText en="Public preview. Premium chapters stay protected." fa="پیش نمایش عمومی است؛ فصل های پریمیوم محافظت می‌شوند." />
+                    <LocalizedText en="Public gateway. Premium chapters stay protected." fa="درگاه عمومی است؛ فصل های پریمیوم محافظت می‌شوند." />
                   </p>
                 ) : null}
                 <div className="mt-6 flex flex-wrap gap-2">

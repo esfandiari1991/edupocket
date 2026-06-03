@@ -6,7 +6,7 @@ They are not copied from third-party copyrighted material. Ali Rad / EduPocket m
 
 ## Eva Digital Booklet material assets
 
-The SVG files under `eva/` are original EduPocket visual learning aids for the local Eva Digital Booklet portal preview.
+The SVG files under `eva/` are original EduPocket visual learning aids for the Eva Digital Booklet premium study portal.
 
 They support original reading, writing, listening, pronunciation, exam-mode, and teacher-feedback activities. They do not copy IELTS, TOEFL, ETS, British Council, test-english, or other exam-prep content.
 

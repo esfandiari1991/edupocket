@@ -915,7 +915,7 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
               EduPocket&apos;s Eva Digital Booklet, segmented into a real 298-page study studio.
             </h2>
             <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-300">
-              The full workbook is indexed by learning stack, semantic lane, chapter, page, skill, practice level, search, related pages, and local study evidence.
+              The full workbook is indexed by learning stack, semantic lane, chapter, page, skill, practice level, search, related pages, and saved study evidence.
               {` ${laneCoverageCount}/${booklet.stats.pages} imported pages are covered by the studio lanes, with chapter order preserved for every page.`}
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
@@ -1122,7 +1122,7 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
             </div>
             <span className="inline-flex items-center gap-2 rounded-[8px] border border-amber-200/20 bg-amber-200/[0.08] px-3 py-2 text-sm font-semibold text-amber-100">
               <Database aria-hidden="true" className="size-4" />
-              Local DB preview
+              Premium member records
             </span>
           </div>
 
@@ -1184,7 +1184,7 @@ export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperience
                 className="mt-3 min-h-28 w-full resize-y rounded-[8px] border border-white/10 bg-slate-950/72 p-3 text-sm leading-7 text-slate-100 outline-none transition placeholder:text-slate-600 focus:border-amber-300/50 focus:ring-2 focus:ring-amber-300/20"
                 placeholder="Write Ali's feedback, weak skill, or next assignment..."
               />
-              <p className="mt-2 text-xs leading-5 text-slate-500">Stored in the selected learner snapshot for local review.</p>
+              <p className="mt-2 text-xs leading-5 text-slate-500">Saved to the selected learner record for focused review.</p>
             </div>
           </div>
         </section>

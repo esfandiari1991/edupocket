@@ -45,11 +45,11 @@ export const evaMaterialSourcePolicy = [
   },
   {
     label: "Public-domain references",
-    note: "Public-domain literature can be used later with attribution, but this local pack currently avoids copied source excerpts and uses fresh passages.",
+    note: "The current pack uses fresh EduPocket passages. Future public-domain literature additions should keep clear attribution and jurisdiction checks.",
   },
   {
     label: "TTS implementation",
-    note: "Pronunciation and listening scripts are designed for the browser Web Speech API, so no paid audio API is required for the local product preview.",
+    note: "Pronunciation and listening scripts are designed for the browser Web Speech API, so no paid audio API is required for the premium study flow.",
   },
 ];
 
@@ -124,7 +124,7 @@ export const evaReadingMaterials: EvaMaterialItem[] = [
     sourceTypeTargets: ["progress", "journal", "reading-lab-rc"],
     visualAsset: "/images/materials/eva/eva-writing-vault.svg",
     passage:
-      "AI feedback is most useful when it acts as a second reader rather than a final judge. A system can notice repeated grammar patterns, missing examples, or vague claims, but it cannot fully understand the learner's intention, emotional state, or long-term goals. For this reason, strong learners use AI comments as a draft lens. They ask what the machine noticed, decide which comments are relevant, and then bring the revised draft to a teacher or mentor. This order keeps the learner active. Instead of accepting every suggestion, the learner practices evaluation, revision, and explanation. In a premium study portal, AI-like routines can be simulated even without an external model by using checklists, rubrics, and stored teacher notes.",
+      "AI feedback is most useful when it acts as a second reader rather than a final judge. A system can notice repeated grammar patterns, missing examples, or vague claims, but it cannot fully understand the learner's intention, emotional state, or long-term goals. For this reason, strong learners use AI comments as a draft lens. They ask what the machine noticed, decide which comments are relevant, and then bring the revised draft to a teacher or mentor. This order keeps the learner active. In a premium study portal, AI-augmented routines can be built with checklists, rubrics, and stored teacher notes even before an external model is connected.",
     prompt: "Answer the questions. The passage is original EduPocket material and follows TOEFL-style reading demands.",
     questions: [
       {

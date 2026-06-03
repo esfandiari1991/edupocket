@@ -82,7 +82,7 @@ Previous local prototype/workspace was found at /Users/ali/Documents/Claude/Proj
 - Approval gate: production deployment happens only after final explicit approval.
 - Public gateway route: `/eva-digital-booklet`.
 - Protected studio route: `/eva-digital-booklet/studio`.
-- Development passcode fallback: `eva-local-preview`.
+- Development-only access fallback: `eva-local-preview`.
 - Private data location: `src/lib/eva-booklet.generated.json`, loaded through `src/lib/eva-private-content.ts`.
 - Private content public exposure: not stored in `public/`; unauthenticated `/eva-digital-booklet/studio` returns `307` to `/eva-digital-booklet`.
 - Import script: `scripts/import-eva-booklet.mjs`.
@@ -102,8 +102,8 @@ Previous local prototype/workspace was found at /Users/ali/Documents/Claude/Proj
   - skill filters
   - page search
   - related-page jumps
-  - local page completion
-  - local page notes
+  - per-member page completion
+  - per-member page notes
   - Markdown export per page
 - Local QA on 2026-06-03:
   - `pnpm lint`: passed
