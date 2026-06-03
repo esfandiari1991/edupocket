@@ -29,6 +29,84 @@ type StoredState = {
   notes: Record<string, string>;
 };
 
+type StudyLane = {
+  id: string;
+  title: string;
+  description: string;
+  matchTypes: string[];
+  primarySkills: string[];
+};
+
+const chapterLane: StudyLane = {
+  id: "chapter-path",
+  title: "Chapter path",
+  description: "Default order for the selected chapter.",
+  matchTypes: [],
+  primarySkills: ["Sequential", "Complete", "Guided"],
+};
+
+const semanticStudyLanes: StudyLane[] = [
+  {
+    id: "orientation-lessons",
+    title: "Orientation & lessons",
+    description: "Foundations, chapter language pages, and opening study frames.",
+    matchTypes: ["cover", "toc", "lesson", "chapter-language"],
+    primarySkills: ["Foundation", "Language focus", "Study rhythm"],
+  },
+  {
+    id: "reading-labs",
+    title: "Reading labs",
+    description: "IELTS/TOEFL-style reading, comprehension, and enrichment passages.",
+    matchTypes: ["reading-lab", "reading-lab-rc", "chapter-reading", "enrichment", "enrichment-rc"],
+    primarySkills: ["Reading", "Comprehension", "Critical thinking"],
+  },
+  {
+    id: "vocabulary-bank",
+    title: "Vocabulary bank",
+    description: "Lexis, collocations, glossary work, and reusable word knowledge.",
+    matchTypes: ["vocabulary"],
+    primarySkills: ["Vocabulary", "Lexis", "Collocation"],
+  },
+  {
+    id: "grammar-accuracy",
+    title: "Grammar accuracy",
+    description: "Grammar teaching, practice, Bible-based accuracy work, and language control.",
+    matchTypes: ["grammar-lesson", "grammar-practice", "grammar-bible"],
+    primarySkills: ["Grammar", "Accuracy", "Control"],
+  },
+  {
+    id: "translation-exegesis",
+    title: "Translation & exegesis",
+    description: "Equivalence, context, revision, deep reading, and meaning transfer.",
+    matchTypes: ["translation", "exegesis"],
+    primarySkills: ["Translation", "Context", "Meaning"],
+  },
+  {
+    id: "listening-speaking",
+    title: "Listening & solo speaking",
+    description: "Audio-led rehearsal, solo speaking prompts, and discussion preparation.",
+    matchTypes: ["listening-speaking"],
+    primarySkills: ["Listening", "Speaking solo", "Discussion"],
+  },
+  {
+    id: "service-scenarios",
+    title: "Service scenarios",
+    description: "Real-life ministry situations, visual prompts, and practical response work.",
+    matchTypes: ["scenario", "gallery"],
+    primarySkills: ["Scenario", "Care", "Visual speaking"],
+  },
+  {
+    id: "progress-portfolio",
+    title: "Progress & portfolio",
+    description: "Trackers, journals, quizzes, review loops, and visible learning evidence.",
+    matchTypes: ["progress", "chapter-quiz"],
+    primarySkills: ["Journal", "Quiz", "Portfolio"],
+  },
+];
+
+const studyLanes = [chapterLane, ...semanticStudyLanes];
+const broadSkillTags = new Set(["Ministry", "Writing", "Speaking Solo", "Reading", "Translation", "Grammar", "Vocabulary"]);
+
 function unique(values: string[]) {
   return Array.from(new Set(values.filter(Boolean)));
 }
@@ -53,10 +131,20 @@ function firstPageForChapter(chapter: EvaBookletChapter, pages: EvaBookletPage[]
   return pages.find((page) => page.chapterId === chapter.id);
 }
 
+function pageMatchesStudyLane(page: EvaBookletPage, lane: StudyLane) {
+  if (lane.id === chapterLane.id) return true;
+  return lane.matchTypes.includes(page.type);
+}
+
+function countFields(pages: EvaBookletPage[]) {
+  return pages.reduce((total, page) => total + page.fieldCount, 0);
+}
+
 export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
   const [activeStackId, setActiveStackId] = useState(booklet.stacks[0]?.id ?? "");
   const [activeChapterId, setActiveChapterId] = useState(booklet.chapters[0]?.id ?? "");
   const [activePageId, setActivePageId] = useState(booklet.pages[0]?.id ?? "");
+  const [activeLaneId, setActiveLaneId] = useState(chapterLane.id);
   const [skillFilter, setSkillFilter] = useState("All");
   const [query, setQuery] = useState("");
   const [done, setDone] = useState<Record<string, boolean>>({});
@@ -109,28 +197,61 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
   const stackPageIds = useMemo(() => new Set(stackChapters.flatMap((chapter) => chapter.pageIds)), [stackChapters]);
   const stackPages = useMemo(() => booklet.pages.filter((page) => stackPageIds.has(page.id)), [booklet.pages, stackPageIds]);
   const chapterPages = useMemo(() => booklet.pages.filter((page) => page.chapterId === activeChapter.id), [activeChapter.id, booklet.pages]);
-  const skillOptions = useMemo(() => ["All", ...unique(chapterPages.flatMap((page) => page.skillTags)).slice(0, 9)], [chapterPages]);
+  const activeLane = useMemo(() => studyLanes.find((lane) => lane.id === activeLaneId) ?? chapterLane, [activeLaneId]);
+  const stackStats = useMemo(() => {
+    return new Map(
+      booklet.stacks.map((stack) => {
+        const chapterIds = new Set(stack.chapterIds);
+        const pages = booklet.pages.filter((page) => chapterIds.has(page.chapterId));
+        return [stack.id, { fields: countFields(pages), pages: pages.length }];
+      }),
+    );
+  }, [booklet.pages, booklet.stacks]);
+  const laneCoverageCount = useMemo(() => {
+    const coveredIds = new Set(
+      booklet.pages
+        .filter((page) => semanticStudyLanes.some((lane) => pageMatchesStudyLane(page, lane)))
+        .map((page) => page.id),
+    );
+    return coveredIds.size;
+  }, [booklet.pages]);
+  const lanePages = useMemo(() => {
+    if (activeLane.id === chapterLane.id) return chapterPages;
+    return stackPages.filter((page) => pageMatchesStudyLane(page, activeLane));
+  }, [activeLane, chapterPages, stackPages]);
+  const laneCounts = useMemo(() => {
+    return new Map(
+      studyLanes.map((lane) => {
+        const pages = lane.id === chapterLane.id ? chapterPages : stackPages.filter((page) => pageMatchesStudyLane(page, lane));
+        return [lane.id, { fields: countFields(pages), pages: pages.length }];
+      }),
+    );
+  }, [chapterPages, stackPages]);
+  const skillOptions = useMemo(() => ["All", ...unique(lanePages.flatMap((page) => page.skillTags)).slice(0, 12)], [lanePages]);
+  const effectiveSkillFilter = skillOptions.includes(skillFilter) ? skillFilter : "All";
   const visiblePages = useMemo(() => {
-    const basePages = query.trim() ? stackPages : chapterPages;
-    return basePages.filter((page) => pageMatches(page, query)).filter((page) => skillFilter === "All" || page.skillTags.includes(skillFilter));
-  }, [chapterPages, query, skillFilter, stackPages]);
+    const basePages = query.trim() && activeLane.id === chapterLane.id ? stackPages : lanePages;
+    return basePages.filter((page) => pageMatches(page, query)).filter((page) => effectiveSkillFilter === "All" || page.skillTags.includes(effectiveSkillFilter));
+  }, [activeLane.id, effectiveSkillFilter, lanePages, query, stackPages]);
 
   const relatedPages = useMemo(() => {
-    const activeSkills = new Set(activePage.skillTags);
+    const activeSpecificSkills = new Set(activePage.skillTags.filter((skill) => !broadSkillTags.has(skill)));
     const adjacent = booklet.pages.filter(
       (page) => page.chapterId === activePage.chapterId && Math.abs(page.page - activePage.page) <= 2 && page.id !== activePage.id,
     );
-    const semantic = booklet.pages.filter(
+    const sameType = stackPages.filter((page) => page.id !== activePage.id && page.type === activePage.type);
+    const sameLane = activeLane.id === chapterLane.id ? [] : stackPages.filter((page) => page.id !== activePage.id && pageMatchesStudyLane(page, activeLane));
+    const semantic = stackPages.filter(
       (page) =>
         page.id !== activePage.id &&
-        page.chapterId === activePage.chapterId &&
-        page.skillTags.some((skill) => activeSkills.has(skill)),
+        page.skillTags.some((skill) => activeSpecificSkills.has(skill)) &&
+        activeSpecificSkills.size > 0,
     );
-    return unique([...adjacent, ...semantic].map((page) => page.id))
+    return unique([...adjacent, ...sameType, ...sameLane, ...semantic].map((page) => page.id))
       .map((id) => booklet.pages.find((page) => page.id === id))
       .filter((page): page is EvaBookletPage => Boolean(page))
       .slice(0, 6);
-  }, [activePage, booklet.pages]);
+  }, [activeLane, activePage, booklet.pages, stackPages]);
 
   if (!activeStack || !activeChapter || !activePage) return null;
 
@@ -146,6 +267,7 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
     setActiveStackId(stack.id);
     setActiveChapterId(nextChapter?.id ?? "");
     setActivePageId(nextPage?.id ?? "");
+    setActiveLaneId(chapterLane.id);
     setSkillFilter("All");
     setQuery("");
   }
@@ -154,12 +276,28 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
     const nextPage = firstPageForChapter(chapter, booklet.pages);
     setActiveChapterId(chapter.id);
     setActivePageId(nextPage?.id ?? "");
+    setActiveLaneId(chapterLane.id);
     setSkillFilter("All");
   }
 
   function choosePage(page: EvaBookletPage) {
+    const nextStack = booklet.stacks.find((stack) => stack.chapterIds.includes(page.chapterId));
+    if (nextStack) setActiveStackId(nextStack.id);
     setActiveChapterId(page.chapterId);
     setActivePageId(page.id);
+  }
+
+  function chooseLane(lane: StudyLane) {
+    setActiveLaneId(lane.id);
+    setSkillFilter("All");
+    setQuery("");
+    if (lane.id === chapterLane.id) return;
+
+    const nextPage = stackPages.find((page) => pageMatchesStudyLane(page, lane));
+    if (nextPage) {
+      setActiveChapterId(nextPage.chapterId);
+      setActivePageId(nextPage.id);
+    }
   }
 
   function exportPageNote() {
@@ -195,7 +333,8 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
               Eva Digital Booklet, segmented into a real 298-page study studio.
             </h2>
             <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-300">
-              The full workbook is indexed by learning stack, chapter, page, skill, practice level, search, related pages, and local study evidence.
+              The full workbook is indexed by learning stack, semantic lane, chapter, page, skill, practice level, search, related pages, and local study evidence.
+              {` ${laneCoverageCount}/${booklet.stats.pages} imported pages are covered by the studio lanes, with chapter order preserved for every page.`}
             </p>
           </div>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:w-[34rem]">
@@ -228,6 +367,7 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
             {booklet.stacks.map((stack) => {
               const active = stack.id === activeStack.id;
+              const stats = stackStats.get(stack.id);
 
               return (
                 <button
@@ -241,10 +381,62 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
                 >
                   <span className="block text-sm font-semibold">{stack.title}</span>
                   <span className="mt-1 block text-xs leading-5 text-slate-400">{stack.primarySkills.join(" / ")}</span>
+                  <span className="mt-2 block text-xs font-semibold text-slate-500">
+                    {stack.chapterIds.length} chapters · {stats?.pages ?? 0} pages · {stats?.fields ?? 0} fields
+                  </span>
                 </button>
               );
             })}
           </div>
+        </div>
+      </section>
+
+      <section className="rounded-[8px] border border-white/10 bg-white/[0.035] p-3 sm:p-4">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 className="text-base font-semibold text-white">Study lanes</h2>
+            <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-400">
+              Buttons group the imported pages by learning job, so similar work stays close while the complete booklet remains reachable.
+            </p>
+          </div>
+          <p className="text-xs font-semibold text-slate-500">
+            Active stack: {stackPages.length} pages · {countFields(stackPages)} fields
+          </p>
+        </div>
+        <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+          {studyLanes.map((lane) => {
+            const active = lane.id === activeLane.id;
+            const stats = laneCounts.get(lane.id);
+            const disabled = (stats?.pages ?? 0) === 0;
+
+            return (
+              <button
+                key={lane.id}
+                type="button"
+                disabled={disabled}
+                onClick={() => chooseLane(lane)}
+                className={cn(
+                  "min-h-[8.25rem] rounded-[8px] border p-3 text-start transition focus:outline-none focus:ring-2 focus:ring-amber-300/50",
+                  disabled
+                    ? "cursor-not-allowed border-white/10 bg-slate-950/18 text-slate-600 opacity-55"
+                    : active
+                      ? "border-amber-300/55 bg-amber-300/12 text-white"
+                      : "border-white/10 bg-slate-950/28 text-slate-300 hover:border-amber-300/35",
+                )}
+              >
+                <span className="flex items-start justify-between gap-3">
+                  <span className="text-sm font-semibold leading-5">{lane.title}</span>
+                  <span className="rounded-[6px] border border-white/10 bg-slate-950/40 px-2 py-1 text-[11px] font-semibold text-amber-100">
+                    {stats?.pages ?? 0}
+                  </span>
+                </span>
+                <span className="mt-2 block text-xs leading-5 text-slate-400">{lane.description}</span>
+                <span className="mt-3 block text-xs font-semibold text-slate-500">
+                  {disabled ? "Not in this stack yet" : lane.primarySkills.join(" / ")}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </section>
 
@@ -281,6 +473,9 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
                     </span>
                     <span className="mt-1 block text-sm font-semibold">{chapter.shortTitle}</span>
                     <span className="mt-1 block text-xs leading-5 text-slate-500">{chapter.mode} · {chapter.time}</span>
+                    <span className="mt-1 block text-xs font-semibold text-slate-600">
+                      {chapter.pageCount} pages · {chapter.fieldCount} fields
+                    </span>
                   </button>
                 );
               })}
@@ -367,7 +562,7 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
                     onClick={() => setSkillFilter(skill)}
                     className={cn(
                       "rounded-[8px] border px-3 py-2 text-xs font-semibold transition focus:outline-none focus:ring-2 focus:ring-amber-300/50",
-                      skillFilter === skill ? "border-amber-300/45 bg-amber-300/12 text-amber-100" : "border-white/10 bg-slate-950/30 text-slate-400 hover:border-amber-300/30 hover:text-slate-200",
+                      effectiveSkillFilter === skill ? "border-amber-300/45 bg-amber-300/12 text-amber-100" : "border-white/10 bg-slate-950/30 text-slate-400 hover:border-amber-300/30 hover:text-slate-200",
                     )}
                   >
                     {skill}
@@ -376,8 +571,11 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
               </div>
 
               <div className="mt-5 flex items-center justify-between gap-3">
-                <h2 className="text-sm font-semibold text-white">{query.trim() ? "Search results" : "Page buttons"}</h2>
-                <span className="text-xs text-slate-500">{visiblePages.length} pages</span>
+                <div>
+                  <h2 className="text-sm font-semibold text-white">{query.trim() ? "Search results" : activeLane.title}</h2>
+                  <p className="mt-1 text-xs leading-5 text-slate-500">{activeLane.id === chapterLane.id ? activeChapter.shortTitle : activeLane.description}</p>
+                </div>
+                <span className="shrink-0 text-xs text-slate-500">{visiblePages.length} pages</span>
               </div>
 
               <div className="mt-3 max-h-[34rem] space-y-2 overflow-y-auto pr-1">
@@ -457,22 +655,28 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
                   ))}
                 </div>
 
-                <div className="mt-5 grid gap-2 sm:grid-cols-5">
-                  {levelOrder.map((level) => {
-                    const active = activePage.levelTags.includes(level) || activePage.blocks.some((block) => block.toLowerCase().includes(level.toLowerCase()));
+                <div className="mt-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <h3 className="text-sm font-semibold text-white">Level stack</h3>
+                    <span className="text-xs font-semibold text-slate-500">{activePage.levelTags.length || "Imported"} signals</span>
+                  </div>
+                  <div className="mt-2 grid gap-2 sm:grid-cols-5">
+                    {levelOrder.map((level) => {
+                      const active = activePage.levelTags.includes(level) || activePage.blocks.some((block) => block.toLowerCase().includes(level.toLowerCase()));
 
-                    return (
-                      <div
-                        key={level}
-                        className={cn(
-                          "rounded-[8px] border px-3 py-2 text-center text-xs font-semibold",
-                          active ? "border-amber-300/45 bg-amber-300/12 text-amber-100" : "border-white/10 bg-slate-950/22 text-slate-600",
-                        )}
-                      >
-                        {level}
-                      </div>
-                    );
-                  })}
+                      return (
+                        <div
+                          key={level}
+                          className={cn(
+                            "rounded-[8px] border px-3 py-2 text-center text-xs font-semibold",
+                            active ? "border-amber-300/45 bg-amber-300/12 text-amber-100" : "border-white/10 bg-slate-950/22 text-slate-600",
+                          )}
+                        >
+                          {level}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </article>
 
