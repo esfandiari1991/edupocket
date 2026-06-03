@@ -50,7 +50,7 @@ function EvaProductStructuredData() {
 }
 
 export const metadata: Metadata = {
-  title: "Eva Digital Booklet by Ali Rad | EduPocket",
+  title: "Eva Digital Booklet by Ali Rad",
   description: "Ali Rad's first official digital study product inside EduPocket: a private Eva Digital Booklet gateway for structured IELTS and TOEFL-style reading and writing practice.",
   keywords: ["Eva Digital Booklet", "IELTS writing practice", "TOEFL reading practice", "premium English booklet", "EduPocket", "digital English booklet"],
   alternates: {
@@ -63,9 +63,9 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/images/eva/eva-digital-booklet-study.jpg",
-        width: 1200,
-        height: 900,
-        alt: "Eva Digital Booklet study portal",
+        width: 920,
+        height: 824,
+        alt: "Eva Digital Booklet study preview",
       },
     ],
   },

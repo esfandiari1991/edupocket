@@ -41,12 +41,12 @@ export function EvaLoginForm({ error }: EvaLoginFormProps) {
         placeholder="••••••••"
       />
       {hasError ? (
-        <p className="mt-3 text-sm leading-6 text-rose-200">
+        <p role="alert" aria-live="polite" className="mt-3 text-sm leading-6 text-rose-200">
           <LocalizedText en="That passcode did not open the portal." fa="این رمز، پرتال را باز نکرد." />
         </p>
       ) : null}
       {hasConfigError ? (
-        <p className="mt-3 text-sm leading-6 text-rose-200">
+        <p role="alert" aria-live="polite" className="mt-3 text-sm leading-6 text-rose-200">
           <LocalizedText en="Premium access is not configured yet." fa="دسترسی پریمیوم هنوز تنظیم نشده است." />
         </p>
       ) : null}

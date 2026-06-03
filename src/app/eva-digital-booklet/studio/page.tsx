@@ -10,7 +10,7 @@ import { evaBooklet } from "@/lib/eva-private-content";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Eva Digital Booklet Studio by Ali Rad | EduPocket",
+  title: "Eva Digital Booklet Studio by Ali Rad",
   description: "Private premium-member studio by Ali Rad inside EduPocket for the Eva Digital Booklet.",
   robots: {
     index: false,
