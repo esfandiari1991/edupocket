@@ -44,15 +44,15 @@ function EvaProductStructuredData() {
 }
 
 export const metadata: Metadata = {
-  title: "Eva Digital Booklet",
-  description: "EduPocket's first digital product: a premium-member Eva Digital Booklet gateway for structured IELTS and TOEFL-style reading and writing practice.",
+  title: "Eva Digital Booklet by EduPocket",
+  description: "An EduPocket premium product by Ali Rad: a private Eva Digital Booklet gateway for structured IELTS and TOEFL-style reading and writing practice.",
   keywords: ["Eva Digital Booklet", "IELTS writing practice", "TOEFL reading practice", "premium English booklet", "EduPocket", "digital English booklet"],
   alternates: {
     canonical: "/eva-digital-booklet",
   },
   openGraph: {
     title: "Eva Digital Booklet | EduPocket",
-    description: "EduPocket's first digital product: structured reading and writing practice in a premium-member study portal.",
+    description: "An EduPocket premium product by Ali Rad: structured reading and writing practice in a premium-member study portal.",
     url: "/eva-digital-booklet",
     images: [
       {
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Eva Digital Booklet | EduPocket",
-    description: "EduPocket's first digital product: structured reading and writing practice in a premium-member study portal.",
+    description: "An EduPocket premium product by Ali Rad: structured reading and writing practice in a premium-member study portal.",
     images: ["/images/eva/eva-digital-booklet-study.jpg"],
   },
 };

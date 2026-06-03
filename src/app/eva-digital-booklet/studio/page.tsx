@@ -10,8 +10,8 @@ import { evaBooklet } from "@/lib/eva-private-content";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Eva Digital Booklet Studio",
-  description: "Premium-member Eva Digital Booklet studio.",
+  title: "Eva Digital Booklet Studio | EduPocket",
+  description: "Private EduPocket premium-member studio for the Eva Digital Booklet by Ali Rad.",
   robots: {
     index: false,
     follow: false,
@@ -28,7 +28,7 @@ export default async function EvaBookletStudioPage() {
     <Container className="py-8 sm:py-12">
       <div className="mb-5 flex flex-col gap-4 border-b border-white/10 pb-5 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm font-semibold text-amber-200">Premium member access</p>
+          <p className="text-sm font-semibold text-amber-200">EduPocket premium product by Ali Rad</p>
           <h1 className="mt-2 text-2xl font-semibold leading-tight text-white sm:text-4xl">Eva Digital Booklet Studio</h1>
         </div>
         <form action="/eva-digital-booklet/logout" method="post">

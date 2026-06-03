@@ -465,7 +465,7 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
           <div>
             <p className="text-sm font-semibold text-amber-200">EduPocket private product database</p>
             <h2 className="mt-2 max-w-4xl text-xl font-semibold leading-tight text-white sm:text-3xl">
-              Eva Digital Booklet, segmented into a real 298-page study studio.
+              EduPocket&apos;s Eva Digital Booklet, segmented into a real 298-page study studio.
             </h2>
             <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-300">
               The full workbook is indexed by learning stack, semantic lane, chapter, page, skill, practice level, search, related pages, and local study evidence.

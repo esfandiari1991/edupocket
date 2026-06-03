@@ -2,8 +2,8 @@ export const evaPublicOffer = {
   title: { en: "Eva Digital Booklet", fa: "جزوه دیجیتال اوا" },
   price: "$4.99",
   description: {
-    en: "EduPocket's first digital product: a premium-member, chapterized study portal for IELTS/TOEFL-style reading and writing practice.",
-    fa: "اولین محصول دیجیتال EduPocket: یک پرتال فصل بندی شده برای اعضای پریمیوم، مخصوص تمرین ریدینگ و رایتینگ به سبک آیلتس و تافل.",
+    en: "An EduPocket premium product by Ali Rad: a chapterized study portal for serious IELTS/TOEFL-style reading and writing practice.",
+    fa: "یک محصول پریمیوم EduPocket از علی راد: پرتال فصل بندی شده برای تمرین جدی ریدینگ و رایتینگ به سبک آیلتس و تافل.",
   },
   included: [
     { en: "Chapterized reading labs", fa: "لابراتوارهای ریدینگ فصل بندی شده" },
@@ -22,7 +22,7 @@ export const evaPublicOffer = {
     { en: "Study inside the portal", fa: "داخل پرتال تمرین کن" },
   ],
   trustSignals: [
-    { en: "Original EduPocket practice", fa: "تمرین اختصاصی EduPocket" },
+    { en: "Original EduPocket practice by Ali Rad", fa: "تمرین اختصاصی EduPocket از علی راد" },
     { en: "Premium passcode portal", fa: "پرتال پریمیوم با رمز" },
     { en: "No copied exam content", fa: "بدون کپی از محتوای آزمون ها" },
   ],
