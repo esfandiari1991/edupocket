@@ -49,14 +49,14 @@ export function EvaBookletGateway({ compact = false, loginError }: EvaBookletGat
                   <div className="absolute inset-0 rounded-[10px] bg-[conic-gradient(from_150deg,rgba(251,191,36,0.7),rgba(125,211,252,0.18),rgba(251,191,36,0.42),rgba(15,23,42,0.2))] opacity-70 blur-[2px]" />
                   <div className="relative overflow-hidden rounded-[8px] border border-amber-100/18 bg-slate-950/70 shadow-[0_18px_48px_rgba(0,0,0,0.34)]">
                     <Image
-                      src="/images/eva/eva-digital-booklet-study.jpg"
+                      src="/images/eva/eva-digital-booklet-portrait.jpg"
                       alt="Premium member studying inside the Eva Digital Booklet portal"
-                      width={360}
-                      height={360}
+                      width={720}
+                      height={720}
                       priority
-                      quality={90}
-                      className="aspect-square w-full object-cover object-[50%_36%] contrast-[1.04] saturate-[1.02]"
-                      sizes="8rem"
+                      quality={88}
+                      className="aspect-square w-full object-cover object-[50%_42%] contrast-[1.02] saturate-[0.98]"
+                      sizes="(max-width: 640px) 5rem, 6rem"
                     />
                     <div className="absolute inset-0 rounded-[8px] ring-1 ring-inset ring-white/12" />
                   </div>
