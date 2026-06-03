@@ -20,7 +20,7 @@ export function EvaLoginForm({ error }: EvaLoginFormProps) {
             <LocalizedText en="Premium member access" fa="دسترسی اعضای پریمیوم" />
           </h2>
           <p className="mt-1 text-xs leading-5 text-slate-400">
-            <LocalizedText en="Only premium members have access to it." fa="فقط اعضای پریمیوم به آن دسترسی دارند." />
+            <LocalizedText en="Each premium member enters with a separate passcode." fa="هر عضو پریمیوم با رمز جداگانه وارد می‌شود." />
           </p>
         </div>
       </div>

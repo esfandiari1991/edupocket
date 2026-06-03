@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { LogOut } from "lucide-react";
 import { Container } from "@/components/site/Container";
 import { EvaStudioExperience } from "@/components/eva/EvaStudioExperience";
-import { evaSessionCookieName, isValidEvaSessionToken } from "@/lib/eva-auth";
+import { evaSessionCookieName, getEvaSessionUser } from "@/lib/eva-auth";
 import { evaBooklet } from "@/lib/eva-private-content";
 
 export const dynamic = "force-dynamic";
@@ -21,8 +21,9 @@ export const metadata: Metadata = {
 export default async function EvaBookletStudioPage() {
   const cookieStore = await cookies();
   const token = cookieStore.get(evaSessionCookieName)?.value;
+  const activeUser = getEvaSessionUser(token);
 
-  if (!isValidEvaSessionToken(token)) redirect("/eva-digital-booklet");
+  if (!activeUser) redirect("/eva-digital-booklet");
 
   return (
     <Container className="py-8 sm:py-12">
@@ -30,6 +31,9 @@ export default async function EvaBookletStudioPage() {
         <div>
           <p className="text-sm font-semibold text-amber-200">By Ali Rad, inside EduPocket</p>
           <h1 className="mt-2 text-2xl font-semibold leading-tight text-white sm:text-4xl">Eva Digital Booklet Studio</h1>
+          <p className="mt-2 text-sm leading-6 text-slate-400">
+            Signed in as <span className="font-semibold text-amber-100">{activeUser.displayName}</span>
+          </p>
         </div>
         <form action="/eva-digital-booklet/logout" method="post">
           <button
@@ -41,7 +45,7 @@ export default async function EvaBookletStudioPage() {
           </button>
         </form>
       </div>
-      <EvaStudioExperience booklet={evaBooklet} />
+      <EvaStudioExperience booklet={evaBooklet} activeUser={activeUser} />
     </Container>
   );
 }

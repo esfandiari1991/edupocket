@@ -5,8 +5,9 @@ export async function POST(request: NextRequest) {
   const formData = await request.formData();
   const passcode = String(formData.get("passcode") ?? "");
   const gatewayUrl = new URL("/eva-digital-booklet", request.url);
+  const user = validateEvaPasscode(passcode);
 
-  if (!validateEvaPasscode(passcode)) {
+  if (!user) {
     gatewayUrl.searchParams.set("error", "passcode");
     return NextResponse.redirect(gatewayUrl, { status: 303 });
   }
@@ -17,8 +18,7 @@ export async function POST(request: NextRequest) {
   }
 
   const response = NextResponse.redirect(new URL("/eva-digital-booklet/studio", request.url), { status: 303 });
-  response.cookies.set(evaSessionCookieName, createEvaSessionToken(), getEvaSessionCookieOptions());
+  response.cookies.set(evaSessionCookieName, createEvaSessionToken(user.id), getEvaSessionCookieOptions());
 
   return response;
 }
-

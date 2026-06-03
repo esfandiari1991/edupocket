@@ -7,24 +7,40 @@ import {
   Check,
   ChevronRight,
   CircleCheck,
+  Database,
   Download,
   FileText,
   Flame,
+  Gauge,
   GraduationCap,
   Headphones,
   ListChecks,
   Layers3,
   LockKeyhole,
+  NotebookPen,
   Play,
   PenLine,
   RotateCcw,
+  Repeat2,
   Search,
   Sparkles,
   Star,
   Target,
+  Timer,
+  UserCheck,
+  Users,
   Volume2,
 } from "lucide-react";
 import type { EvaBooklet, EvaBookletChapter, EvaBookletPage, EvaBookletStack } from "@/lib/eva-private-content";
+import {
+  buildEvaLearningDatabase,
+  evaSeedUsers,
+  evaUserStorageKey,
+  normalizeStoredState,
+  type EvaSeedUser,
+  type EvaStoredStudioState,
+  type EvaUserId,
+} from "@/lib/eva-learning-db";
 import {
   evaGrammarModules,
   evaLexicalResource,
@@ -40,19 +56,11 @@ import { cn } from "@/lib/utils";
 
 type EvaStudioExperienceProps = {
   booklet: EvaBooklet;
+  activeUser: EvaSeedUser;
 };
 
-const storageKey = "edupocket-eva-studio-v1";
+const legacyStorageKey = "edupocket-eva-studio-v1";
 const levelOrder = ["Supported", "Independent", "Challenging", "Critical Thinking", "Portfolio"];
-
-type StoredState = {
-  done: Record<string, boolean>;
-  moduleDone: Record<string, boolean>;
-  notes: Record<string, string>;
-  pronunciationDone: Record<string, boolean>;
-  quizAnswers: Record<string, number>;
-  reviewQueue: Record<string, boolean>;
-};
 
 type StudyLane = {
   id: string;
@@ -176,12 +184,16 @@ const studyRoutes: StudyRoute[] = [
   },
 ];
 
-const premiumTabs: Array<{ id: "overview" | EvaStudioTrack | "quiz"; title: string; description: string }> = [
+type PremiumTabId = "overview" | EvaStudioTrack | "quiz" | "exam" | "vault";
+
+const premiumTabs: Array<{ id: PremiumTabId; title: string; description: string }> = [
   { id: "overview", title: "Use model", description: "How the studio should be worked." },
   { id: "grammar", title: "Grammar Atlas", description: "10 accuracy chapters." },
   { id: "religious", title: "Religious Context", description: "10 meaning chapters." },
-  { id: "lexical", title: "Lexical Resource", description: "Pronunciation and collocation." },
+  { id: "lexical", title: "Pronunciation Lab", description: "Lexis, stress, IPA, and shadowing." },
   { id: "quiz", title: "Quiz & Review", description: "Track mastery signals." },
+  { id: "exam", title: "Exam Mode", description: "Timed IELTS/TOEFL practice." },
+  { id: "vault", title: "Writing Vault", description: "Saved drafts and teacher notes." },
 ];
 
 function unique(values: string[]) {
@@ -256,38 +268,84 @@ function quizTrackTitle(track: EvaStudioTrack) {
   return "Lexical resource";
 }
 
-export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
+function answeredCorrectly(selected: number | undefined, answerIndex: number) {
+  return selected !== undefined && selected === answerIndex;
+}
+
+function recordCount(record: Record<string, unknown>) {
+  return Object.values(record).filter(Boolean).length;
+}
+
+export function EvaStudioExperience({ booklet, activeUser }: EvaStudioExperienceProps) {
   const [activeStackId, setActiveStackId] = useState(booklet.stacks[0]?.id ?? "");
   const [activeChapterId, setActiveChapterId] = useState(booklet.chapters[0]?.id ?? "");
   const [activePageId, setActivePageId] = useState(booklet.pages[0]?.id ?? "");
   const [activeLaneId, setActiveLaneId] = useState(chapterLane.id);
-  const [activePremiumTab, setActivePremiumTab] = useState<(typeof premiumTabs)[number]["id"]>("overview");
+  const [activePremiumTab, setActivePremiumTab] = useState<PremiumTabId>("overview");
   const [activeModuleId, setActiveModuleId] = useState(evaGrammarModules[0]?.id ?? "");
   const [activeLexicalId, setActiveLexicalId] = useState(evaLexicalResource[0]?.id ?? "");
   const [activeQuizTrack, setActiveQuizTrack] = useState<EvaStudioTrack>("grammar");
+  const [activeExamId, setActiveExamId] = useState("ielts-reading-ministry-planning");
+  const [activeTeacherTargetId, setActiveTeacherTargetId] = useState<EvaUserId>("eva");
   const [skillFilter, setSkillFilter] = useState("All");
   const [query, setQuery] = useState("");
   const [done, setDone] = useState<Record<string, boolean>>({});
   const [moduleDone, setModuleDone] = useState<Record<string, boolean>>({});
   const [notes, setNotes] = useState<Record<string, string>>({});
+  const [writingDrafts, setWritingDrafts] = useState<Record<string, string>>({});
   const [pronunciationDone, setPronunciationDone] = useState<Record<string, boolean>>({});
+  const [shadowingDone, setShadowingDone] = useState<Record<string, boolean>>({});
+  const [ttsListened, setTtsListened] = useState<Record<string, number>>({});
+  const [ttsRepeated, setTtsRepeated] = useState<Record<string, number>>({});
   const [quizAnswers, setQuizAnswers] = useState<Record<string, number>>({});
+  const [examAnswers, setExamAnswers] = useState<Record<string, number>>({});
   const [reviewQueue, setReviewQueue] = useState<Record<string, boolean>>({});
+  const [teacherNotes, setTeacherNotes] = useState<Record<string, string>>({});
+  const [teacherSnapshots, setTeacherSnapshots] = useState<Record<EvaUserId, EvaStoredStudioState>>({ ali: normalizeStoredState(null), eva: normalizeStoredState(null), elham: normalizeStoredState(null) });
   const [hydrated, setHydrated] = useState(false);
+  const learningDatabase = useMemo(() => buildEvaLearningDatabase(booklet), [booklet]);
+  const storageKey = evaUserStorageKey(activeUser.id);
+  const activeExamTask = learningDatabase.examTasks.find((task) => task.id === activeExamId) ?? learningDatabase.examTasks[0]!;
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
       try {
         const stored = window.localStorage.getItem(storageKey);
-        if (stored) {
-          const parsed = JSON.parse(stored) as StoredState;
-          setDone(parsed.done ?? {});
-          setModuleDone(parsed.moduleDone ?? {});
-          setNotes(parsed.notes ?? {});
-          setPronunciationDone(parsed.pronunciationDone ?? {});
-          setQuizAnswers(parsed.quizAnswers ?? {});
-          setReviewQueue(parsed.reviewQueue ?? {});
+        const legacyStored = activeUser.id === "eva" ? window.localStorage.getItem(legacyStorageKey) : null;
+        const target = stored ?? legacyStored;
+
+        if (target) {
+          const parsed = normalizeStoredState(JSON.parse(target) as Partial<EvaStoredStudioState>);
+          setActiveStackId(parsed.activeStackId ?? booklet.stacks[0]?.id ?? "");
+          setActiveChapterId(parsed.activeChapterId ?? booklet.chapters[0]?.id ?? "");
+          setActivePageId(parsed.activePageId ?? booklet.pages[0]?.id ?? "");
+          setActiveLaneId(parsed.activeLaneId ?? chapterLane.id);
+          setActivePremiumTab((parsed.activePremiumTab as PremiumTabId | undefined) ?? "overview");
+          setActiveModuleId(parsed.activeModuleId ?? evaGrammarModules[0]?.id ?? "");
+          setActiveLexicalId(parsed.activeLexicalId ?? evaLexicalResource[0]?.id ?? "");
+          setActiveQuizTrack((parsed.activeQuizTrack as EvaStudioTrack | undefined) ?? "grammar");
+          setActiveExamId(parsed.activeExamId ?? learningDatabase.examTasks[0]?.id ?? "");
+          setDone(parsed.done);
+          setModuleDone(parsed.moduleDone);
+          setNotes(parsed.notes);
+          setWritingDrafts(parsed.writingDrafts);
+          setPronunciationDone(parsed.pronunciationDone);
+          setShadowingDone(parsed.shadowingDone);
+          setTtsListened(parsed.ttsListened);
+          setTtsRepeated(parsed.ttsRepeated);
+          setQuizAnswers(parsed.quizAnswers);
+          setExamAnswers(parsed.examAnswers);
+          setReviewQueue(parsed.reviewQueue);
+          setTeacherNotes(parsed.teacherNotes);
         }
+
+        const snapshots = Object.fromEntries(
+          evaSeedUsers.map((user) => {
+            const raw = window.localStorage.getItem(evaUserStorageKey(user.id));
+            return [user.id, normalizeStoredState(raw ? (JSON.parse(raw) as Partial<EvaStoredStudioState>) : null)];
+          }),
+        ) as Record<EvaUserId, EvaStoredStudioState>;
+        setTeacherSnapshots(snapshots);
       } catch {
         // Local progress is helpful, but the studio should remain usable if storage is unavailable.
       }
@@ -295,12 +353,60 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
     });
 
     return () => window.cancelAnimationFrame(frame);
-  }, []);
+  }, [activeUser.id, booklet.chapters, booklet.pages, booklet.stacks, learningDatabase.examTasks, storageKey]);
 
   useEffect(() => {
     if (!hydrated) return;
-    window.localStorage.setItem(storageKey, JSON.stringify({ done, moduleDone, notes, pronunciationDone, quizAnswers, reviewQueue }));
-  }, [done, hydrated, moduleDone, notes, pronunciationDone, quizAnswers, reviewQueue]);
+    const state = normalizeStoredState({
+      activeStackId,
+      activeChapterId,
+      activePageId,
+      activeLaneId,
+      activePremiumTab,
+      activeModuleId,
+      activeLexicalId,
+      activeQuizTrack,
+      activeExamId,
+      done,
+      moduleDone,
+      notes,
+      writingDrafts,
+      pronunciationDone,
+      shadowingDone,
+      ttsListened,
+      ttsRepeated,
+      quizAnswers,
+      examAnswers,
+      reviewQueue,
+      teacherNotes,
+    });
+    window.localStorage.setItem(storageKey, JSON.stringify(state));
+  }, [
+    activeChapterId,
+    activeExamId,
+    activeLaneId,
+    activeLexicalId,
+    activeModuleId,
+    activePageId,
+    activePremiumTab,
+    activeQuizTrack,
+    activeStackId,
+    activeUser.id,
+    done,
+    examAnswers,
+    hydrated,
+    moduleDone,
+    notes,
+    pronunciationDone,
+    quizAnswers,
+    reviewQueue,
+    shadowingDone,
+    storageKey,
+    teacherNotes,
+    ttsListened,
+    ttsRepeated,
+    writingDrafts,
+  ]);
 
   const activeStack = useMemo(
     () => booklet.stacks.find((stack) => stack.id === activeStackId) ?? booklet.stacks[0],
@@ -460,16 +566,93 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
       .slice(0, 6);
   }, [activeLane, activePage, booklet.pages, stackPages]);
 
+  const coverage = useMemo(() => {
+    const transformedPageIds = new Set(learningDatabase.activities.flatMap((activity) => activity.sourcePageIds));
+    const ttsPageIds = new Set(learningDatabase.ttsSegments.map((segment) => segment.sourcePageId).filter(Boolean));
+    const trackableSignals = learningDatabase.activities.reduce((total, activity) => total + activity.trackableSignals.length, 0);
+
+    return {
+      transformedPages: transformedPageIds.size,
+      ttsPages: ttsPageIds.size,
+      activityCount: learningDatabase.activities.length,
+      learningItems: learningDatabase.learningItems.length,
+      trackableSignals,
+      percent: Math.round((transformedPageIds.size / Math.max(booklet.stats.pages, 1)) * 100),
+    };
+  }, [booklet.stats.pages, learningDatabase.activities, learningDatabase.learningItems.length, learningDatabase.ttsSegments]);
+
+  const weakSkillMap = useMemo(() => {
+    const weights = new Map<string, number>();
+    const add = (skill: string, amount = 1) => weights.set(skill, (weights.get(skill) ?? 0) + amount);
+
+    for (const pageId of Object.keys(reviewQueue).filter((id) => reviewQueue[id])) {
+      const page = booklet.pages.find((item) => item.id === pageId);
+      page?.skillTags.slice(0, 5).forEach((skill) => add(skill));
+    }
+
+    for (const question of evaQuizQuestions) {
+      const selected = quizAnswers[question.id];
+      if (selected !== undefined && selected !== question.answerIndex) add(quizTrackTitle(question.track), 2);
+    }
+
+    for (const task of learningDatabase.examTasks) {
+      for (const question of task.questions) {
+        const selected = examAnswers[`${task.id}:${question.id}`];
+        if (selected !== undefined && selected !== question.answerIndex) add(`${task.exam} ${task.skill}`, 2);
+      }
+    }
+
+    return Array.from(weights.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 6);
+  }, [booklet.pages, examAnswers, learningDatabase.examTasks, quizAnswers, reviewQueue]);
+
   if (!activeStack || !activeChapter || !activePage) return null;
 
   const chapterDoneCount = chapterPages.filter((page) => done[page.id]).length;
   const chapterProgress = Math.round((chapterDoneCount / Math.max(chapterPages.length, 1)) * 100);
-  const activeNote = notes[activePage.id] ?? "";
+  const activeNote = writingDrafts[activePage.id] ?? notes[activePage.id] ?? "";
   const activeNoteWordCount = activeNote.trim().split(/\s+/).filter(Boolean).length;
   const activeBlocks = activePage.blocks.filter((block, index) => index !== 0 || block !== activePage.title);
   const activeModuleStats = activeModule ? moduleStats.get(activeModule.id) : undefined;
   const activeQuizAnswered = activeQuizQuestions.filter((question) => quizAnswers[question.id] !== undefined);
   const activeQuizCorrect = activeQuizAnswered.filter((question) => quizAnswers[question.id] === question.answerIndex);
+  const activeTtsSegment = learningDatabase.ttsSegments.find((segment) => segment.sourcePageId === activePage.id);
+  const writingVaultEntries = Object.entries(writingDrafts).filter(([, value]) => value.trim().length > 0);
+  const activeExamAnswered = activeExamTask.questions.filter((question) => examAnswers[`${activeExamTask.id}:${question.id}`] !== undefined);
+  const activeExamCorrect = activeExamTask.questions.filter((question) => answeredCorrectly(examAnswers[`${activeExamTask.id}:${question.id}`], question.answerIndex));
+  const currentStoredState = normalizeStoredState({
+    activeStackId,
+    activeChapterId,
+    activePageId,
+    activeLaneId,
+    activePremiumTab,
+    activeModuleId,
+    activeLexicalId,
+    activeQuizTrack,
+    activeExamId,
+    done,
+    moduleDone,
+    notes,
+    writingDrafts,
+    pronunciationDone,
+    shadowingDone,
+    ttsListened,
+    ttsRepeated,
+    quizAnswers,
+    examAnswers,
+    reviewQueue,
+    teacherNotes,
+  });
+  const visibleTeacherSnapshots = { ...teacherSnapshots, [activeUser.id]: currentStoredState };
+  const nextIncompletePage = visiblePages.find((page) => !done[page.id] && page.id !== activePage.id) ?? booklet.pages.find((page) => !done[page.id]);
+  const smartNextStep = reviewPages[0]
+    ? { label: "Review weak page", text: reviewPages[0].title, action: () => choosePage(reviewPages[0]) }
+    : nextIncompletePage
+      ? { label: "Continue source path", text: nextIncompletePage.title, action: () => choosePage(nextIncompletePage) }
+      : activeQuizQuestions.find((question) => quizAnswers[question.id] === undefined)
+        ? { label: "Finish quiz track", text: quizTrackTitle(activeQuizTrack), action: () => setActivePremiumTab("quiz" as const) }
+        : { label: "Open Writing Vault", text: `${writingVaultEntries.length} saved drafts`, action: () => setActivePremiumTab("vault" as const) };
 
   function chooseStack(stack: EvaBookletStack) {
     const nextChapter = booklet.chapters.find((chapter) => stack.chapterIds.includes(chapter.id)) ?? booklet.chapters[0];
@@ -561,18 +744,52 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
     if (nextPage) choosePage(nextPage);
   }
 
-  function speakLexicalItem(term: string) {
+  function speakStudioText(text: string, segmentId: string, repeat = false, rate = 0.82) {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(term);
+    const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "en-US";
-    utterance.rate = 0.82;
+    utterance.rate = rate;
     utterance.pitch = 1;
     window.speechSynthesis.speak(utterance);
+    setTtsListened((current) => ({ ...current, [segmentId]: (current[segmentId] ?? 0) + 1 }));
+    if (repeat) setTtsRepeated((current) => ({ ...current, [segmentId]: (current[segmentId] ?? 0) + 1 }));
+  }
+
+  function speakLexicalItem(term: string) {
+    const segmentId = `tts-lexical-${activeLexicalItem.id}`;
+    speakStudioText(term, segmentId, false, 0.78);
   }
 
   function answerQuiz(question: EvaQuizQuestion, answerIndex: number) {
     setQuizAnswers((current) => ({ ...current, [question.id]: answerIndex }));
+    if (answerIndex !== question.answerIndex) {
+      setReviewQueue((current) => ({ ...current, [activePage.id]: true, [`quiz-${question.id}`]: true }));
+    }
+  }
+
+  function answerExamQuestion(questionId: string, answerIndex: number) {
+    const question = activeExamTask.questions.find((item) => item.id === questionId);
+    setExamAnswers((current) => ({ ...current, [`${activeExamTask.id}:${questionId}`]: answerIndex }));
+    if (question && answerIndex !== question.answerIndex) {
+      setReviewQueue((current) => ({ ...current, [activePage.id]: true, [`exam-${activeExamTask.id}-${questionId}`]: true }));
+    }
+  }
+
+  function updateActiveDraft(value: string) {
+    setNotes((current) => ({ ...current, [activePage.id]: value }));
+    setWritingDrafts((current) => ({ ...current, [activePage.id]: value }));
+  }
+
+  function updateTeacherNote(targetId: EvaUserId, note: string) {
+    const currentSnapshot = normalizeStoredState(teacherSnapshots[targetId]);
+    const nextSnapshot = normalizeStoredState({
+      ...currentSnapshot,
+      teacherNotes: { ...currentSnapshot.teacherNotes, [activePage.id]: note },
+    });
+    window.localStorage.setItem(evaUserStorageKey(targetId), JSON.stringify(nextSnapshot));
+    setTeacherSnapshots((current) => ({ ...current, [targetId]: nextSnapshot }));
+    if (targetId === activeUser.id) setTeacherNotes(nextSnapshot.teacherNotes);
   }
 
   function resetQuizTrack() {
@@ -619,6 +836,16 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
               The full workbook is indexed by learning stack, semantic lane, chapter, page, skill, practice level, search, related pages, and local study evidence.
               {` ${laneCoverageCount}/${booklet.stats.pages} imported pages are covered by the studio lanes, with chapter order preserved for every page.`}
             </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <span className="inline-flex items-center gap-2 rounded-[8px] border border-amber-200/20 bg-amber-200/[0.08] px-3 py-2 text-sm font-semibold text-amber-100">
+                <UserCheck aria-hidden="true" className="size-4" />
+                {activeUser.displayName} / {activeUser.role}
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-[8px] border border-sky-200/15 bg-sky-300/[0.055] px-3 py-2 text-sm font-semibold text-sky-100">
+                <Database aria-hidden="true" className="size-4" />
+                {learningDatabase.entities.length} DB entities modeled
+              </span>
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:w-[34rem]">
             {[
@@ -638,6 +865,88 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
               );
             })}
           </div>
+        </div>
+      </section>
+
+      <section className="grid gap-3 lg:grid-cols-[0.95fr_1.05fr]">
+        <div className="rounded-[8px] border border-amber-200/20 bg-[radial-gradient(circle_at_12%_0%,rgba(251,191,36,0.12),transparent_18rem),rgba(255,255,255,0.035)] p-4 sm:p-5">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <div className="flex items-center gap-2 text-sm font-semibold text-amber-200">
+                <Gauge aria-hidden="true" className="size-4" />
+                Coverage Meter
+              </div>
+              <h2 className="mt-2 text-2xl font-semibold leading-tight text-white">{coverage.percent}% of the booklet is activity-mapped</h2>
+              <p className="mt-2 text-sm leading-7 text-slate-300">
+                {coverage.transformedPages}/{booklet.stats.pages} pages become trackable activities. The database also exposes {coverage.learningItems} learning items, {coverage.activityCount} activities, and {coverage.trackableSignals} progress signals.
+              </p>
+            </div>
+            <div className="flex size-20 shrink-0 items-center justify-center rounded-full border border-amber-200/25 bg-slate-950/48 text-xl font-semibold text-amber-100">
+              {coverage.percent}%
+            </div>
+          </div>
+          <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-800">
+            <div className="h-full rounded-full bg-gradient-to-r from-amber-300 via-yellow-100 to-sky-300" style={{ width: `${coverage.percent}%` }} />
+          </div>
+          <div className="mt-4 grid gap-2 sm:grid-cols-3">
+            {[
+              { label: "TTS segments", value: learningDatabase.ttsSegments.length },
+              { label: "Exam tasks", value: learningDatabase.examTasks.length },
+              { label: "Questions", value: learningDatabase.questions.length },
+            ].map((item) => (
+              <div key={item.label} className="rounded-[8px] border border-white/10 bg-slate-950/32 p-3">
+                <p className="text-lg font-semibold text-white">{item.value}</p>
+                <p className="text-sm leading-5 text-slate-400">{item.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-[8px] border border-sky-200/15 bg-[radial-gradient(circle_at_90%_0%,rgba(125,211,252,0.11),transparent_18rem),rgba(255,255,255,0.035)] p-4 sm:p-5">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <div className="flex items-center gap-2 text-sm font-semibold text-sky-100">
+                <Sparkles aria-hidden="true" className="size-4" />
+                Smart Next Step
+              </div>
+              <h2 className="mt-2 text-2xl font-semibold leading-tight text-white">{smartNextStep.label}</h2>
+              <p className="mt-2 text-sm leading-7 text-slate-300">{smartNextStep.text}</p>
+            </div>
+            <button
+              type="button"
+              onClick={smartNextStep.action}
+              className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-[8px] bg-sky-200 px-4 text-sm font-bold text-slate-950 transition hover:bg-sky-100 focus:outline-none focus:ring-2 focus:ring-sky-100"
+            >
+              Open
+              <ChevronRight aria-hidden="true" className="size-4" />
+            </button>
+          </div>
+          <div className="mt-4 grid gap-2 sm:grid-cols-3">
+            {[
+              { label: "Drafts", value: writingVaultEntries.length, icon: NotebookPen },
+              { label: "Review", value: Object.values(reviewQueue).filter(Boolean).length, icon: Star },
+              { label: "Weak skills", value: weakSkillMap.length, icon: Target },
+            ].map((item) => {
+              const Icon = item.icon;
+
+              return (
+                <div key={item.label} className="rounded-[8px] border border-white/10 bg-slate-950/32 p-3">
+                  <Icon aria-hidden="true" className="size-4 text-sky-100" />
+                  <p className="mt-2 text-lg font-semibold text-white">{item.value}</p>
+                  <p className="text-sm leading-5 text-slate-400">{item.label}</p>
+                </div>
+              );
+            })}
+          </div>
+          {weakSkillMap.length ? (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {weakSkillMap.map(([skill, weight]) => (
+                <span key={skill} className="rounded-[8px] border border-rose-200/15 bg-rose-300/[0.07] px-3 py-2 text-sm font-semibold text-rose-100">
+                  {skill}: {weight}
+                </span>
+              ))}
+            </div>
+          ) : null}
         </div>
       </section>
 
@@ -679,7 +988,7 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
           <div className="flex items-start justify-between gap-4">
             <div>
               <h2 className="text-base font-semibold text-white">Mastery tracker</h2>
-              <p className="mt-1 text-sm leading-6 text-slate-400">Local signals until member accounts are added.</p>
+              <p className="mt-1 text-sm leading-6 text-slate-400">Separate member signals for pages, modules, quiz, TTS, review, and writing.</p>
             </div>
             <div className="flex size-16 shrink-0 items-center justify-center rounded-full border border-amber-200/25 bg-slate-950/46 text-lg font-semibold text-amber-100">
               {studioMastery}%
@@ -706,13 +1015,96 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
             })}
           </div>
           <div className="mt-3 rounded-[8px] border border-white/10 bg-slate-950/30 p-3">
-            <p className="text-xs font-semibold uppercase text-slate-500">Review queue</p>
+            <p className="text-xs font-semibold uppercase text-slate-500">Review queue for {activeUser.displayName}</p>
             <p className="mt-2 text-sm leading-6 text-slate-300">
               {reviewPages.length ? `${reviewPages.length} pages waiting for deliberate review.` : "No review pages yet. Add weak pages from the reader."}
             </p>
           </div>
         </aside>
       </section>
+
+      {activeUser.canTeach ? (
+        <section className="rounded-[8px] border border-white/10 bg-white/[0.035] p-4 sm:p-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <div className="flex items-center gap-2 text-sm font-semibold text-amber-200">
+                <Users aria-hidden="true" className="size-4" />
+                Teacher Lens
+              </div>
+              <h2 className="mt-2 text-2xl font-semibold leading-tight text-white">Ali can inspect premium learners separately.</h2>
+              <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-300">
+                Eva and Elham keep separate progress, drafts, quiz answers, TTS history, pronunciation work, review queues, weak-skill signals, and teacher notes.
+              </p>
+            </div>
+            <span className="inline-flex items-center gap-2 rounded-[8px] border border-amber-200/20 bg-amber-200/[0.08] px-3 py-2 text-sm font-semibold text-amber-100">
+              <Database aria-hidden="true" className="size-4" />
+              Local DB preview
+            </span>
+          </div>
+
+          <div className="mt-5 grid gap-3 lg:grid-cols-[minmax(0,1fr)_20rem]">
+            <div className="grid gap-3 md:grid-cols-3">
+              {evaSeedUsers.map((user) => {
+                const snapshot = normalizeStoredState(visibleTeacherSnapshots[user.id]);
+                const quizCorrect = evaQuizQuestions.filter((question) => snapshot.quizAnswers[question.id] === question.answerIndex).length;
+                const active = activeTeacherTargetId === user.id;
+
+                return (
+                  <button
+                    key={user.id}
+                    type="button"
+                    onClick={() => setActiveTeacherTargetId(user.id)}
+                    className={cn(
+                      "rounded-[8px] border p-4 text-start transition focus:outline-none focus:ring-2 focus:ring-amber-300/50",
+                      active ? "border-amber-300/55 bg-amber-300/12 text-white" : "border-white/10 bg-slate-950/28 text-slate-300 hover:border-amber-300/35",
+                    )}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-lg font-semibold text-white">{user.displayName}</p>
+                        <p className="mt-1 text-sm leading-5 text-slate-400">{user.role}</p>
+                      </div>
+                      <UserCheck aria-hidden="true" className="size-5 text-amber-200" />
+                    </div>
+                    <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
+                      <span className="rounded-[8px] border border-white/10 bg-slate-950/30 p-2">
+                        <span className="block font-semibold text-white">{recordCount(snapshot.done)}</span>
+                        <span className="text-xs text-slate-500">pages</span>
+                      </span>
+                      <span className="rounded-[8px] border border-white/10 bg-slate-950/30 p-2">
+                        <span className="block font-semibold text-white">{Object.values(snapshot.writingDrafts).filter((value) => value.trim()).length}</span>
+                        <span className="text-xs text-slate-500">drafts</span>
+                      </span>
+                      <span className="rounded-[8px] border border-white/10 bg-slate-950/30 p-2">
+                        <span className="block font-semibold text-white">{quizCorrect}</span>
+                        <span className="text-xs text-slate-500">quiz correct</span>
+                      </span>
+                      <span className="rounded-[8px] border border-white/10 bg-slate-950/30 p-2">
+                        <span className="block font-semibold text-white">{recordCount(snapshot.reviewQueue)}</span>
+                        <span className="text-xs text-slate-500">review</span>
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="rounded-[8px] border border-amber-200/16 bg-amber-200/[0.06] p-4">
+              <h3 className="text-sm font-semibold text-amber-100">Teacher note for active page</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-300">
+                Target: {evaSeedUsers.find((user) => user.id === activeTeacherTargetId)?.displayName}. Page {String(activePage.page).padStart(3, "0")}.
+              </p>
+              <textarea
+                value={normalizeStoredState(visibleTeacherSnapshots[activeTeacherTargetId]).teacherNotes[activePage.id] ?? ""}
+                onChange={(event) => updateTeacherNote(activeTeacherTargetId, event.target.value)}
+                className="mt-3 min-h-28 w-full resize-y rounded-[8px] border border-white/10 bg-slate-950/72 p-3 text-sm leading-7 text-slate-100 outline-none transition placeholder:text-slate-600 focus:border-amber-300/50 focus:ring-2 focus:ring-amber-300/20"
+                placeholder="Write Ali's feedback, weak skill, or next assignment..."
+              />
+              <p className="mt-2 text-xs leading-5 text-slate-500">Stored in the selected learner snapshot for local review.</p>
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       <section className="overflow-hidden rounded-[8px] border border-amber-200/20 bg-[radial-gradient(circle_at_12%_0%,rgba(251,191,36,0.11),transparent_24rem),rgba(255,255,255,0.035)] p-3 sm:p-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -722,10 +1114,12 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
               Grammar, religious context, lexical pronunciation, quizzes, and review all point back to source pages.
             </p>
           </div>
-          <p className="text-xs font-semibold text-slate-500">20 modules · 10 pronunciation cards · {evaQuizQuestions.length} quiz checks</p>
+          <p className="text-sm font-semibold text-slate-500">
+            20 modules · {evaLexicalResource.length} pronunciation cards · {evaQuizQuestions.length} quiz checks · {learningDatabase.examTasks.length} exam tasks
+          </p>
         </div>
 
-        <div className="mt-4 grid gap-2 md:grid-cols-5">
+        <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-7">
           {premiumTabs.map((tab) => {
             const active = activePremiumTab === tab.id;
 
@@ -733,6 +1127,7 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
               <button
                 key={tab.id}
                 type="button"
+                data-testid={`eva-premium-tab-${tab.id}`}
                 onClick={() => {
                   setActivePremiumTab(tab.id);
                   if (tab.id === "grammar") setActiveModuleId(evaGrammarModules[0]?.id ?? "");
@@ -788,7 +1183,7 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
                   >
                     <Icon aria-hidden="true" className="size-5 text-amber-200" />
                     <p className="mt-4 text-2xl font-semibold text-white">{item.value}</p>
-                    <h3 className="mt-1 text-sm font-semibold text-white">{item.title}</h3>
+                  <h3 className="mt-1 text-sm font-semibold text-white">{item.title === "Lexical Resource" ? "Pronunciation Lab" : item.title}</h3>
                     <p className="mt-2 text-xs leading-5 text-slate-400">{item.text}</p>
                   </button>
                 );
@@ -917,7 +1312,7 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
             <article className="rounded-[8px] border border-white/10 bg-slate-950/30 p-4">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                 <div>
-                  <p className="text-xs font-semibold uppercase text-amber-200">Lexical resource / pronunciation</p>
+                  <p className="text-xs font-semibold uppercase text-amber-200">Lexical resource / Pronunciation Lab</p>
                   <h3 className="mt-2 text-3xl font-semibold text-white">{activeLexicalItem.term}</h3>
                   <p className="mt-1 font-mono text-lg text-sky-100">{activeLexicalItem.ipa}</p>
                 </div>
@@ -932,6 +1327,14 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
                   </button>
                   <button
                     type="button"
+                    onClick={() => speakStudioText(`${activeLexicalItem.term}. ${activeLexicalItem.stress}. ${activeLexicalItem.example}`, `tts-lexical-${activeLexicalItem.id}`, true, 0.72)}
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[8px] border border-white/10 px-4 text-sm font-semibold text-slate-200 transition hover:border-sky-200/40 hover:text-sky-100 focus:outline-none focus:ring-2 focus:ring-sky-300/40"
+                  >
+                    <Repeat2 aria-hidden="true" className="size-4" />
+                    Repeat
+                  </button>
+                  <button
+                    type="button"
                     onClick={() => setPronunciationDone((current) => ({ ...current, [activeLexicalItem.id]: !current[activeLexicalItem.id] }))}
                     className={cn(
                       "inline-flex min-h-11 items-center justify-center gap-2 rounded-[8px] border px-4 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-amber-300/50",
@@ -940,6 +1343,17 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
                   >
                     <Headphones aria-hidden="true" className="size-4" />
                     Practiced
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShadowingDone((current) => ({ ...current, [activeLexicalItem.id]: !current[activeLexicalItem.id] }))}
+                    className={cn(
+                      "inline-flex min-h-11 items-center justify-center gap-2 rounded-[8px] border px-4 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-sky-300/40",
+                      shadowingDone[activeLexicalItem.id] ? "border-sky-200 bg-sky-200 text-slate-950" : "border-white/10 text-slate-200 hover:border-sky-200/40",
+                    )}
+                  >
+                    <Check aria-hidden="true" className="size-4" />
+                    Shadowed
                   </button>
                 </div>
               </div>
@@ -974,6 +1388,18 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
                   <p className="mt-2 text-sm leading-6 text-slate-300">
                     Listen once, say it twice, then use it in one source-page note before marking it practiced.
                   </p>
+                  <div className="mt-4 grid grid-cols-3 gap-2 text-center text-sm">
+                    {[
+                      ["Listened", ttsListened[`tts-lexical-${activeLexicalItem.id}`] ?? 0],
+                      ["Repeated", ttsRepeated[`tts-lexical-${activeLexicalItem.id}`] ?? 0],
+                      ["Shadow", shadowingDone[activeLexicalItem.id] ? 1 : 0],
+                    ].map(([label, value]) => (
+                      <div key={label} className="rounded-[8px] border border-white/10 bg-slate-950/30 p-2">
+                        <p className="font-semibold text-white">{value}</p>
+                        <p className="text-xs text-slate-500">{label}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </article>
@@ -1069,6 +1495,198 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
                 })}
               </div>
             </article>
+          </div>
+        ) : null}
+
+        {activePremiumTab === "exam" ? (
+          <div className="mt-4 grid gap-3 xl:grid-cols-[20rem_minmax(0,1fr)]">
+            <aside className="rounded-[8px] border border-white/10 bg-slate-950/30 p-4">
+              <h3 className="text-base font-semibold text-white">IELTS / TOEFL Exam Mode</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-400">Original EduPocket tasks, modeled on real exam question families without copying official material.</p>
+              <div className="mt-4 grid gap-2">
+                {learningDatabase.examTasks.map((task) => {
+                  const active = task.id === activeExamTask.id;
+                  const answered = task.questions.filter((question) => examAnswers[`${task.id}:${question.id}`] !== undefined).length;
+                  const correct = task.questions.filter((question) => examAnswers[`${task.id}:${question.id}`] === question.answerIndex).length;
+
+                  return (
+                    <button
+                      key={task.id}
+                      type="button"
+                      onClick={() => setActiveExamId(task.id)}
+                      className={cn(
+                        "rounded-[8px] border p-3 text-start transition focus:outline-none focus:ring-2 focus:ring-amber-300/50",
+                        active ? "border-amber-300/55 bg-amber-300/12 text-white" : "border-white/10 bg-white/[0.035] text-slate-300 hover:border-amber-300/35",
+                      )}
+                    >
+                      <span className="flex items-center justify-between gap-3">
+                        <span className="text-sm font-semibold">{task.title}</span>
+                        <span className="rounded-[6px] border border-white/10 bg-slate-950/35 px-2 py-1 text-xs font-semibold text-amber-100">{task.exam}</span>
+                      </span>
+                      <span className="mt-2 block text-sm leading-5 text-slate-400">
+                        {task.skill} · {task.timeLimitMinutes} min · {task.questions.length ? `${correct}/${task.questions.length} correct` : "rubric task"}
+                      </span>
+                      {answered ? <span className="mt-1 block text-xs font-semibold text-slate-500">{answered} answers saved</span> : null}
+                    </button>
+                  );
+                })}
+              </div>
+            </aside>
+
+            <article className="rounded-[8px] border border-white/10 bg-slate-950/30 p-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-amber-200">
+                    {activeExamTask.exam} / {activeExamTask.skill} / {activeExamTask.level}
+                  </p>
+                  <h3 className="mt-2 text-2xl font-semibold leading-tight text-white">{activeExamTask.title}</h3>
+                  <p className="mt-2 text-sm leading-7 text-slate-300">{activeExamTask.prompt}</p>
+                </div>
+                <span className="inline-flex min-h-11 items-center gap-2 rounded-[8px] border border-amber-200/20 bg-amber-200/[0.08] px-3 text-sm font-semibold text-amber-100">
+                  <Timer aria-hidden="true" className="size-4" />
+                  {activeExamTask.timeLimitMinutes} min
+                </span>
+              </div>
+
+              {activeExamTask.passage ? (
+                <div className="mt-5 rounded-[8px] border border-sky-200/15 bg-sky-300/[0.055] p-4">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <h4 className="text-base font-semibold text-white">Reading passage</h4>
+                    <button
+                      type="button"
+                      onClick={() => speakStudioText(activeExamTask.passage ?? activeExamTask.prompt, `tts-exam-${activeExamTask.id}`, false, 0.9)}
+                      className="inline-flex min-h-10 items-center justify-center gap-2 rounded-[8px] border border-white/10 px-3 text-sm font-semibold text-slate-200 transition hover:border-sky-200/40 hover:text-sky-100"
+                    >
+                      <Volume2 aria-hidden="true" className="size-4" />
+                      Listen passage
+                    </button>
+                  </div>
+                  <p className="mt-3 text-base leading-8 text-slate-200">{activeExamTask.passage}</p>
+                </div>
+              ) : null}
+
+              {activeExamTask.questions.length ? (
+                <div className="mt-5 grid gap-3">
+                  {activeExamTask.questions.map((question, index) => {
+                    const answerKey = `${activeExamTask.id}:${question.id}`;
+                    const selected = examAnswers[answerKey];
+                    const answered = selected !== undefined;
+
+                    return (
+                      <div key={question.id} className="rounded-[8px] border border-white/10 bg-white/[0.035] p-4">
+                        <p className="text-sm font-semibold text-amber-200">
+                          {index + 1}. {question.type}
+                        </p>
+                        <h4 className="mt-2 text-base font-semibold leading-7 text-white">{question.prompt}</h4>
+                        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                          {question.options.map((option, optionIndex) => {
+                            const correct = optionIndex === question.answerIndex;
+                            const active = selected === optionIndex;
+
+                            return (
+                              <button
+                                key={option}
+                                type="button"
+                                onClick={() => answerExamQuestion(question.id, optionIndex)}
+                                className={cn(
+                                  "rounded-[8px] border p-3 text-start text-sm leading-6 transition focus:outline-none focus:ring-2 focus:ring-amber-300/50",
+                                  answered && correct
+                                    ? "border-emerald-300 bg-emerald-300/12 text-emerald-100"
+                                    : active
+                                      ? "border-rose-300 bg-rose-300/10 text-rose-100"
+                                      : "border-white/10 bg-slate-950/32 text-slate-300 hover:border-amber-300/35",
+                                )}
+                              >
+                                {option}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        {answered ? <p className="mt-3 text-sm leading-7 text-slate-300">{question.rationale}</p> : null}
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="mt-5">
+                  <h4 className="text-base font-semibold text-white">Writing response</h4>
+                  <textarea
+                    value={writingDrafts[`exam-${activeExamTask.id}`] ?? ""}
+                    onChange={(event) => setWritingDrafts((current) => ({ ...current, [`exam-${activeExamTask.id}`]: event.target.value }))}
+                    className="mt-3 min-h-44 w-full resize-y rounded-[8px] border border-white/10 bg-slate-950/72 p-4 text-base leading-8 text-slate-100 outline-none transition placeholder:text-slate-600 focus:border-amber-300/50 focus:ring-2 focus:ring-amber-300/20"
+                    placeholder="Write your timed response here..."
+                  />
+                </div>
+              )}
+
+              <div className="mt-5 grid gap-2 sm:grid-cols-4">
+                {activeExamTask.rubric.map((item) => (
+                  <span key={item} className="rounded-[8px] border border-white/10 bg-white/[0.04] px-3 py-2 text-sm font-semibold text-slate-200">
+                    {item}
+                  </span>
+                ))}
+              </div>
+              <p className="mt-4 text-sm leading-6 text-slate-400">
+                Saved: {activeExamAnswered.length} answers. Correct: {activeExamCorrect.length}. Wrong answers enter the review engine automatically.
+              </p>
+            </article>
+          </div>
+        ) : null}
+
+        {activePremiumTab === "vault" ? (
+          <div className="mt-4 grid gap-3 xl:grid-cols-[minmax(0,1fr)_20rem]">
+            <article className="rounded-[8px] border border-white/10 bg-slate-950/30 p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-lg font-semibold text-white">Writing Vault</h3>
+                  <p className="mt-1 text-sm leading-6 text-slate-400">All saved page drafts and exam responses for {activeUser.displayName}.</p>
+                </div>
+                <NotebookPen aria-hidden="true" className="size-5 text-amber-200" />
+              </div>
+              <div className="mt-4 grid gap-3">
+                {writingVaultEntries.length ? (
+                  writingVaultEntries.slice(0, 12).map(([id, draft]) => {
+                    const page = booklet.pages.find((item) => item.id === id);
+                    const title = page?.title ?? learningDatabase.examTasks.find((task) => `exam-${task.id}` === id)?.title ?? id;
+
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        onClick={() => {
+                          if (page) choosePage(page);
+                          else setActivePremiumTab("exam");
+                        }}
+                        className="rounded-[8px] border border-white/10 bg-white/[0.035] p-4 text-start transition hover:border-amber-300/35 focus:outline-none focus:ring-2 focus:ring-amber-300/50"
+                      >
+                        <span className="text-sm font-semibold text-white">{title}</span>
+                        <span className="mt-2 line-clamp-3 block text-sm leading-6 text-slate-400">{draft}</span>
+                      </button>
+                    );
+                  })
+                ) : (
+                  <p className="rounded-[8px] border border-dashed border-slate-500/35 bg-slate-900/30 p-5 text-sm leading-7 text-slate-400">
+                    No writing saved yet. Open a source page or timed writing task and save the first serious answer.
+                  </p>
+                )}
+              </div>
+            </article>
+            <aside className="rounded-[8px] border border-amber-200/16 bg-amber-200/[0.06] p-4">
+              <h3 className="text-sm font-semibold text-amber-100">Vault signals</h3>
+              <div className="mt-4 grid gap-2">
+                {[
+                  ["Drafts", writingVaultEntries.length],
+                  ["Teacher notes", Object.values(teacherNotes).filter((value) => value.trim()).length],
+                  ["TTS listened", Object.values(ttsListened).reduce((sum, value) => sum + value, 0)],
+                  ["TTS repeated", Object.values(ttsRepeated).reduce((sum, value) => sum + value, 0)],
+                ].map(([label, value]) => (
+                  <div key={label} className="flex items-center justify-between gap-3 rounded-[8px] border border-white/10 bg-slate-950/30 px-3 py-2 text-sm">
+                    <span className="font-semibold text-slate-200">{label}</span>
+                    <span className="text-amber-100">{value}</span>
+                  </div>
+                ))}
+              </div>
+            </aside>
           </div>
         ) : null}
       </section>
@@ -1376,7 +1994,7 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
                   <div className="h-full rounded-full bg-gradient-to-r from-amber-300 to-sky-300" style={{ width: `${chapterProgress}%` }} />
                 </div>
                 <p className="mt-3 text-xs leading-5 text-slate-500">
-                  {chapterDoneCount} of {chapterPages.length} pages marked complete locally.
+                  {chapterDoneCount} of {chapterPages.length} pages marked complete for {activeUser.displayName}.
                 </p>
               </div>
             </div>
@@ -1479,6 +2097,26 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
                     {activePage.subtitle ? <p className="mt-1 text-sm leading-6 text-slate-400">{activePage.subtitle}</p> : null}
                   </div>
                   <div className="flex flex-wrap gap-2">
+                    {activeTtsSegment ? (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => speakStudioText(activeTtsSegment.text, activeTtsSegment.id, false, activeTtsSegment.speedDefault)}
+                          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[8px] border border-white/10 px-3 text-sm font-semibold text-slate-200 transition hover:border-sky-200/40 hover:text-sky-100 focus:outline-none focus:ring-2 focus:ring-sky-300/40"
+                        >
+                          <Volume2 aria-hidden="true" className="size-4" />
+                          Listen
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => speakStudioText(activeTtsSegment.text, activeTtsSegment.id, true, Math.max(0.68, activeTtsSegment.speedDefault - 0.12))}
+                          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[8px] border border-white/10 px-3 text-sm font-semibold text-slate-200 transition hover:border-sky-200/40 hover:text-sky-100 focus:outline-none focus:ring-2 focus:ring-sky-300/40"
+                        >
+                          <Repeat2 aria-hidden="true" className="size-4" />
+                          Repeat
+                        </button>
+                      </>
+                    ) : null}
                     <button
                       type="button"
                       onClick={() => setReviewQueue((current) => ({ ...current, [activePage.id]: !current[activePage.id] }))}
@@ -1519,6 +2157,20 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
                     <p className="mt-2 text-lg font-semibold text-white">{activePage.wordCount}</p>
                   </div>
                 </div>
+                {activeTtsSegment ? (
+                  <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                    {[
+                      ["TTS listened", ttsListened[activeTtsSegment.id] ?? 0],
+                      ["TTS repeated", ttsRepeated[activeTtsSegment.id] ?? 0],
+                      ["Segment speed", `${activeTtsSegment.speedDefault}x`],
+                    ].map(([label, value]) => (
+                      <div key={label} className="rounded-[8px] border border-sky-200/15 bg-sky-300/[0.045] p-3">
+                        <p className="text-sm font-semibold text-sky-100">{value}</p>
+                        <p className="text-xs leading-4 text-slate-500">{label}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
 
                 <div className="mt-5 flex flex-wrap gap-2">
                   {unique([...activePage.skillTags, ...activePage.levelTags]).slice(0, 12).map((tag) => (
@@ -1585,13 +2237,13 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
                     </span>
                     <div>
                       <h2 className="text-lg font-semibold text-white">Study note</h2>
-                      <p className="text-sm leading-6 text-slate-400">Local notes stay in this browser until a real member database is added.</p>
+                      <p className="text-sm leading-6 text-slate-400">Saved as writing evidence for this member and visible in the Writing Vault.</p>
                     </div>
                   </div>
                   <textarea
                     value={activeNote}
-                    onChange={(event) => setNotes((current) => ({ ...current, [activePage.id]: event.target.value }))}
-                    className="mt-5 min-h-44 w-full resize-y rounded-[8px] border border-white/10 bg-slate-950/72 p-4 text-sm leading-7 text-slate-100 outline-none transition placeholder:text-slate-600 focus:border-amber-300/50 focus:ring-2 focus:ring-amber-300/20"
+                    onChange={(event) => updateActiveDraft(event.target.value)}
+                    className="mt-5 min-h-44 w-full resize-y rounded-[8px] border border-white/10 bg-slate-950/72 p-4 text-base leading-8 text-slate-100 outline-none transition placeholder:text-slate-600 focus:border-amber-300/50 focus:ring-2 focus:ring-amber-300/20"
                     placeholder="Write the answer, revision, translation note, or portfolio evidence for this page..."
                   />
                   <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

@@ -483,7 +483,7 @@ export const evaLexicalResource: EvaLexicalItem[] = [
   },
 ];
 
-export const evaQuizQuestions: EvaQuizQuestion[] = [
+const grammarQuizQuestions: EvaQuizQuestion[] = [
   {
     id: "quiz-grammar-tense",
     track: "grammar",
@@ -498,12 +498,46 @@ export const evaQuizQuestions: EvaQuizQuestion[] = [
     explanation: "Present perfect with 'for two years' shows an action continuing until now.",
   },
   {
+    id: "quiz-grammar-past-vs-present-perfect",
+    track: "grammar",
+    prompt: "Which sentence best separates a finished event from present evidence?",
+    options: [
+      "I have visited the class yesterday and I learned a lot.",
+      "I visited the class yesterday, and I have written my reflection.",
+      "I visit the class yesterday, and I write my reflection.",
+      "I have visited yesterday, and I have wrote my reflection.",
+    ],
+    answerIndex: 1,
+    explanation: "Past simple fits a finished time marker like 'yesterday'; present perfect fits evidence that exists now.",
+  },
+  {
+    id: "quiz-grammar-article-specific",
+    track: "grammar",
+    prompt: "Choose the most natural article pattern.",
+    options: [
+      "Eva wrote the answer about a passage she read today.",
+      "Eva wrote answer about passage she read today.",
+      "Eva wrote an answer about the passage she read today.",
+      "Eva wrote a answer about a passage she read today.",
+    ],
+    answerIndex: 2,
+    explanation: "'An answer' is singular countable, and 'the passage' is specific because it was already read.",
+  },
+  {
     id: "quiz-grammar-connector",
     track: "grammar",
     prompt: "Choose the connector that best shows contrast: 'The text is difficult, ___ it is worth reading carefully.'",
     options: ["because", "therefore", "although", "so that"],
     answerIndex: 2,
     explanation: "'Although' creates contrast between difficulty and value.",
+  },
+  {
+    id: "quiz-grammar-purpose-connector",
+    track: "grammar",
+    prompt: "Choose the connector that shows purpose: 'She reviews the sentence ___ she can explain it clearly.'",
+    options: ["although", "so that", "however", "because of"],
+    answerIndex: 1,
+    explanation: "'So that' introduces purpose or intended result.",
   },
   {
     id: "quiz-grammar-modal",
@@ -514,12 +548,140 @@ export const evaQuizQuestions: EvaQuizQuestion[] = [
     explanation: "'Could' suggests an option; it is softer than obligation language.",
   },
   {
+    id: "quiz-grammar-indirect-question",
+    track: "grammar",
+    prompt: "Which indirect question is grammatically correct?",
+    options: [
+      "Can you tell me where is the main idea?",
+      "Can you tell me where the main idea is?",
+      "Can you tell me where the main idea?",
+      "Can you tell me where does the main idea is?",
+    ],
+    answerIndex: 1,
+    explanation: "In an indirect question, word order returns to statement order: 'where the main idea is.'",
+  },
+  {
+    id: "quiz-grammar-relative-clause",
+    track: "grammar",
+    prompt: "Choose the best relative clause for a definition.",
+    options: [
+      "A mentor is a person who guides a learner.",
+      "A mentor is a person which guides a learner.",
+      "A mentor is a person where guides a learner.",
+      "A mentor is a person guides a learner.",
+    ],
+    answerIndex: 0,
+    explanation: "'Who' refers to people and creates a clean definition.",
+  },
+  {
+    id: "quiz-grammar-passive-focus",
+    track: "grammar",
+    prompt: "Which sentence uses passive voice correctly?",
+    options: [
+      "The draft was revised after the lesson.",
+      "The draft revised after the lesson.",
+      "The draft was revise after the lesson.",
+      "The draft is revising after the lesson.",
+    ],
+    answerIndex: 0,
+    explanation: "Passive voice uses 'be' plus past participle: 'was revised.'",
+  },
+  {
+    id: "quiz-grammar-conditional",
+    track: "grammar",
+    prompt: "Which sentence is a natural first conditional?",
+    options: [
+      "If Eva reviews daily, she will remember more.",
+      "If Eva reviewed daily, she will remembers more.",
+      "If Eva reviews daily, she remembered more.",
+      "If Eva will review daily, she remembers more.",
+    ],
+    answerIndex: 0,
+    explanation: "The first conditional uses present simple in the if-clause and 'will' in the result clause.",
+  },
+  {
+    id: "quiz-grammar-paragraph-control",
+    track: "grammar",
+    prompt: "What should a strong IELTS/TOEFL body paragraph usually include?",
+    options: [
+      "A topic sentence, support, explanation, and a clear link.",
+      "Only one memorized sentence.",
+      "A list of unrelated vocabulary.",
+      "A conclusion without evidence.",
+    ],
+    answerIndex: 0,
+    explanation: "Academic paragraphs need a controlling idea and developed support.",
+  },
+];
+
+const religiousQuizQuestions: EvaQuizQuestion[] = [
+  {
     id: "quiz-religious-exegesis",
     track: "religious",
     prompt: "In careful reading, what should come before personal application?",
     options: ["Interpretation based on context", "A final opinion", "A memorized phrase", "A random translation"],
     answerIndex: 0,
     explanation: "Application is stronger when it follows observation and contextual interpretation.",
+  },
+  {
+    id: "quiz-religious-calling",
+    track: "religious",
+    prompt: "Which sentence explains calling with the most care?",
+    options: [
+      "Calling means any job someone likes.",
+      "Calling can describe purpose, service, and faithful responsibility.",
+      "Calling means never changing plans.",
+      "Calling is only a grammar term.",
+    ],
+    answerIndex: 1,
+    explanation: "The studio treats calling as purpose connected to service and responsibility.",
+  },
+  {
+    id: "quiz-religious-prayer-language",
+    track: "religious",
+    prompt: "Which line is the most natural prayer request?",
+    options: [
+      "Please help me to speak with patience and clarity.",
+      "Give me success because I want all result.",
+      "I demand that every mistake disappear now.",
+      "Make my English perfect immediately.",
+    ],
+    answerIndex: 0,
+    explanation: "It is simple, humble, specific, and natural.",
+  },
+  {
+    id: "quiz-religious-worship-tone",
+    track: "religious",
+    prompt: "Which word best describes respectful worship language?",
+    options: ["reverent", "random", "careless", "noisy"],
+    answerIndex: 0,
+    explanation: "'Reverent' describes deep respect in tone and action.",
+  },
+  {
+    id: "quiz-religious-observe-interpret-apply",
+    track: "religious",
+    prompt: "In an observe-interpret-apply method, what is observation?",
+    options: [
+      "Noticing what the text actually says.",
+      "Skipping the text and giving advice.",
+      "Choosing a personal opinion first.",
+      "Changing the passage into another topic.",
+    ],
+    answerIndex: 0,
+    explanation: "Observation begins with careful attention to the text itself.",
+  },
+  {
+    id: "quiz-religious-parable-summary",
+    track: "religious",
+    prompt: "A useful parable summary should include...",
+    options: [
+      "only the final sentence",
+      "the situation, contrast, lesson, and application",
+      "unrelated grammar rules",
+      "a payment instruction",
+    ],
+    answerIndex: 1,
+    explanation: "A parable summary should preserve the movement of the story and its meaning.",
   },
   {
     id: "quiz-religious-care",
@@ -535,6 +697,32 @@ export const evaQuizQuestions: EvaQuizQuestion[] = [
     explanation: "A gentle question creates space before advice.",
   },
   {
+    id: "quiz-religious-testimony",
+    track: "religious",
+    prompt: "Which structure best fits a short testimony?",
+    options: [
+      "Before, turning point, change, present practice.",
+      "Price, discount, login, logout.",
+      "Only a list of adjectives.",
+      "Question, question, question, no answer.",
+    ],
+    answerIndex: 0,
+    explanation: "A testimony becomes clearer when experience is organized in stages.",
+  },
+  {
+    id: "quiz-religious-community-language",
+    track: "religious",
+    prompt: "Which welcome line sounds warm and clear?",
+    options: [
+      "You must join every group today.",
+      "We are glad you are here; would you like help finding a seat?",
+      "Why are you late?",
+      "This place is difficult for visitors.",
+    ],
+    answerIndex: 1,
+    explanation: "It is welcoming, practical, and respectful.",
+  },
+  {
     id: "quiz-religious-translation",
     track: "religious",
     prompt: "A faithful translation note should mention...",
@@ -543,12 +731,52 @@ export const evaQuizQuestions: EvaQuizQuestion[] = [
     explanation: "Translation decisions should protect meaning, tone, and context.",
   },
   {
+    id: "quiz-religious-discernment",
+    track: "religious",
+    prompt: "What does discernment require in the studio model?",
+    options: [
+      "Fast reaction only.",
+      "Fact, feeling, counsel, and a wise next step.",
+      "Ignoring feedback.",
+      "Memorizing one phrase without context.",
+    ],
+    answerIndex: 1,
+    explanation: "Discernment is modeled as careful judgment, not quick reaction.",
+  },
+];
+
+const lexicalQuizQuestions: EvaQuizQuestion[] = [
+  {
     id: "quiz-lexical-calling",
     track: "lexical",
     prompt: "Which collocation is most natural?",
     options: ["do a calling", "clarify a calling", "eat a calling", "cancel a calling"],
     answerIndex: 1,
     explanation: "'Clarify a calling' is a natural phrase for understanding purpose.",
+  },
+  {
+    id: "quiz-lexical-discernment",
+    track: "lexical",
+    prompt: "Which phrase is a natural collocation?",
+    options: ["spiritual discernment", "eat discernment", "heavy discernmenting", "cancel discernment"],
+    answerIndex: 0,
+    explanation: "'Spiritual discernment' is a natural phrase for wise judgment in faith contexts.",
+  },
+  {
+    id: "quiz-lexical-reverence",
+    track: "lexical",
+    prompt: "Which phrase best matches 'reverence'?",
+    options: ["deep respect", "quick payment", "random habit", "grammar deletion"],
+    answerIndex: 0,
+    explanation: "Reverence means deep respect shown through attitude or action.",
+  },
+  {
+    id: "quiz-lexical-intercession",
+    track: "lexical",
+    prompt: "Intercession is closest in meaning to...",
+    options: ["prayer on behalf of another person", "a reading speed", "a punctuation mark", "a browser tab"],
+    answerIndex: 0,
+    explanation: "Intercession is prayer or action for someone else.",
   },
   {
     id: "quiz-lexical-exegesis",
@@ -559,6 +787,48 @@ export const evaQuizQuestions: EvaQuizQuestion[] = [
     explanation: "Exegesis is careful explanation based on text and context.",
   },
   {
+    id: "quiz-lexical-testimony",
+    track: "lexical",
+    prompt: "Which collocation is most natural?",
+    options: ["share a testimony", "drink a testimony", "delete a testimony", "sleep a testimony"],
+    answerIndex: 0,
+    explanation: "'Share a testimony' is the natural collocation.",
+  },
+  {
+    id: "quiz-lexical-fellowship",
+    track: "lexical",
+    prompt: "In this booklet, fellowship means...",
+    options: [
+      "supportive spiritual community and shared life",
+      "a grammar error",
+      "a private payment code",
+      "a random list of words",
+    ],
+    answerIndex: 0,
+    explanation: "Fellowship is more than friendship; it carries community and shared faith.",
+  },
+  {
+    id: "quiz-lexical-compassion",
+    track: "lexical",
+    prompt: "Which phrase is most natural?",
+    options: ["show compassion", "make compassioning", "do the compassion", "cancel compassion"],
+    answerIndex: 0,
+    explanation: "'Show compassion' is a standard collocation.",
+  },
+  {
+    id: "quiz-lexical-stewardship",
+    track: "lexical",
+    prompt: "Stewardship is best explained as...",
+    options: [
+      "responsible care for something entrusted to you",
+      "a fast exam trick",
+      "a type of audio error",
+      "a phrase with no practical use",
+    ],
+    answerIndex: 0,
+    explanation: "Stewardship is responsible care for time, gifts, money, learning, or service.",
+  },
+  {
     id: "quiz-lexical-cohesion",
     track: "lexical",
     prompt: "Cohesion mainly helps a paragraph...",
@@ -567,5 +837,7 @@ export const evaQuizQuestions: EvaQuizQuestion[] = [
     explanation: "Cohesion is the smooth connection between ideas and sentences.",
   },
 ];
+
+export const evaQuizQuestions: EvaQuizQuestion[] = [...grammarQuizQuestions, ...religiousQuizQuestions, ...lexicalQuizQuestions];
 
 export const evaSkillModules = [...evaGrammarModules, ...evaReligiousModules];
