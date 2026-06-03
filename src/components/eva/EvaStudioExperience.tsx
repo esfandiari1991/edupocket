@@ -2,19 +2,40 @@
 
 import { useEffect, useMemo, useState } from "react";
 import {
+  BarChart3,
   BookOpen,
   Check,
   ChevronRight,
+  CircleCheck,
   Download,
   FileText,
+  Flame,
+  GraduationCap,
+  Headphones,
+  ListChecks,
   Layers3,
   LockKeyhole,
+  Play,
   PenLine,
+  RotateCcw,
   Search,
   Sparkles,
+  Star,
   Target,
+  Volume2,
 } from "lucide-react";
 import type { EvaBooklet, EvaBookletChapter, EvaBookletPage, EvaBookletStack } from "@/lib/eva-private-content";
+import {
+  evaGrammarModules,
+  evaLexicalResource,
+  evaQuizQuestions,
+  evaReligiousModules,
+  evaSkillModules,
+  evaWorkflowSteps,
+  type EvaQuizQuestion,
+  type EvaSkillModule,
+  type EvaStudioTrack,
+} from "@/lib/eva-studio-curriculum";
 import { cn } from "@/lib/utils";
 
 type EvaStudioExperienceProps = {
@@ -26,7 +47,11 @@ const levelOrder = ["Supported", "Independent", "Challenging", "Critical Thinkin
 
 type StoredState = {
   done: Record<string, boolean>;
+  moduleDone: Record<string, boolean>;
   notes: Record<string, string>;
+  pronunciationDone: Record<string, boolean>;
+  quizAnswers: Record<string, number>;
+  reviewQueue: Record<string, boolean>;
 };
 
 type StudyLane = {
@@ -151,6 +176,14 @@ const studyRoutes: StudyRoute[] = [
   },
 ];
 
+const premiumTabs: Array<{ id: "overview" | EvaStudioTrack | "quiz"; title: string; description: string }> = [
+  { id: "overview", title: "Use model", description: "How the studio should be worked." },
+  { id: "grammar", title: "Grammar Atlas", description: "10 accuracy chapters." },
+  { id: "religious", title: "Religious Context", description: "10 meaning chapters." },
+  { id: "lexical", title: "Lexical Resource", description: "Pronunciation and collocation." },
+  { id: "quiz", title: "Quiz & Review", description: "Track mastery signals." },
+];
+
 function unique(values: string[]) {
   return Array.from(new Set(values.filter(Boolean)));
 }
@@ -184,6 +217,10 @@ function countFields(pages: EvaBookletPage[]) {
   return pages.reduce((total, page) => total + page.fieldCount, 0);
 }
 
+function countChecks(pages: EvaBookletPage[]) {
+  return pages.reduce((total, page) => total + page.checkboxCount, 0);
+}
+
 function pagesForStack(stack: EvaBookletStack, pages: EvaBookletPage[]) {
   const chapterIds = new Set(stack.chapterIds);
   return pages.filter((page) => chapterIds.has(page.chapterId));
@@ -203,15 +240,39 @@ function orderedRouteStacks(route: StudyRoute, stacks: EvaBookletStack[]) {
   return [...preferred, ...stacks.filter((stack) => !preferredIds.has(stack.id))];
 }
 
+function pagesForModule(module: EvaSkillModule, pages: EvaBookletPage[]) {
+  return pages.filter((page) => module.sourceTypes.includes(page.type));
+}
+
+function moduleTrackTitle(track: EvaStudioTrack) {
+  if (track === "grammar") return "Grammar Atlas";
+  if (track === "religious") return "Religious Context Library";
+  return "Lexical Resource";
+}
+
+function quizTrackTitle(track: EvaStudioTrack) {
+  if (track === "grammar") return "Grammar";
+  if (track === "religious") return "Religious context";
+  return "Lexical resource";
+}
+
 export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
   const [activeStackId, setActiveStackId] = useState(booklet.stacks[0]?.id ?? "");
   const [activeChapterId, setActiveChapterId] = useState(booklet.chapters[0]?.id ?? "");
   const [activePageId, setActivePageId] = useState(booklet.pages[0]?.id ?? "");
   const [activeLaneId, setActiveLaneId] = useState(chapterLane.id);
+  const [activePremiumTab, setActivePremiumTab] = useState<(typeof premiumTabs)[number]["id"]>("overview");
+  const [activeModuleId, setActiveModuleId] = useState(evaGrammarModules[0]?.id ?? "");
+  const [activeLexicalId, setActiveLexicalId] = useState(evaLexicalResource[0]?.id ?? "");
+  const [activeQuizTrack, setActiveQuizTrack] = useState<EvaStudioTrack>("grammar");
   const [skillFilter, setSkillFilter] = useState("All");
   const [query, setQuery] = useState("");
   const [done, setDone] = useState<Record<string, boolean>>({});
+  const [moduleDone, setModuleDone] = useState<Record<string, boolean>>({});
   const [notes, setNotes] = useState<Record<string, string>>({});
+  const [pronunciationDone, setPronunciationDone] = useState<Record<string, boolean>>({});
+  const [quizAnswers, setQuizAnswers] = useState<Record<string, number>>({});
+  const [reviewQueue, setReviewQueue] = useState<Record<string, boolean>>({});
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -221,7 +282,11 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
         if (stored) {
           const parsed = JSON.parse(stored) as StoredState;
           setDone(parsed.done ?? {});
+          setModuleDone(parsed.moduleDone ?? {});
           setNotes(parsed.notes ?? {});
+          setPronunciationDone(parsed.pronunciationDone ?? {});
+          setQuizAnswers(parsed.quizAnswers ?? {});
+          setReviewQueue(parsed.reviewQueue ?? {});
         }
       } catch {
         // Local progress is helpful, but the studio should remain usable if storage is unavailable.
@@ -234,8 +299,8 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
 
   useEffect(() => {
     if (!hydrated) return;
-    window.localStorage.setItem(storageKey, JSON.stringify({ done, notes }));
-  }, [done, hydrated, notes]);
+    window.localStorage.setItem(storageKey, JSON.stringify({ done, moduleDone, notes, pronunciationDone, quizAnswers, reviewQueue }));
+  }, [done, hydrated, moduleDone, notes, pronunciationDone, quizAnswers, reviewQueue]);
 
   const activeStack = useMemo(
     () => booklet.stacks.find((stack) => stack.id === activeStackId) ?? booklet.stacks[0],
@@ -330,6 +395,45 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
       }),
     );
   }, [booklet.pages, booklet.stacks, stackPagesById]);
+  const moduleStats = useMemo(() => {
+    return new Map(
+      evaSkillModules.map((module) => {
+        const pages = pagesForModule(module, booklet.pages);
+        return [module.id, { pages, pageCount: pages.length, fields: countFields(pages), checks: countChecks(pages) }];
+      }),
+    );
+  }, [booklet.pages]);
+  const activeModules = useMemo(() => {
+    if (activePremiumTab === "religious") return evaReligiousModules;
+    return evaGrammarModules;
+  }, [activePremiumTab]);
+  const activeModule = useMemo(() => {
+    const preferredModules = activePremiumTab === "religious" ? evaReligiousModules : evaGrammarModules;
+    return preferredModules.find((module) => module.id === activeModuleId) ?? preferredModules[0];
+  }, [activeModuleId, activePremiumTab]);
+  const activeModulePages = useMemo(() => (activeModule ? pagesForModule(activeModule, booklet.pages) : []), [activeModule, booklet.pages]);
+  const activeLexicalItem = useMemo(
+    () => evaLexicalResource.find((item) => item.id === activeLexicalId) ?? evaLexicalResource[0],
+    [activeLexicalId],
+  );
+  const activeQuizQuestions = useMemo(() => evaQuizQuestions.filter((question) => question.track === activeQuizTrack), [activeQuizTrack]);
+  const answeredQuizQuestions = evaQuizQuestions.filter((question) => quizAnswers[question.id] !== undefined);
+  const correctQuizQuestions = answeredQuizQuestions.filter((question) => quizAnswers[question.id] === question.answerIndex);
+  const reviewPageIds = Object.entries(reviewQueue)
+    .filter(([, queued]) => queued)
+    .map(([pageId]) => pageId);
+  const reviewPages = reviewPageIds
+    .map((pageId) => booklet.pages.find((page) => page.id === pageId))
+    .filter((page): page is EvaBookletPage => Boolean(page));
+  const completedPremiumModules = evaSkillModules.filter((module) => moduleDone[module.id]).length;
+  const completedPronunciations = evaLexicalResource.filter((item) => pronunciationDone[item.id]).length;
+  const studioMastery = Math.round(
+    ((booklet.pages.filter((page) => done[page.id]).length / Math.max(booklet.pages.length, 1)) * 0.45 +
+      (completedPremiumModules / Math.max(evaSkillModules.length, 1)) * 0.25 +
+      (correctQuizQuestions.length / Math.max(evaQuizQuestions.length, 1)) * 0.2 +
+      (completedPronunciations / Math.max(evaLexicalResource.length, 1)) * 0.1) *
+      100,
+  );
   const skillOptions = useMemo(() => ["All", ...unique(lanePages.flatMap((page) => page.skillTags)).slice(0, 12)], [lanePages]);
   const effectiveSkillFilter = skillOptions.includes(skillFilter) ? skillFilter : "All";
   const visiblePages = useMemo(() => {
@@ -363,6 +467,9 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
   const activeNote = notes[activePage.id] ?? "";
   const activeNoteWordCount = activeNote.trim().split(/\s+/).filter(Boolean).length;
   const activeBlocks = activePage.blocks.filter((block, index) => index !== 0 || block !== activePage.title);
+  const activeModuleStats = activeModule ? moduleStats.get(activeModule.id) : undefined;
+  const activeQuizAnswered = activeQuizQuestions.filter((question) => quizAnswers[question.id] !== undefined);
+  const activeQuizCorrect = activeQuizAnswered.filter((question) => quizAnswers[question.id] === question.answerIndex);
 
   function chooseStack(stack: EvaBookletStack) {
     const nextChapter = booklet.chapters.find((chapter) => stack.chapterIds.includes(chapter.id)) ?? booklet.chapters[0];
@@ -435,6 +542,47 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
     }
   }
 
+  function chooseModule(module: EvaSkillModule) {
+    setActivePremiumTab(module.track);
+    setActiveModuleId(module.id);
+
+    const preferredPages = pagesForModule(module, stackPages);
+    const nextPage = preferredPages[0] ?? pagesForModule(module, booklet.pages)[0];
+    if (nextPage) choosePage(nextPage);
+  }
+
+  function chooseLexicalItem(itemId: string) {
+    setActivePremiumTab("lexical");
+    setActiveLexicalId(itemId);
+    const item = evaLexicalResource.find((entry) => entry.id === itemId);
+    const nextPage = item
+      ? booklet.pages.find((page) => item.tags.some((tag) => page.skillTags.join(" ").toLowerCase().includes(tag.toLowerCase()) || page.blocks.join(" ").toLowerCase().includes(tag.toLowerCase())))
+      : undefined;
+    if (nextPage) choosePage(nextPage);
+  }
+
+  function speakLexicalItem(term: string) {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(term);
+    utterance.lang = "en-US";
+    utterance.rate = 0.82;
+    utterance.pitch = 1;
+    window.speechSynthesis.speak(utterance);
+  }
+
+  function answerQuiz(question: EvaQuizQuestion, answerIndex: number) {
+    setQuizAnswers((current) => ({ ...current, [question.id]: answerIndex }));
+  }
+
+  function resetQuizTrack() {
+    setQuizAnswers((current) => {
+      const next = { ...current };
+      for (const question of activeQuizQuestions) delete next[question.id];
+      return next;
+    });
+  }
+
   function exportPageNote() {
     const text = [
       `# ${activePage.title}`,
@@ -491,6 +639,438 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
             })}
           </div>
         </div>
+      </section>
+
+      <section className="grid gap-3 lg:grid-cols-[minmax(0,1.25fr)_minmax(20rem,0.75fr)]">
+        <div className="rounded-[8px] border border-white/10 bg-white/[0.035] p-4 sm:p-5">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 className="text-base font-semibold text-white">How to use the digital booklet</h2>
+              <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-400">
+                The product is designed as a study operating system: route, source page, skill layer, evidence, review.
+              </p>
+            </div>
+            <span className="inline-flex items-center gap-2 rounded-[8px] border border-amber-200/18 bg-amber-200/[0.08] px-3 py-2 text-xs font-semibold text-amber-100">
+              <CircleCheck aria-hidden="true" className="size-4" />
+              No imported page is discarded
+            </span>
+          </div>
+          <div className="mt-4 grid gap-2 md:grid-cols-4">
+            {evaWorkflowSteps.map((step, index) => {
+              const Icon = step.icon;
+
+              return (
+                <div key={step.id} className="rounded-[8px] border border-white/10 bg-slate-950/32 p-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="flex size-9 items-center justify-center rounded-[8px] bg-amber-200/10 text-amber-200">
+                      <Icon aria-hidden="true" className="size-4" />
+                    </span>
+                    <span className="text-xs font-semibold text-slate-600">0{index + 1}</span>
+                  </div>
+                  <h3 className="mt-3 text-sm font-semibold text-white">{step.title}</h3>
+                  <p className="mt-2 text-xs leading-5 text-slate-400">{step.text}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <aside className="rounded-[8px] border border-amber-200/20 bg-[radial-gradient(circle_at_20%_0%,rgba(251,191,36,0.13),transparent_16rem),rgba(15,23,42,0.54)] p-4 sm:p-5">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h2 className="text-base font-semibold text-white">Mastery tracker</h2>
+              <p className="mt-1 text-sm leading-6 text-slate-400">Local signals until member accounts are added.</p>
+            </div>
+            <div className="flex size-16 shrink-0 items-center justify-center rounded-full border border-amber-200/25 bg-slate-950/46 text-lg font-semibold text-amber-100">
+              {studioMastery}%
+            </div>
+          </div>
+          <div className="mt-4 grid grid-cols-2 gap-2">
+            {[
+              { label: "Pages done", value: booklet.pages.filter((page) => done[page.id]).length, total: booklet.pages.length, icon: FileText },
+              { label: "Modules", value: completedPremiumModules, total: evaSkillModules.length, icon: ListChecks },
+              { label: "Quiz correct", value: correctQuizQuestions.length, total: evaQuizQuestions.length, icon: BarChart3 },
+              { label: "Pronounced", value: completedPronunciations, total: evaLexicalResource.length, icon: Headphones },
+            ].map((item) => {
+              const Icon = item.icon;
+
+              return (
+                <div key={item.label} className="rounded-[8px] border border-white/10 bg-slate-950/32 p-3">
+                  <Icon aria-hidden="true" className="size-4 text-amber-200" />
+                  <p className="mt-2 text-sm font-semibold text-white">
+                    {item.value}/{item.total}
+                  </p>
+                  <p className="text-xs leading-4 text-slate-500">{item.label}</p>
+                </div>
+              );
+            })}
+          </div>
+          <div className="mt-3 rounded-[8px] border border-white/10 bg-slate-950/30 p-3">
+            <p className="text-xs font-semibold uppercase text-slate-500">Review queue</p>
+            <p className="mt-2 text-sm leading-6 text-slate-300">
+              {reviewPages.length ? `${reviewPages.length} pages waiting for deliberate review.` : "No review pages yet. Add weak pages from the reader."}
+            </p>
+          </div>
+        </aside>
+      </section>
+
+      <section className="overflow-hidden rounded-[8px] border border-amber-200/20 bg-[radial-gradient(circle_at_12%_0%,rgba(251,191,36,0.11),transparent_24rem),rgba(255,255,255,0.035)] p-3 sm:p-4">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 className="text-base font-semibold text-white">Premium workbench</h2>
+            <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-400">
+              Grammar, religious context, lexical pronunciation, quizzes, and review all point back to source pages.
+            </p>
+          </div>
+          <p className="text-xs font-semibold text-slate-500">20 modules · 10 pronunciation cards · {evaQuizQuestions.length} quiz checks</p>
+        </div>
+
+        <div className="mt-4 grid gap-2 md:grid-cols-5">
+          {premiumTabs.map((tab) => {
+            const active = activePremiumTab === tab.id;
+
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => {
+                  setActivePremiumTab(tab.id);
+                  if (tab.id === "grammar") setActiveModuleId(evaGrammarModules[0]?.id ?? "");
+                  if (tab.id === "religious") setActiveModuleId(evaReligiousModules[0]?.id ?? "");
+                }}
+                className={cn(
+                  "rounded-[8px] border p-3 text-start transition focus:outline-none focus:ring-2 focus:ring-amber-300/50",
+                  active ? "border-amber-300/55 bg-amber-300/12 text-white" : "border-white/10 bg-slate-950/28 text-slate-300 hover:border-amber-300/35",
+                )}
+              >
+                <span className="block text-sm font-semibold">{tab.title}</span>
+                <span className="mt-1 block text-xs leading-5 text-slate-500">{tab.description}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {activePremiumTab === "overview" ? (
+          <div className="mt-4 grid gap-3 lg:grid-cols-[0.78fr_1.22fr]">
+            <div className="rounded-[8px] border border-white/10 bg-slate-950/30 p-4">
+              <h3 className="text-sm font-semibold text-white">Segmentation principle</h3>
+              <p className="mt-2 text-sm leading-7 text-slate-300">
+                Same-meaning work stays visually close: grammar with accuracy, religious meaning with exegesis and service, lexis with pronunciation and collocation, review with measurable evidence.
+              </p>
+              <div className="mt-4 grid gap-2">
+                {[
+                  ["Source", `${booklet.stats.pages} imported pages`],
+                  ["Semantic lanes", `${semanticStudyLanes.length} lanes plus chapter path`],
+                  ["Premium layers", "Grammar / Religious / Lexical / Quiz"],
+                  ["Tracking", "page, module, quiz, pronunciation, review"],
+                ].map(([label, value]) => (
+                  <div key={label} className="flex items-center justify-between gap-3 rounded-[8px] border border-white/10 bg-white/[0.035] px-3 py-2 text-sm">
+                    <span className="font-semibold text-slate-200">{label}</span>
+                    <span className="text-slate-500">{value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="grid gap-2 sm:grid-cols-3">
+              {[
+                { title: "Grammar Atlas", value: evaGrammarModules.length, text: "Accuracy chapters with source-page jumps.", icon: GraduationCap },
+                { title: "Religious Context", value: evaReligiousModules.length, text: "Meaning, service, prayer, and translation chapters.", icon: Flame },
+                { title: "Lexical Resource", value: evaLexicalResource.length, text: "IPA, stress, collocations, and listen practice.", icon: Volume2 },
+              ].map((item) => {
+                const Icon = item.icon;
+
+                return (
+                  <button
+                    key={item.title}
+                    type="button"
+                    onClick={() => setActivePremiumTab(item.title === "Grammar Atlas" ? "grammar" : item.title === "Religious Context" ? "religious" : "lexical")}
+                    className="rounded-[8px] border border-white/10 bg-slate-950/28 p-4 text-start transition hover:border-amber-300/35 focus:outline-none focus:ring-2 focus:ring-amber-300/50"
+                  >
+                    <Icon aria-hidden="true" className="size-5 text-amber-200" />
+                    <p className="mt-4 text-2xl font-semibold text-white">{item.value}</p>
+                    <h3 className="mt-1 text-sm font-semibold text-white">{item.title}</h3>
+                    <p className="mt-2 text-xs leading-5 text-slate-400">{item.text}</p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ) : null}
+
+        {(activePremiumTab === "grammar" || activePremiumTab === "religious") && activeModule ? (
+          <div className="mt-4 grid gap-3 xl:grid-cols-[22rem_minmax(0,1fr)]">
+            <div className="max-h-[32rem] space-y-2 overflow-y-auto pr-1">
+              {activeModules.map((module) => {
+                const active = module.id === activeModule.id;
+                const stats = moduleStats.get(module.id);
+                const Icon = module.icon;
+
+                return (
+                  <button
+                    key={module.id}
+                    type="button"
+                    onClick={() => chooseModule(module)}
+                    className={cn(
+                      "w-full rounded-[8px] border p-3 text-start transition focus:outline-none focus:ring-2 focus:ring-amber-300/50",
+                      active ? "border-amber-300/55 bg-amber-300/12 text-white" : "border-white/10 bg-slate-950/28 text-slate-300 hover:border-amber-300/35",
+                    )}
+                  >
+                    <span className="flex items-center justify-between gap-3">
+                      <span className="flex items-center gap-2 text-sm font-semibold">
+                        <Icon aria-hidden="true" className="size-4 text-amber-200" />
+                        {module.order}. {module.title}
+                      </span>
+                      <span className={cn("flex size-5 shrink-0 items-center justify-center rounded-[6px] border", moduleDone[module.id] ? "border-emerald-300 bg-emerald-300 text-slate-950" : "border-white/15 text-transparent")}>
+                        <Check aria-hidden="true" className="size-3.5" />
+                      </span>
+                    </span>
+                    <span className="mt-2 block text-xs leading-5 text-slate-500">
+                      {stats?.pageCount ?? 0} source pages · {stats?.fields ?? 0} fields · {module.minutes} min
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            <article className="rounded-[8px] border border-white/10 bg-slate-950/30 p-4">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                <div>
+                  <p className="text-xs font-semibold uppercase text-amber-200">{moduleTrackTitle(activeModule.track)} / module {activeModule.order}</p>
+                  <h3 className="mt-2 text-2xl font-semibold leading-tight text-white">{activeModule.title}</h3>
+                  <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">{activeModule.outcome}</p>
+                </div>
+                <label className="inline-flex min-h-11 shrink-0 cursor-pointer items-center justify-between gap-3 rounded-[8px] border border-white/10 px-3 text-sm font-semibold text-slate-200 transition hover:border-amber-300/40 hover:text-amber-100">
+                  <span>Module done</span>
+                  <input
+                    type="checkbox"
+                    checked={Boolean(moduleDone[activeModule.id])}
+                    onChange={(event) => setModuleDone((current) => ({ ...current, [activeModule.id]: event.target.checked }))}
+                    className="sr-only"
+                  />
+                  <span className={cn("flex size-6 items-center justify-center rounded-[6px] border", moduleDone[activeModule.id] ? "border-amber-200 bg-amber-200 text-slate-950" : "border-white/20")}>
+                    {moduleDone[activeModule.id] ? <Check aria-hidden="true" className="size-4" /> : null}
+                  </span>
+                </label>
+              </div>
+              <div className="mt-5 grid gap-3 md:grid-cols-3">
+                {[
+                  { label: "Focus", value: activeModule.focus },
+                  { label: "Evidence", value: activeModule.evidence },
+                  { label: "Coverage", value: `${activeModuleStats?.pageCount ?? 0} pages / ${activeModuleStats?.fields ?? 0} fields / ${activeModuleStats?.checks ?? 0} checks` },
+                ].map((item) => (
+                  <div key={item.label} className="rounded-[8px] border border-white/10 bg-white/[0.035] p-3">
+                    <p className="text-xs font-semibold uppercase text-slate-500">{item.label}</p>
+                    <p className="mt-2 text-sm leading-6 text-slate-300">{item.value}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_18rem]">
+                <div>
+                  <h4 className="text-sm font-semibold text-white">Practice stack</h4>
+                  <div className="mt-3 grid gap-2">
+                    {activeModule.practice.map((practice, index) => (
+                      <div key={practice} className="flex items-start gap-3 rounded-[8px] border border-white/10 bg-white/[0.035] p-3 text-sm leading-6 text-slate-300">
+                        <span className="flex size-7 shrink-0 items-center justify-center rounded-[6px] bg-amber-200/10 text-xs font-semibold text-amber-100">{index + 1}</span>
+                        <span>{practice}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="rounded-[8px] border border-amber-200/16 bg-amber-200/[0.06] p-3">
+                  <h4 className="text-sm font-semibold text-amber-100">Jump to source</h4>
+                  <div className="mt-3 grid gap-2">
+                    {activeModulePages.slice(0, 4).map((page) => (
+                      <button
+                        key={page.id}
+                        type="button"
+                        onClick={() => choosePage(page)}
+                        className="rounded-[8px] border border-white/10 bg-slate-950/30 p-3 text-start text-xs leading-5 text-slate-300 transition hover:border-amber-300/35 focus:outline-none focus:ring-2 focus:ring-amber-300/40"
+                      >
+                        <span className="font-semibold text-amber-100">P{String(page.page).padStart(3, "0")}</span> · {page.title}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        ) : null}
+
+        {activePremiumTab === "lexical" && activeLexicalItem ? (
+          <div className="mt-4 grid gap-3 xl:grid-cols-[18rem_minmax(0,1fr)]">
+            <div className="grid max-h-[30rem] gap-2 overflow-y-auto pr-1">
+              {evaLexicalResource.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => chooseLexicalItem(item.id)}
+                  className={cn(
+                    "rounded-[8px] border p-3 text-start transition focus:outline-none focus:ring-2 focus:ring-amber-300/50",
+                    item.id === activeLexicalItem.id ? "border-amber-300/55 bg-amber-300/12 text-white" : "border-white/10 bg-slate-950/28 text-slate-300 hover:border-amber-300/35",
+                  )}
+                >
+                  <span className="block text-sm font-semibold">{item.term}</span>
+                  <span className="mt-1 block font-mono text-xs text-sky-100">{item.ipa}</span>
+                  <span className="mt-1 block text-xs text-slate-500">{item.tags.join(" / ")}</span>
+                </button>
+              ))}
+            </div>
+            <article className="rounded-[8px] border border-white/10 bg-slate-950/30 p-4">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                <div>
+                  <p className="text-xs font-semibold uppercase text-amber-200">Lexical resource / pronunciation</p>
+                  <h3 className="mt-2 text-3xl font-semibold text-white">{activeLexicalItem.term}</h3>
+                  <p className="mt-1 font-mono text-lg text-sky-100">{activeLexicalItem.ipa}</p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => speakLexicalItem(activeLexicalItem.term)}
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[8px] bg-amber-300 px-4 text-sm font-bold text-slate-950 transition hover:bg-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-100"
+                  >
+                    <Volume2 aria-hidden="true" className="size-4" />
+                    Listen
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPronunciationDone((current) => ({ ...current, [activeLexicalItem.id]: !current[activeLexicalItem.id] }))}
+                    className={cn(
+                      "inline-flex min-h-11 items-center justify-center gap-2 rounded-[8px] border px-4 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-amber-300/50",
+                      pronunciationDone[activeLexicalItem.id] ? "border-emerald-300 bg-emerald-300 text-slate-950" : "border-white/10 text-slate-200 hover:border-amber-300/40",
+                    )}
+                  >
+                    <Headphones aria-hidden="true" className="size-4" />
+                    Practiced
+                  </button>
+                </div>
+              </div>
+              <div className="mt-5 grid gap-3 md:grid-cols-3">
+                {[
+                  { label: "Stress", value: activeLexicalItem.stress },
+                  { label: "Meaning", value: activeLexicalItem.meaning },
+                  { label: "Use", value: activeLexicalItem.ministryUse },
+                ].map((item) => (
+                  <div key={item.label} className="rounded-[8px] border border-white/10 bg-white/[0.035] p-3">
+                    <p className="text-xs font-semibold uppercase text-slate-500">{item.label}</p>
+                    <p className="mt-2 text-sm leading-6 text-slate-300">{item.value}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_1fr]">
+                <div>
+                  <h4 className="text-sm font-semibold text-white">Collocation cards</h4>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {activeLexicalItem.collocations.map((item) => (
+                      <span key={item} className="rounded-[8px] border border-white/10 bg-white/[0.04] px-3 py-2 text-sm font-semibold text-slate-200">
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="mt-4 rounded-[8px] border border-sky-200/15 bg-sky-300/[0.055] p-3 text-sm leading-7 text-slate-300">{activeLexicalItem.example}</p>
+                </div>
+                <div className="rounded-[8px] border border-amber-200/16 bg-amber-200/[0.06] p-4">
+                  <h4 className="text-sm font-semibold text-amber-100">Pronunciation coaching</h4>
+                  <p className="mt-3 text-sm leading-7 text-slate-300">{activeLexicalItem.pronunciationTip}</p>
+                  <p className="mt-4 text-xs font-semibold uppercase text-slate-500">Tracking idea</p>
+                  <p className="mt-2 text-sm leading-6 text-slate-300">
+                    Listen once, say it twice, then use it in one source-page note before marking it practiced.
+                  </p>
+                </div>
+              </div>
+            </article>
+          </div>
+        ) : null}
+
+        {activePremiumTab === "quiz" ? (
+          <div className="mt-4 grid gap-3 xl:grid-cols-[18rem_minmax(0,1fr)]">
+            <aside className="rounded-[8px] border border-white/10 bg-slate-950/30 p-4">
+              <h3 className="text-sm font-semibold text-white">Quiz tracks</h3>
+              <div className="mt-3 grid gap-2">
+                {(["grammar", "religious", "lexical"] as EvaStudioTrack[]).map((track) => {
+                  const questions = evaQuizQuestions.filter((question) => question.track === track);
+                  const answered = questions.filter((question) => quizAnswers[question.id] !== undefined);
+                  const correct = answered.filter((question) => quizAnswers[question.id] === question.answerIndex);
+
+                  return (
+                    <button
+                      key={track}
+                      type="button"
+                      onClick={() => setActiveQuizTrack(track)}
+                      className={cn(
+                        "rounded-[8px] border p-3 text-start transition focus:outline-none focus:ring-2 focus:ring-amber-300/50",
+                        activeQuizTrack === track ? "border-amber-300/55 bg-amber-300/12 text-white" : "border-white/10 bg-white/[0.035] text-slate-300 hover:border-amber-300/35",
+                      )}
+                    >
+                      <span className="block text-sm font-semibold">{quizTrackTitle(track)}</span>
+                      <span className="mt-1 block text-xs text-slate-500">
+                        {correct.length}/{questions.length} correct
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+              <button
+                type="button"
+                onClick={resetQuizTrack}
+                className="mt-4 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-[8px] border border-white/10 px-3 text-sm font-semibold text-slate-200 transition hover:border-amber-300/40 hover:text-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-300/50"
+              >
+                <RotateCcw aria-hidden="true" className="size-4" />
+                Reset this track
+              </button>
+            </aside>
+            <article className="rounded-[8px] border border-white/10 bg-slate-950/30 p-4">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-white">{quizTrackTitle(activeQuizTrack)} quiz</h3>
+                  <p className="mt-1 text-sm leading-6 text-slate-400">
+                    {activeQuizCorrect.length}/{activeQuizQuestions.length} correct in this track. Explanations appear after answering.
+                  </p>
+                </div>
+                <span className="inline-flex items-center gap-2 rounded-[8px] border border-amber-200/18 bg-amber-200/[0.08] px-3 py-2 text-xs font-semibold text-amber-100">
+                  <Star aria-hidden="true" className="size-4" />
+                  Trackable checks
+                </span>
+              </div>
+              <div className="mt-4 grid gap-3">
+                {activeQuizQuestions.map((question, index) => {
+                  const selected = quizAnswers[question.id];
+                  const answered = selected !== undefined;
+
+                  return (
+                    <div key={question.id} className="rounded-[8px] border border-white/10 bg-white/[0.035] p-4">
+                      <p className="text-xs font-semibold uppercase text-amber-200">Question {index + 1}</p>
+                      <h4 className="mt-2 text-sm font-semibold leading-6 text-white">{question.prompt}</h4>
+                      <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                        {question.options.map((option, optionIndex) => {
+                          const correct = optionIndex === question.answerIndex;
+                          const active = selected === optionIndex;
+
+                          return (
+                            <button
+                              key={option}
+                              type="button"
+                              onClick={() => answerQuiz(question, optionIndex)}
+                              className={cn(
+                                "rounded-[8px] border p-3 text-start text-sm leading-6 transition focus:outline-none focus:ring-2 focus:ring-amber-300/50",
+                                answered && correct
+                                  ? "border-emerald-300 bg-emerald-300/12 text-emerald-100"
+                                  : active
+                                    ? "border-rose-300 bg-rose-300/10 text-rose-100"
+                                    : "border-white/10 bg-slate-950/32 text-slate-300 hover:border-amber-300/35",
+                              )}
+                            >
+                              {option}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {answered ? <p className="mt-3 text-sm leading-6 text-slate-300">{question.explanation}</p> : null}
+                    </div>
+                  );
+                })}
+              </div>
+            </article>
+          </div>
+        ) : null}
       </section>
 
       <section className="rounded-[8px] border border-white/10 bg-white/[0.035] p-3 sm:p-4">
@@ -579,7 +1159,39 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
             </div>
             <p className="text-xs font-semibold text-slate-500">{semanticStudyLanes.length} lanes · {booklet.stacks.length} stacks</p>
           </div>
-          <div className="mt-3 overflow-x-auto pb-1">
+          <div className="mt-3 grid gap-2 sm:hidden">
+            {semanticStudyLanes.map((lane) => {
+              const stats = laneCounts.get(lane.id);
+              const active = lane.id === activeLane.id;
+              const disabled = (stats?.pages ?? 0) === 0;
+
+              return (
+                <button
+                  key={`mobile-${lane.id}`}
+                  type="button"
+                  disabled={disabled}
+                  onClick={() => chooseLane(lane)}
+                  className={cn(
+                    "flex items-center justify-between gap-3 rounded-[8px] border p-3 text-start transition focus:outline-none focus:ring-2 focus:ring-amber-300/40",
+                    disabled
+                      ? "cursor-not-allowed border-white/10 bg-slate-950/16 text-slate-700"
+                      : active
+                        ? "border-amber-300/55 bg-amber-300/12 text-amber-50"
+                        : "border-white/10 bg-slate-950/32 text-slate-300 hover:border-amber-300/35",
+                  )}
+                >
+                  <span>
+                    <span className="block text-sm font-semibold">{lane.title}</span>
+                    <span className="mt-1 block text-xs text-slate-500">{lane.primarySkills.join(" / ")}</span>
+                  </span>
+                  <span className="shrink-0 rounded-[6px] border border-white/10 bg-slate-950/42 px-2 py-1 text-xs font-semibold text-amber-100">
+                    {stats?.pages ?? 0} pages
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          <div className="mt-3 hidden overflow-x-auto pb-1 sm:block">
             <div className="grid min-w-[55rem] gap-1" style={{ gridTemplateColumns: `13rem repeat(${booklet.stacks.length}, minmax(6.75rem, 1fr))` }}>
               <div className="rounded-[6px] border border-white/10 bg-slate-950/50 px-3 py-2 text-[11px] font-semibold uppercase text-slate-500">
                 Lane
@@ -866,18 +1478,31 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
                     <h2 className="mt-2 text-2xl font-semibold leading-tight text-white">{activePage.title}</h2>
                     {activePage.subtitle ? <p className="mt-1 text-sm leading-6 text-slate-400">{activePage.subtitle}</p> : null}
                   </div>
-                  <label className="inline-flex min-h-11 cursor-pointer items-center justify-between gap-3 rounded-[8px] border border-white/10 px-3 text-sm font-semibold text-slate-200 transition hover:border-amber-300/40 hover:text-amber-100">
-                    <span>Complete</span>
-                    <input
-                      type="checkbox"
-                      checked={Boolean(done[activePage.id])}
-                      onChange={(event) => setDone((current) => ({ ...current, [activePage.id]: event.target.checked }))}
-                      className="sr-only"
-                    />
-                    <span className={cn("flex size-6 items-center justify-center rounded-[6px] border", done[activePage.id] ? "border-amber-200 bg-amber-200 text-slate-950" : "border-white/20")}>
-                      {done[activePage.id] ? <Check aria-hidden="true" className="size-4" /> : null}
-                    </span>
-                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setReviewQueue((current) => ({ ...current, [activePage.id]: !current[activePage.id] }))}
+                      className={cn(
+                        "inline-flex min-h-11 items-center justify-center gap-2 rounded-[8px] border px-3 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-amber-300/50",
+                        reviewQueue[activePage.id] ? "border-sky-200 bg-sky-200 text-slate-950" : "border-white/10 text-slate-200 hover:border-sky-200/40 hover:text-sky-100",
+                      )}
+                    >
+                      <Star aria-hidden="true" className="size-4" />
+                      {reviewQueue[activePage.id] ? "In review" : "Add review"}
+                    </button>
+                    <label className="inline-flex min-h-11 cursor-pointer items-center justify-between gap-3 rounded-[8px] border border-white/10 px-3 text-sm font-semibold text-slate-200 transition hover:border-amber-300/40 hover:text-amber-100">
+                      <span>Complete</span>
+                      <input
+                        type="checkbox"
+                        checked={Boolean(done[activePage.id])}
+                        onChange={(event) => setDone((current) => ({ ...current, [activePage.id]: event.target.checked }))}
+                        className="sr-only"
+                      />
+                      <span className={cn("flex size-6 items-center justify-center rounded-[6px] border", done[activePage.id] ? "border-amber-200 bg-amber-200 text-slate-950" : "border-white/20")}>
+                        {done[activePage.id] ? <Check aria-hidden="true" className="size-4" /> : null}
+                      </span>
+                    </label>
+                  </div>
                 </div>
 
                 <div className="mt-5 grid gap-3 sm:grid-cols-3">
@@ -983,6 +1608,31 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
                 </article>
 
                 <aside className="rounded-[8px] border border-white/10 bg-white/[0.045] p-4 sm:p-5">
+                  {reviewPages.length ? (
+                    <div className="mb-5 rounded-[8px] border border-sky-200/15 bg-sky-300/[0.055] p-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <h2 className="text-sm font-semibold text-sky-100">Review queue</h2>
+                        <span className="text-xs font-semibold text-slate-500">{reviewPages.length}</span>
+                      </div>
+                      <div className="mt-3 grid gap-2">
+                        {reviewPages.slice(0, 4).map((page) => (
+                          <button
+                            key={page.id}
+                            type="button"
+                            onClick={() => choosePage(page)}
+                            className="group flex items-start justify-between gap-3 rounded-[8px] border border-white/10 bg-slate-950/28 p-3 text-start transition hover:border-sky-200/35"
+                          >
+                            <span>
+                              <span className="block text-xs font-semibold text-sky-100">P{String(page.page).padStart(3, "0")}</span>
+                              <span className="mt-1 block text-sm font-semibold leading-5 text-slate-200">{page.title}</span>
+                            </span>
+                            <Play aria-hidden="true" className="mt-1 size-4 shrink-0 text-slate-500 transition group-hover:text-sky-100" />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+
                   <h2 className="text-lg font-semibold text-white">Related pages</h2>
                   <div className="mt-4 grid gap-2">
                     {relatedPages.map((page) => (
