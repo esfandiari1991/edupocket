@@ -9,17 +9,17 @@ import { LocalizedText } from "@/components/site/LocalizedText";
 const labHighlights = [
   {
     title: { en: "Placement sample", fa: "نمونه تعیین سطح" },
-    text: { en: "Quick questions, instant scoring, and clear next steps.", fa: "سوال های کوتاه، امتیاز فوری و قدم بعدی واضح." },
+    text: { en: "Quick questions, instant scoring, and clear next steps.", fa: "سؤال‌های کوتاه، امتیاز فوری و قدم بعدی واضح." },
     icon: FlaskConical,
   },
   {
     title: { en: "AI-augmented review", fa: "مرور تقویت شده با AI" },
-    text: { en: "Use AI as a mirror for mistakes, patterns, and stronger memory.", fa: "از AI مثل آینه ای برای خطاها، الگوها و حافظه قوی تر استفاده کن." },
+    text: { en: "Use AI as a mirror for mistakes, patterns, and stronger memory.", fa: "از AI مثل آینه‌ای برای خطاها، الگوها و حافظه قوی‌تر استفاده کن." },
     icon: Sparkles,
   },
   {
     title: { en: "Bilingual flow", fa: "جریان دوزبانه" },
-    text: { en: "Persian and English stay aligned across the same interface.", fa: "فارسی و انگلیسی در یک رابط منظم کنار هم می مانند." },
+    text: { en: "Persian and English stay aligned across the same interface.", fa: "فارسی و انگلیسی در یک رابط منظم کنار هم می‌مانند." },
     icon: BrainCircuit,
   },
 ];
@@ -34,7 +34,7 @@ const workModes = [
     icon: BrainCircuit,
   },
   {
-    title: { en: "Education projects", fa: "پروژه های آموزشی" },
+    title: { en: "Education projects", fa: "پروژه‌های آموزشی" },
     text: {
       en: "Collaborate on lessons, mini-products, language tools, content strategy, or learning apps.",
       fa: "برای درس، مینی محصول، ابزار زبان، استراتژی محتوا یا اپ یادگیری همکاری کنیم.",
@@ -60,7 +60,7 @@ export default function HomePage() {
                 <p className="mt-5 text-sm leading-7 text-slate-300 sm:text-base">
                   <LocalizedText
                     en="A compact practice space for level checks, grammar, vocabulary, reading, writing, and exam habits. It starts small, then grows around feedback, memory cues, and AI-supported study loops."
-                    fa="یک فضای تمرین فشرده برای تعیین سطح، گرامر، واژگان، ریدینگ، رایتینگ و عادت های آزمونی. کوچک شروع می شود و بعد حول بازخورد، نشانه های حافظه و چرخه های مطالعه با AI رشد می کند."
+                    fa="یک فضای تمرین فشرده برای تعیین سطح، گرامر، واژگان، ریدینگ، رایتینگ و عادت‌های آزمونی. کوچک شروع می‌شود و بعد حول بازخورد، نشانه‌های حافظه و چرخه‌های مطالعه با AI رشد می‌کند."
                   />
                 </p>
               </div>

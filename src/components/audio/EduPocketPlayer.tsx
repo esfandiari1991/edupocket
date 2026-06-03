@@ -90,7 +90,7 @@ export function EduPocketPlayer({ title, titleFa, audioSrc, audioAvailable = tru
           <LocalizedText en={title} fa={titleFa ?? title} />
         </h2>
         <p className="mt-3 text-sm leading-6 text-amber-50/80">
-          <LocalizedText en="Audio file is not attached yet. The episode notes are still available." fa="فایل صوتی هنوز اضافه نشده است. یادداشت های اپیزود همچنان در دسترس هستند." />
+          <LocalizedText en="Audio file is not attached yet. The episode notes are still available." fa="فایل صوتی هنوز اضافه نشده است. یادداشت‌های اپیزود همچنان در دسترس هستند." />
         </p>
       </div>
     );

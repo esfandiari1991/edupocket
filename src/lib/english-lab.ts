@@ -47,16 +47,16 @@ export type SkillTrack = {
 };
 
 export const englishLevels: Array<{ id: EnglishLevel; label: string; faLabel: string; description: LocalizedCopy }> = [
-  { id: "A1", label: "A1 Elementary", faLabel: "A1 مقدماتی", description: { en: "short sentences and survival grammar", fa: "جمله های کوتاه و گرامر پایه" } },
+  { id: "A1", label: "A1 Elementary", faLabel: "A1 مقدماتی", description: { en: "short sentences and survival grammar", fa: "جمله‌های کوتاه و گرامر پایه" } },
   { id: "A2", label: "A2 Pre-intermediate", faLabel: "A2 پیش متوسط", description: { en: "daily topics, routines, and simple stories", fa: "موضوعات روزمره، روتین و متن ساده" } },
-  { id: "B1", label: "B1 Intermediate", faLabel: "B1 متوسط", description: { en: "clear opinions, longer texts, and exam habits", fa: "نظر دادن، متن طولانی تر و عادت آزمونی" } },
+  { id: "B1", label: "B1 Intermediate", faLabel: "B1 متوسط", description: { en: "clear opinions, longer texts, and exam habits", fa: "نظر دادن، متن طولانی‌تر و عادت آزمونی" } },
   { id: "B2", label: "B2 Upper-intermediate", faLabel: "B2 بالاتر از متوسط", description: { en: "precision, argument, and natural phrasing", fa: "دقت، استدلال و بیان طبیعی" } },
 ];
 
 export const skillTracks: SkillTrack[] = [
   {
     id: "grammar",
-    title: { en: "Grammar lessons", fa: "درس های گرامر" },
+    title: { en: "Grammar lessons", fa: "درس‌های گرامر" },
     shortTitle: { en: "Grammar", fa: "گرامر" },
     description: { en: "Mini explanations, sentence control, and instant feedback.", fa: "توضیح کوتاه، کنترل جمله و بازخورد فوری." },
     icon: BookOpen,
@@ -66,7 +66,7 @@ export const skillTracks: SkillTrack[] = [
     id: "vocabulary",
     title: { en: "Vocabulary practice", fa: "تمرین واژگان" },
     shortTitle: { en: "Vocabulary", fa: "واژگان" },
-    description: { en: "Meaning, collocation, word family, and context drills.", fa: "معنا، هم نشینی، خانواده کلمه و تمرین در متن." },
+    description: { en: "Meaning, collocation, word family, and context drills.", fa: "معنا، هم‌نشینی، خانواده کلمه و تمرین در متن." },
     icon: Brain,
     color: "from-sky-300/22 to-cyan-500/8",
   },
@@ -74,7 +74,7 @@ export const skillTracks: SkillTrack[] = [
     id: "listening",
     title: { en: "Listening drills", fa: "تمرین شنیداری" },
     shortTitle: { en: "Listening", fa: "شنیداری" },
-    description: { en: "Audio-style tasks with transcript reveal and focus questions.", fa: "تمرین شبیه صوت با نمایش متن و سوال های متمرکز." },
+    description: { en: "Audio-style tasks with transcript reveal and focus questions.", fa: "تمرین شبیه صوت با نمایش متن و سؤال‌های متمرکز." },
     icon: Headphones,
     color: "from-indigo-300/22 to-blue-500/8",
   },
@@ -105,8 +105,8 @@ export const skillTracks: SkillTrack[] = [
   {
     id: "exams",
     title: { en: "Exam corner", fa: "گوشه آزمون" },
-    shortTitle: { en: "Exams", fa: "آزمون ها" },
-    description: { en: "KET, IELTS, and TOEFL-style habits without empty promises.", fa: "عادت های KET، آیلتس و تافل بدون وعده خالی." },
+    shortTitle: { en: "Exams", fa: "آزمون‌ها" },
+    description: { en: "KET, IELTS, and TOEFL-style habits without empty promises.", fa: "عادت‌های KET، آیلتس و تافل بدون وعده خالی." },
     icon: Trophy,
     color: "from-lime-300/16 to-amber-500/8",
   },
@@ -139,20 +139,20 @@ export const labModules: LabModule[] = [
           { en: "studying", fa: "studying" },
         ],
         answer: 1,
-        feedback: { en: "Use studies with she/he/it in the present simple.", fa: "با she/he/it در حال ساده از studies استفاده می کنیم." },
+        feedback: { en: "Use studies with she/he/it in the present simple.", fa: "با she/he/it در حال ساده از studies استفاده می‌کنیم." },
       },
       {
-        prompt: { en: "They ___ coffee before class.", fa: "آن ها قبل از کلاس قهوه ___." },
+        prompt: { en: "They ___ coffee before class.", fa: "آن‌ها قبل از کلاس قهوه ___." },
         options: [
           { en: "drink", fa: "drink" },
           { en: "drinks", fa: "drinks" },
           { en: "drinking", fa: "drinking" },
         ],
         answer: 0,
-        feedback: { en: "They uses the base verb: drink.", fa: "با they فعل ساده می آید: drink." },
+        feedback: { en: "They use the base verb: drink.", fa: "با they فعل ساده می‌آید: drink." },
       },
       {
-        prompt: { en: "Ali ___ online lessons on Saturdays.", fa: "علی شنبه ها کلاس آنلاین ___." },
+        prompt: { en: "Ali ___ online lessons on Saturdays.", fa: "علی شنبه‌ها کلاس آنلاین ___." },
         options: [
           { en: "teach", fa: "teach" },
           { en: "teaches", fa: "teaches" },
@@ -201,7 +201,7 @@ export const labModules: LabModule[] = [
           { en: "understands", fa: "understands" },
         ],
         answer: 1,
-        feedback: { en: "Understand is irregular: understood.", fa: "فعل understand بی قاعده است: understood." },
+        feedback: { en: "Understand is irregular: understood.", fa: "فعل understand بی‌قاعده است: understood." },
       },
     ],
   },
@@ -216,7 +216,7 @@ export const labModules: LabModule[] = [
     format: { en: "feedback quiz", fa: "کوئیز با بازخورد" },
     questions: [
       {
-        prompt: { en: "If you practise daily, you ___ faster.", fa: "اگر هر روز تمرین کنی، سریع تر ___." },
+        prompt: { en: "If you practise daily, you ___ faster.", fa: "اگر هر روز تمرین کنی، سریع‌تر ___." },
         options: [
           { en: "improve", fa: "improve" },
           { en: "will improve", fa: "will improve" },
@@ -233,7 +233,7 @@ export const labModules: LabModule[] = [
           { en: "was", fa: "was" },
         ],
         answer: 0,
-        feedback: { en: "After if, use the present simple for real future conditions.", fa: "بعد از if برای شرط واقعی آینده، حال ساده می آید." },
+        feedback: { en: "After if, use the present simple for real future conditions.", fa: "بعد از if برای شرط واقعی آینده، حال ساده می‌آید." },
       },
       {
         prompt: { en: "If I have time, I ___ the transcript.", fa: "اگر وقت داشته باشم، متن را ___." },
@@ -243,7 +243,7 @@ export const labModules: LabModule[] = [
           { en: "am read", fa: "am read" },
         ],
         answer: 0,
-        feedback: { en: "The result clause uses will read.", fa: "در بخش نتیجه از will read استفاده می کنیم." },
+        feedback: { en: "The result clause uses will read.", fa: "در بخش نتیجه از will read استفاده می‌کنیم." },
       },
     ],
   },
@@ -252,8 +252,8 @@ export const labModules: LabModule[] = [
     skill: "grammar",
     level: "B2",
     status: "ready",
-    title: { en: "Linking ideas with contrast", fa: "وصل کردن ایده ها با تضاد" },
-    description: { en: "Choose precise connectors for academic and exam sentences.", fa: "connector دقیق برای جمله های آکادمیک و آزمونی." },
+    title: { en: "Linking ideas with contrast", fa: "وصل کردن ایده‌ها با تضاد" },
+    description: { en: "Choose precise connectors for academic and exam sentences.", fa: "connector دقیق برای جمله‌های آکادمیک و آزمونی." },
     duration: { en: "9 min", fa: "۹ دقیقه" },
     format: { en: "precision drill", fa: "تمرین دقت" },
     questions: [
@@ -275,7 +275,7 @@ export const labModules: LabModule[] = [
           { en: "In addition", fa: "In addition" },
         ],
         answer: 0,
-        feedback: { en: "Although starts a contrast clause.", fa: "Although بخش تضاد را شروع می کند." },
+        feedback: { en: "Although starts a contrast clause.", fa: "Although بخش تضاد را شروع می‌کند." },
       },
       {
         prompt: { en: "The app is simple. ___, it gives detailed feedback.", fa: "اپ ساده است. ___ بازخورد دقیق می دهد." },
@@ -285,7 +285,7 @@ export const labModules: LabModule[] = [
           { en: "For example", fa: "For example" },
         ],
         answer: 0,
-        feedback: { en: "Nevertheless keeps the contrast but sounds formal.", fa: "Nevertheless تضاد را رسمی تر بیان می کند." },
+        feedback: { en: "Nevertheless keeps the contrast but sounds formal.", fa: "Nevertheless تضاد را رسمی‌تر بیان می‌کند." },
       },
     ],
   },
@@ -300,7 +300,7 @@ export const labModules: LabModule[] = [
     format: { en: "meaning in context", fa: "معنا در متن" },
     questions: [
       {
-        prompt: { en: "I need to ___ my notes before the exam.", fa: "قبل از امتحان باید یادداشت هایم را ___." },
+        prompt: { en: "I need to ___ my notes before the exam.", fa: "قبل از امتحان باید یادداشت‌هایم را ___." },
         options: [
           { en: "revise", fa: "revise" },
           { en: "repair", fa: "repair" },
@@ -345,7 +345,7 @@ export const labModules: LabModule[] = [
         prompt: { en: "Text: A useful AI tool should ask questions before giving answers. What is the main idea?", fa: "متن: ابزار AI مفید باید قبل از جواب دادن سوال بپرسد. ایده اصلی چیست؟" },
         options: [
           { en: "AI should replace all studying.", fa: "AI باید جای همه مطالعه را بگیرد." },
-          { en: "AI should make learners think first.", fa: "AI باید اول زبان آموز را وادار به فکر کند." },
+          { en: "AI should make learners think first.", fa: "AI باید اول زبان‌آموز را وادار به فکر کند." },
           { en: "AI should only translate words.", fa: "AI فقط باید کلمه ترجمه کند." },
         ],
         answer: 1,
@@ -364,12 +364,12 @@ export const labModules: LabModule[] = [
       {
         prompt: { en: "The word partner is closest to:", fa: "کلمه partner نزدیک تر است به:" },
         options: [
-          { en: "tool that works with you", fa: "ابزاری که با تو کار می کند" },
+          { en: "tool that works with you", fa: "ابزاری که با تو کار می‌کند" },
           { en: "a final answer", fa: "جواب نهایی" },
           { en: "a grammar mistake", fa: "خطای گرامری" },
         ],
         answer: 0,
-        feedback: { en: "A partner supports your process.", fa: "partner یعنی همراهی که روندت را پشتیبانی می کند." },
+        feedback: { en: "A partner supports your process.", fa: "partner یعنی همراهی که روندت را پشتیبانی می‌کند." },
       },
     ],
   },
@@ -391,7 +391,7 @@ export const labModules: LabModule[] = [
           { en: "during", fa: "during" },
         ],
         answer: 1,
-        feedback: { en: "Use since with a starting point.", fa: "با نقطه شروع از since استفاده می کنیم." },
+        feedback: { en: "Use since with a starting point.", fa: "با نقطه شروع از since استفاده می‌کنیم." },
       },
       {
         prompt: { en: "The lesson was ___ useful that I saved it.", fa: "درس آنقدر مفید بود که ذخیره اش کردم." },
@@ -426,7 +426,7 @@ export const labModules: LabModule[] = [
     format: { en: "transcript drill", fa: "تمرین متن شنیداری" },
     questions: [
       {
-        prompt: { en: "Transcript: I study English after dinner and review five words. When does the speaker study?", fa: "متن: بعد از شام انگلیسی می خوانم و پنج کلمه مرور می کنم. گوینده کی مطالعه می کند؟" },
+        prompt: { en: "Transcript: I study English after dinner and review five words. When does the speaker study?", fa: "متن: بعد از شام انگلیسی می‌خوانم و پنج کلمه مرور می‌کنم. گوینده کی مطالعه می‌کند؟" },
         options: [
           { en: "After dinner", fa: "بعد از شام" },
           { en: "Before breakfast", fa: "قبل از صبحانه" },
@@ -436,7 +436,7 @@ export const labModules: LabModule[] = [
         feedback: { en: "The time phrase is after dinner.", fa: "عبارت زمانی after dinner است." },
       },
       {
-        prompt: { en: "How many words does the speaker review?", fa: "گوینده چند کلمه مرور می کند؟" },
+        prompt: { en: "How many words does the speaker review?", fa: "گوینده چند کلمه مرور می‌کند؟" },
         options: [
           { en: "three", fa: "سه" },
           { en: "five", fa: "پنج" },
@@ -470,7 +470,7 @@ export const labModules: LabModule[] = [
       {
         prompt: { en: "Best topic sentence: Online lessons are useful because ___.", fa: "بهترین topic sentence: کلاس آنلاین مفید است چون ___." },
         options: [
-          { en: "they can save time and allow flexible practice", fa: "در زمان صرفه جویی می کنند و تمرین منعطف می دهند" },
+          { en: "they can save time and allow flexible practice", fa: "در زمان صرفه‌جویی می‌کنند و تمرین منعطف می‌دهند" },
           { en: "I am yesterday", fa: "I am yesterday" },
           { en: "very lesson good", fa: "very lesson good" },
         ],
@@ -478,7 +478,7 @@ export const labModules: LabModule[] = [
         feedback: { en: "A clear topic sentence gives one focused reason.", fa: "topic sentence خوب یک دلیل روشن می دهد." },
       },
       {
-        prompt: { en: "Which connector introduces an example?", fa: "کدام connector مثال را معرفی می کند؟" },
+        prompt: { en: "Which connector introduces an example?", fa: "کدام connector مثال را معرفی می‌کند؟" },
         options: [
           { en: "For example", fa: "For example" },
           { en: "However", fa: "However" },
@@ -514,7 +514,7 @@ export const labModules: LabModule[] = [
         options: [
           { en: "read the question carefully", fa: "سوال را دقیق بخوانی" },
           { en: "guess without reading", fa: "بدون خواندن حدس بزنی" },
-          { en: "copy the longest answer", fa: "طولانی ترین جواب را کپی کنی" },
+          { en: "copy the longest answer", fa: "طولانی‌ترین جواب را کپی کنی" },
         ],
         answer: 0,
         feedback: { en: "Careful task reading prevents avoidable errors.", fa: "خواندن دقیق سوال جلوی خطاهای قابل پیشگیری را می گیرد." },
@@ -534,7 +534,7 @@ export const labModules: LabModule[] = [
         options: [
           { en: "check evidence in the text", fa: "مدرک را در متن چک کنی" },
           { en: "ignore the text", fa: "متن را نادیده بگیری" },
-          { en: "change every answer", fa: "همه جواب ها را عوض کنی" },
+          { en: "change every answer", fa: "همه جواب‌ها را عوض کنی" },
         ],
         answer: 0,
         feedback: { en: "Good exam habits are evidence-based.", fa: "عادت آزمونی خوب بر اساس مدرک است." },
@@ -559,7 +559,7 @@ export const labModules: LabModule[] = [
           { en: "woke up", fa: "woke up" },
         ],
         answer: 0,
-        feedback: { en: "I + base verb in present simple.", fa: "با I در حال ساده فعل ساده می آید." },
+        feedback: { en: "I + base verb in present simple.", fa: "با I در حال ساده فعل ساده می‌آید." },
       },
       {
         prompt: { en: "This is the ___ lesson I have tried this week.", fa: "این ___ درسی است که این هفته امتحان کرده ام." },
@@ -569,7 +569,7 @@ export const labModules: LabModule[] = [
           { en: "most useful", fa: "most useful" },
         ],
         answer: 2,
-        feedback: { en: "The pattern the + most + adjective forms a superlative.", fa: "الگوی the + most + adjective صفت عالی می سازد." },
+        feedback: { en: "The pattern the + most + adjective forms a superlative.", fa: "الگوی the + most + adjective صفت عالی می‌سازد." },
       },
       {
         prompt: { en: "If I ___ more examples, I will understand it.", fa: "اگر مثال های بیشتری ___، می فهمم." },
@@ -579,7 +579,7 @@ export const labModules: LabModule[] = [
           { en: "saw", fa: "saw" },
         ],
         answer: 0,
-        feedback: { en: "First conditional uses present simple after if.", fa: "در شرطی نوع اول بعد از if حال ساده می آید." },
+        feedback: { en: "First conditional uses present simple after if.", fa: "در شرطی نوع اول بعد از if حال ساده می‌آید." },
       },
     ],
   },
@@ -590,7 +590,7 @@ export const labModules: LabModule[] = [
     status: "upcoming",
     title: { en: "Advanced transformation set", fa: "ست تبدیل جمله پیشرفته" },
     description: { en: "A C1-style transformation pack is planned, but not open yet.", fa: "یک پک تبدیل جمله سبک C1 برنامه ریزی شده اما هنوز باز نیست." },
-    duration: { en: "Soon", fa: "به زودی" },
+    duration: { en: "Soon", fa: "به‌زودی" },
     format: { en: "locked module", fa: "ماژول قفل" },
     questions: [],
   },
@@ -600,8 +600,8 @@ export const labModules: LabModule[] = [
     level: "B2",
     status: "upcoming",
     title: { en: "IELTS Task 2 feedback pack", fa: "پک بازخورد IELTS Task 2" },
-    description: { en: "Band-aware writing feedback will open after the first content batch.", fa: "بازخورد نوشتن بر اساس band بعد از اولین بسته محتوا باز می شود." },
-    duration: { en: "Soon", fa: "به زودی" },
+    description: { en: "Band-aware writing feedback will open after the first content batch.", fa: "بازخورد نوشتن بر اساس band بعد از اولین بسته محتوا باز می‌شود." },
+    duration: { en: "Soon", fa: "به‌زودی" },
     format: { en: "not clickable", fa: "قابل کلیک نیست" },
     questions: [],
   },

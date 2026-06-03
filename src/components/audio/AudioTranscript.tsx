@@ -32,7 +32,7 @@ export function AudioTranscript({ enabled, title, titleFa }: AudioTranscriptProp
           }
           fa={
             <>
-              از این ایستگاه های شنیداری به عنوان نقشه مطالعه برای <span className="text-slate-200">{titleFa ?? title}</span> استفاده کن. فایل صوتی کوتاه و اصلی بالا اضافه شده و یادداشت های پایین درس را گسترش می دهند.
+              از این ایستگاه‌های شنیداری به عنوان نقشه مطالعه برای <span className="text-slate-200">{titleFa ?? title}</span> استفاده کن. فایل صوتی کوتاه و اصلی بالا اضافه شده و یادداشت‌های پایین درس را گسترش می‌دهند.
             </>
           }
         />

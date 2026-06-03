@@ -28,11 +28,11 @@ export const metadata: Metadata = {
 const strengths = [
   {
     title: { en: "English teaching", fa: "آموزش انگلیسی" },
-    text: { en: "IELTS, TOEFL, KET, Business English, conversational English, and kids English.", fa: "آیلتس، تافل، KET، انگلیسی کسب و کار، مکالمه و انگلیسی کودکان." },
+    text: { en: "IELTS, TOEFL, KET, Business English, conversational English, and kids English.", fa: "آیلتس، تافل، KET، انگلیسی کسب‌وکار، مکالمه و انگلیسی کودکان." },
     icon: GraduationCap,
   },
   {
-    title: { en: "Languages", fa: "زبان ها" },
+    title: { en: "Languages", fa: "زبان‌ها" },
     text: { en: "Arabic teaching, bilingual support, vocabulary systems, and language coaching.", fa: "آموزش عربی، پشتیبانی دوزبانه، سیستم واژگان و کوچینگ زبان." },
     icon: Languages,
   },
@@ -42,18 +42,18 @@ const strengths = [
     icon: Laptop,
   },
   {
-    title: { en: "Frameworks", fa: "چارچوب ها" },
-    text: { en: "Structured teaching frameworks, micro-lessons, exam strategy, and practical roadmaps.", fa: "چارچوب های تدریس، درس های کوتاه، استراتژی آزمون و نقشه های کاربردی." },
+    title: { en: "Frameworks", fa: "چارچوب‌ها" },
+    text: { en: "Structured teaching frameworks, micro-lessons, exam strategy, and practical roadmaps.", fa: "چارچوب‌های تدریس، درس‌های کوتاه، استراتژی آزمون و نقشه‌های کاربردی." },
     icon: ListChecks,
   },
   {
-    title: { en: "Practice loops", fa: "چرخه های تمرین" },
-    text: { en: "Spaced repetition, error logs, feedback cycles, and small measurable habits.", fa: "مرور فاصله دار، دفتر خطا، چرخه بازخورد و عادت های کوچک قابل سنجش." },
+    title: { en: "Practice loops", fa: "چرخه‌های تمرین" },
+    text: { en: "Spaced repetition, error logs, feedback cycles, and small measurable habits.", fa: "مرور فاصله‌دار، دفتر خطا، چرخه بازخورد و عادت‌های کوچک قابل سنجش." },
     icon: Repeat,
   },
   {
     title: { en: "AI learning", fa: "یادگیری با AI" },
-    text: { en: "AI as a thinking partner for teachers, students, and creators, not a shortcut.", fa: "هوش مصنوعی به عنوان همراه فکر برای معلم ها، زبان آموزها و سازنده ها؛ نه میانبر." },
+    text: { en: "AI as a thinking partner for teachers, students, and creators, not a shortcut.", fa: "هوش مصنوعی به عنوان همراه فکر برای معلم‌ها، زبان‌آموزها و سازنده‌ها؛ نه میانبر." },
     icon: BrainCircuit,
   },
 ];
@@ -67,7 +67,7 @@ export default function AboutPage() {
         description={
           <LocalizedText
             en="EduPocket is the public learning library of Ali Esfandiari Rad: English teacher, computer engineer, Arabic teacher, AI practitioner, CELTA student, online tutor, and language coach."
-            fa="EduPocket کتابخانه عمومی یادگیری علی اسفندیاری راد است: مدرس انگلیسی، مهندس کامپیوتر، مدرس عربی، فعال در هوش مصنوعی، زبان آموز CELTA، مدرس آنلاین و کوچ زبان."
+            fa="EduPocket کتابخانه عمومی یادگیری علی اسفندیاری راد است: مدرس انگلیسی، مهندس کامپیوتر، مدرس عربی، فعال در هوش مصنوعی، زبان‌آموز CELTA، مدرس آنلاین و کوچ زبان."
           />
         }
       />
@@ -88,13 +88,13 @@ export default function AboutPage() {
             <p className="mt-4 text-sm leading-7 text-slate-400">
               <LocalizedText
                 en="Ali teaches English, exam preparation, math, SQL, Python, and AI learning systems online. EduPocket brings those lessons into a structured content hub: notes, micro-lessons, podcasts, and frameworks that help learners practice with clarity."
-                fa="علی انگلیسی، آمادگی آزمون، ریاضی، SQL، پایتون و سیستم های یادگیری با هوش مصنوعی را آنلاین تدریس می کند. EduPocket این تجربه ها را به یک هاب محتوایی ساختارمند تبدیل می کند: یادداشت، درس کوتاه، پادکست و چارچوب هایی که تمرین را شفاف تر می کنند."
+                fa="علی انگلیسی، آمادگی آزمون، ریاضی، SQL، پایتون و سیستم‌های یادگیری با هوش مصنوعی را آنلاین تدریس می‌کند. EduPocket این تجربه‌ها را به یک هاب محتوایی ساختارمند تبدیل می‌کند: یادداشت، درس کوتاه، پادکست و چارچوب‌هایی که تمرین را شفاف‌تر می‌کنند."
               />
             </p>
             <p className="mt-4 text-sm leading-7 text-slate-400">
               <LocalizedText
                 en="The focus is simple: make learning easier to repeat. That means clear frameworks, short lessons, error logs, spaced repetition, bilingual support, and AI-assisted study habits that improve real performance."
-                fa="تمرکز ساده است: یادگیری باید راحت تر تکرار شود. یعنی چارچوب روشن، درس کوتاه، دفتر خطا، مرور فاصله دار، پشتیبانی دوزبانه و عادت های مطالعه با کمک هوش مصنوعی که عملکرد واقعی را بهتر می کنند."
+                fa="تمرکز ساده است: یادگیری باید راحت‌تر تکرار شود. یعنی چارچوب روشن، درس کوتاه، دفتر خطا، مرور فاصله‌دار، پشتیبانی دوزبانه و عادت‌های مطالعه با کمک هوش مصنوعی که عملکرد واقعی را بهتر می‌کنند."
               />
             </p>
           </div>

@@ -10,28 +10,28 @@ type ContactPanelProps = {
 
 const copy = {
   general: {
-    title: { en: "Build your next learning step with me.", fa: "قدم بعدی یادگیری ات را با من بساز." },
+    title: { en: "Build your next learning step with me.", fa: "قدم بعدی یادگیری‌ات را با من بساز." },
     text: {
       en: "Send one clear message for tutoring, English coaching, AI learning systems, content ideas, or education projects.",
       fa: "برای تدریس، کوچینگ انگلیسی، سیستم یادگیری با هوش مصنوعی، ایده محتوا یا پروژه آموزشی یک پیام واضح بفرست.",
     },
   },
   article: {
-    title: { en: "Want this idea turned into a plan?", fa: "می خواهی این ایده تبدیل به برنامه شود؟" },
+    title: { en: "Want this idea turned into a plan?", fa: "می‌خواهی این ایده تبدیل به برنامه شود؟" },
     text: {
       en: "Message me with your goal and get a practical next step for study, teaching, or AI-supported learning.",
       fa: "هدفت را برای من بفرست تا قدم بعدی کاربردی برای مطالعه، تدریس یا یادگیری با AI بگیری.",
     },
   },
   lesson: {
-    title: { en: "Need feedback on your practice?", fa: "برای تمرینت بازخورد می خواهی؟" },
+    title: { en: "Need feedback on your practice?", fa: "برای تمرینت بازخورد می‌خواهی؟" },
     text: {
       en: "Send a short message with your level, exam goal, or study problem.",
-      fa: "سطح، هدف آزمون یا مشکل مطالعه ات را کوتاه بفرست.",
+      fa: "سطح، هدف آزمون یا مشکل مطالعه‌ات را کوتاه بفرست.",
     },
   },
   podcast: {
-    title: { en: "Want the audio notes as a study routine?", fa: "می خواهی نکات صوتی تبدیل به روتین مطالعه شود؟" },
+    title: { en: "Want the audio notes as a study routine?", fa: "می‌خواهی نکات صوتی تبدیل به روتین مطالعه شود؟" },
     text: {
       en: "Message me and turn the episode into a small weekly learning loop.",
       fa: "به من پیام بده تا این اپیزود را به یک چرخه کوچک هفتگی تبدیل کنی.",
@@ -41,7 +41,7 @@ const copy = {
     title: { en: "Work with me directly", fa: "مستقیم با من در ارتباط باش" },
     text: {
       en: "For tutoring, language coaching, AI learning systems, or education projects, start with a direct message.",
-      fa: "برای تدریس، کوچینگ زبان، سیستم های یادگیری با هوش مصنوعی یا پروژه آموزشی، با یک پیام مستقیم شروع کن.",
+      fa: "برای تدریس، کوچینگ زبان، سیستم‌های یادگیری با هوش مصنوعی یا پروژه آموزشی، با یک پیام مستقیم شروع کن.",
     },
   },
 };
@@ -87,7 +87,7 @@ export function ContactPanel({ context = "general", className }: ContactPanelPro
           <DirectContactButtons
             variant="hero"
             primaryLabel={{ en: "Collaborate with me", fa: "همکاری با من" }}
-            primarySubLabel={{ en: "Fastest response on Telegram", fa: "سریع ترین پاسخ در تلگرام" }}
+            primarySubLabel={{ en: "Fastest response on Telegram", fa: "سریع‌ترین پاسخ در تلگرام" }}
           />
         </div>
       </div>

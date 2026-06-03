@@ -9,7 +9,9 @@ export function LocalizedText({ en, fa }: LocalizedTextProps) {
   return (
     <>
       <span className="lang-en">{en}</span>
-      <span className="lang-fa">{fa}</span>
+      <span className="lang-fa" lang="fa" dir="rtl">
+        {fa}
+      </span>
     </>
   );
 }

@@ -89,7 +89,7 @@ export default async function LessonPage({ params }: PageProps) {
           </span>
           {lesson.updated ? (
             <span>
-              <LocalizedText en={`Updated ${formatDate(lesson.updated)}`} fa={`به روزشده ${formatDateFa(lesson.updated)}`} />
+              <LocalizedText en={`Updated ${formatDate(lesson.updated)}`} fa={`به‌روزشده ${formatDateFa(lesson.updated)}`} />
             </span>
           ) : null}
           <span>
@@ -119,7 +119,7 @@ export default async function LessonPage({ params }: PageProps) {
         <FeaturedGrid
           items={related}
           emptyTitle={<LocalizedText en="No related lessons yet" fa="هنوز درس مرتبطی نیست" />}
-          emptyDescription={<LocalizedText en="More connected micro-lessons will appear as EduPocket grows." fa="با رشد EduPocket، درس های مرتبط بیشتری اینجا می آیند." />}
+          emptyDescription={<LocalizedText en="More connected micro-lessons will appear as EduPocket grows." fa="با رشد EduPocket، درس‌های مرتبط بیشتری اینجا می‌آیند." />}
         />
       </section>
       </Container>

@@ -43,7 +43,7 @@ export function EnglishLabExperience() {
   const complete = activeQuestions.length > 0 && activeQuestions.every((_, index) => answers[index] !== undefined);
   const wordCount = writingText.trim().split(/\s+/).filter(Boolean).length;
   const writingChecks = [
-    { en: "clear opinion", fa: "نظر روشن", done: /\b(i think|in my opinion|i believe|from my point of view)\b/i.test(writingText) || /به نظر|فکر می کنم/.test(writingText) },
+    { en: "clear opinion", fa: "نظر روشن", done: /\b(i think|in my opinion|i believe|from my point of view)\b/i.test(writingText) || /به نظر|فکر\s+می(?:‌|\s)?کنم/.test(writingText) },
     { en: "example included", fa: "مثال دارد", done: /\b(for example|for instance|such as)\b/i.test(writingText) || /مثلا|برای مثال/.test(writingText) },
     { en: "50+ words", fa: "بیش از ۵۰ کلمه", done: wordCount >= 50 },
   ];
@@ -91,14 +91,14 @@ export function EnglishLabExperience() {
             <p className="mt-5 max-w-2xl text-base leading-8 text-slate-300">
               <LocalizedText
                 en="Grammar, vocabulary, reading, listening-style tasks, Use of English, writing prompts, exam habits, and a fast level sample. The structure is benchmarked against serious English-practice sites, but every exercise here is original EduPocket material."
-                fa="گرامر، واژگان، ریدینگ، تمرین های شبیه شنیداری، کاربرد انگلیسی، نوشتن، عادت های آزمونی و یک نمونه تعیین سطح سریع. ساختار بر اساس سایت های جدی تمرین انگلیسی الگوبرداری شده، اما تمرین ها محتوای اصلی EduPocket هستند."
+                fa="گرامر، واژگان، ریدینگ، تمرین‌های شبیه شنیداری، کاربرد انگلیسی، نوشتن، عادت‌های آزمونی و یک نمونه تعیین سطح سریع. ساختار بر اساس سایت‌های جدی تمرین انگلیسی الگوبرداری شده، اما تمرین‌ها محتوای اصلی EduPocket هستند."
               />
             </p>
             <div className="mt-7 grid gap-3 sm:grid-cols-3">
               {[
                 { en: "40-50% starter scale", fa: "نسخه شروع ۴۰ تا ۵۰ درصدی" },
                 { en: "instant feedback", fa: "بازخورد فوری" },
-                { en: "AI review cues", fa: "نشانه های مرور با AI" },
+                { en: "AI review cues", fa: "نشانه‌های مرور با AI" },
               ].map((item) => (
                 <div key={item.en} className="motion-micro-tile rounded-[8px] border border-white/10 bg-slate-950/30 px-4 py-3 text-sm font-semibold text-slate-200">
                   <LocalizedText en={item.en} fa={item.fa} />
@@ -160,7 +160,7 @@ export function EnglishLabExperience() {
                 selectedLevel === allLevels ? "border-amber-300/60 bg-amber-300/12 text-amber-100" : "border-white/10 bg-white/[0.035] text-slate-300 hover:border-amber-300/35",
               )}
             >
-              <LocalizedText en="All levels" fa="همه سطح ها" />
+              <LocalizedText en="All levels" fa="همه سطح‌ها" />
             </button>
             {englishLevels.map((level) => (
               <button
@@ -210,7 +210,7 @@ export function EnglishLabExperience() {
                       {locked ? (
                         <span className="inline-flex items-center gap-1 rounded-[6px] border border-slate-500/35 px-2 py-1 text-xs font-semibold text-slate-300">
                           <LockKeyhole aria-hidden="true" className="size-3" />
-                          <LocalizedText en="Upcoming" fa="به زودی" />
+                          <LocalizedText en="Upcoming" fa="به‌زودی" />
                         </span>
                       ) : (
                         <ArrowRight aria-hidden="true" className="mt-1 size-4 text-amber-200 rtl:rotate-180" />
@@ -270,12 +270,12 @@ export function EnglishLabExperience() {
                 <p className="mt-3 text-sm leading-7 text-slate-300">
                   <LocalizedText
                     en="I study English after dinner and review five words. It is a small habit, but it helps me remember more."
-                    fa="بعد از شام انگلیسی می خوانم و پنج کلمه مرور می کنم. عادت کوچکی است، اما کمک می کند بیشتر یادم بماند."
+                    fa="بعد از شام انگلیسی می‌خوانم و پنج کلمه مرور می‌کنم. عادت کوچکی است، اما کمک می‌کند بیشتر یادم بماند."
                   />
                 </p>
               ) : (
                 <p className="mt-3 text-sm leading-7 text-slate-500">
-                  <LocalizedText en="Try the questions first. Then reveal the transcript and check what you missed." fa="اول سوال ها را جواب بده. بعد متن را ببین و بررسی کن چه چیزی را از دست دادی." />
+                  <LocalizedText en="Try the questions first. Then reveal the transcript and check what you missed." fa="اول سؤال‌ها را جواب بده. بعد متن را ببین و بررسی کن چه چیزی را از دست دادی." />
                 </p>
               )}
             </div>
@@ -284,7 +284,7 @@ export function EnglishLabExperience() {
           {activeModule.skill === "writing" ? (
             <div className="motion-card mt-5 rounded-[8px] border border-rose-200/15 bg-rose-300/[0.08] p-4">
               <label className="text-sm font-semibold text-rose-100" htmlFor="writing-studio">
-                <LocalizedText en="Write 50-90 words: Should students use AI for homework practice?" fa="۵۰ تا ۹۰ کلمه بنویس: آیا دانش آموزها باید برای تمرین تکلیف از AI استفاده کنند؟" />
+                <LocalizedText en="Write 50-90 words: Should students use AI for homework practice?" fa="۵۰ تا ۹۰ کلمه بنویس: آیا دانش‌آموزها باید برای تمرین تکلیف از AI استفاده کنند؟" />
               </label>
               <textarea
                 id="writing-studio"
@@ -378,7 +378,7 @@ export function EnglishLabExperience() {
                   <LocalizedText en="Instant result" fa="نتیجه فوری" />
                 </p>
                 <p className="mt-1 text-sm text-slate-400">
-                  <LocalizedText en={submitted ? `${score}/${activeQuestions.length} correct` : "Answer every question to unlock feedback."} fa={submitted ? `${score}/${activeQuestions.length} جواب درست` : "همه سوال ها را جواب بده تا بازخورد باز شود."} />
+                  <LocalizedText en={submitted ? `${score}/${activeQuestions.length} correct` : "Answer every question to unlock feedback."} fa={submitted ? `${score}/${activeQuestions.length} جواب درست` : "همه سؤال‌ها را جواب بده تا بازخورد باز شود."} />
                 </p>
               </div>
               <button
@@ -387,7 +387,7 @@ export function EnglishLabExperience() {
                 onClick={() => setSubmitted(true)}
                 className="motion-button-pop inline-flex min-h-12 items-center justify-center gap-2 rounded-[8px] bg-amber-400 px-5 py-3 text-sm font-bold text-slate-950 shadow-[0_18px_44px_rgba(251,191,36,0.22)] transition hover:bg-amber-300 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400 disabled:shadow-none"
               >
-                <LocalizedText en="Check answers" fa="بررسی جواب ها" />
+                <LocalizedText en="Check answers" fa="بررسی جواب‌ها" />
                 <ArrowRight aria-hidden="true" className="size-4 rtl:rotate-180" />
               </button>
             </div>

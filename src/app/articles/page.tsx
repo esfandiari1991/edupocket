@@ -33,8 +33,8 @@ export default function ArticlesPage() {
     <Container className="py-16">
       <SectionHeading
         level={1}
-        title={<LocalizedText en="Articles" fa="مقاله ها" />}
-        description={<LocalizedText en="Readable, practical notes for AI-assisted learning, teaching frameworks, study systems, and technology." fa="یادداشت های خواندنی و کاربردی درباره یادگیری با هوش مصنوعی، چارچوب های تدریس، سیستم های مطالعه و تکنولوژی." />}
+        title={<LocalizedText en="Articles" fa="مقاله‌ها" />}
+        description={<LocalizedText en="Readable, practical notes for AI-assisted learning, teaching frameworks, study systems, and technology." fa="یادداشت‌های خواندنی و کاربردی درباره یادگیری با هوش مصنوعی، چارچوب‌های تدریس، سیستم‌های مطالعه و تکنولوژی." />}
         action={<DirectContactButtons showSecondary={false} />}
       />
       <FeaturedGrid

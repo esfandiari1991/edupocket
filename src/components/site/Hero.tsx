@@ -35,7 +35,7 @@ export function Hero() {
                     Practical learning, direct coaching, and <span className="motion-accent text-amber-200">AI-powered</span> English systems.
                   </>
                 }
-                fa="یادگیری عملی، کوچینگ مستقیم، و سیستم های انگلیسی با کمک هوش مصنوعی."
+                fa="یادگیری عملی، کوچینگ مستقیم، و سیستم‌های انگلیسی با کمک هوش مصنوعی."
               />
             </h1>
             <p className="motion-reveal motion-delay-1 type-lead mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
@@ -46,7 +46,7 @@ export function Hero() {
                     English, smarter study routines, and useful AI habits.
                   </>
                 }
-                fa="EduPocket هاب متمرکز علی راد برای دانشجوها، معلم ها و خودآموزهایی است که انگلیسی قوی تر، روتین مطالعه بهتر و عادت های کاربردی AI می خواهند."
+                fa="EduPocket هاب متمرکز علی راد برای دانشجوها، معلم‌ها و خودآموزهایی است که انگلیسی قوی‌تر، روتین مطالعه بهتر و عادت‌های کاربردی AI می‌خواهند."
               />
             </p>
 
@@ -130,7 +130,7 @@ export function Hero() {
                     <LocalizedText en="Human first" fa="اول انسان" />
                   </p>
                   <p className="mt-2 text-sm leading-6 text-slate-300">
-                    <LocalizedText en="Real teaching practice, not anonymous content." fa="تجربه واقعی تدریس، نه محتوای بی هویت." />
+                    <LocalizedText en="Real teaching practice, not anonymous content." fa="تجربه واقعی تدریس، نه محتوای بی‌هویت." />
                   </p>
                 </div>
                 <div className="rounded-[8px] border border-white/10 bg-slate-950/70 p-4">

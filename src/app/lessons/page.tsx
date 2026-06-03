@@ -33,8 +33,8 @@ export default function LessonsPage() {
     <Container className="py-16">
       <SectionHeading
         level={1}
-        title={<LocalizedText en="Lessons" fa="درس ها" />}
-        description={<LocalizedText en="Short, structured micro-lessons that turn a topic into a repeatable learning move." fa="درس های کوتاه و ساختارمند که هر موضوع را به یک حرکت قابل تکرار تبدیل می کنند." />}
+        title={<LocalizedText en="Lessons" fa="درس‌ها" />}
+        description={<LocalizedText en="Short, structured micro-lessons that turn a topic into a repeatable learning move." fa="درس‌های کوتاه و ساختارمند که هر موضوع را به یک حرکت قابل تکرار تبدیل می‌کنند." />}
         action={<DirectContactButtons showSecondary={false} />}
       />
       <FeaturedGrid

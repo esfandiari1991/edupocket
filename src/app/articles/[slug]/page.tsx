@@ -88,7 +88,7 @@ export default async function ArticlePage({ params }: PageProps) {
           </span>
           {article.updated ? (
             <span>
-              <LocalizedText en={`Updated ${formatDate(article.updated)}`} fa={`به روزشده ${formatDateFa(article.updated)}`} />
+              <LocalizedText en={`Updated ${formatDate(article.updated)}`} fa={`به‌روزشده ${formatDateFa(article.updated)}`} />
             </span>
           ) : null}
           <span>
@@ -115,7 +115,7 @@ export default async function ArticlePage({ params }: PageProps) {
         <FeaturedGrid
           items={related}
           emptyTitle={<LocalizedText en="No related articles yet" fa="هنوز مقاله مرتبطی نیست" />}
-          emptyDescription={<LocalizedText en="More connected reading will appear as EduPocket grows." fa="با رشد EduPocket، مطالعه های مرتبط بیشتری اینجا می آیند." />}
+          emptyDescription={<LocalizedText en="More connected reading will appear as EduPocket grows." fa="با رشد EduPocket، مطالعه‌های مرتبط بیشتری اینجا می‌آیند." />}
         />
       </section>
       </Container>

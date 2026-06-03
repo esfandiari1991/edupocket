@@ -13,7 +13,7 @@ export default function NotFound() {
         <p className="mt-4 text-sm leading-6 text-slate-400">
           <LocalizedText
             en="The page may have moved, or it may be a future EduPocket idea that has not been published."
-            fa="ممکن است صفحه جابه جا شده باشد، یا ایده ای برای آینده EduPocket باشد که هنوز منتشر نشده."
+            fa="ممکن است صفحه جابه‌جا شده باشد، یا ایده‌ای برای آینده EduPocket باشد که هنوز منتشر نشده."
           />
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3 text-sm font-semibold">
@@ -21,13 +21,13 @@ export default function NotFound() {
             <LocalizedText en="Home" fa="خانه" />
           </Link>
           <Link className="rounded-[8px] border border-white/10 px-4 py-2.5 text-slate-100" href="/articles">
-            <LocalizedText en="Articles" fa="مقاله ها" />
+            <LocalizedText en="Articles" fa="مقاله‌ها" />
           </Link>
           <Link className="rounded-[8px] border border-white/10 px-4 py-2.5 text-slate-100" href="/lessons">
-            <LocalizedText en="Lessons" fa="درس ها" />
+            <LocalizedText en="Lessons" fa="درس‌ها" />
           </Link>
           <Link className="rounded-[8px] border border-white/10 px-4 py-2.5 text-slate-100" href="/podcasts">
-            <LocalizedText en="Podcasts" fa="پادکست ها" />
+            <LocalizedText en="Podcasts" fa="پادکست‌ها" />
           </Link>
         </div>
       </div>

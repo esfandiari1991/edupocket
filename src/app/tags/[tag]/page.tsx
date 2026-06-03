@@ -51,7 +51,7 @@ export default async function TagPage({ params }: PageProps) {
       <SectionHeading
         level={1}
         title={<LocalizedText en={`Tag: ${localizedLabel.en}`} fa={`برچسب: ${localizedLabel.fa}`} />}
-        description={<LocalizedText en="Connected articles, micro-lessons, and podcast episodes from the EduPocket library." fa="مقاله ها، درس های کوتاه و اپیزودهای مرتبط از کتابخانه EduPocket." />}
+        description={<LocalizedText en="Connected articles, micro-lessons, and podcast episodes from the EduPocket library." fa="مقاله‌ها، درس‌های کوتاه و اپیزودهای مرتبط از کتابخانه EduPocket." />}
         action={<DirectContactButtons showSecondary={false} />}
       />
       <FeaturedGrid

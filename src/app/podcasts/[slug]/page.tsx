@@ -94,7 +94,7 @@ export default async function PodcastPage({ params }: PageProps) {
             </span>
             {episode.updated ? (
               <span>
-                <LocalizedText en={`Updated ${formatDate(episode.updated)}`} fa={`به روزشده ${formatDateFa(episode.updated)}`} />
+                <LocalizedText en={`Updated ${formatDate(episode.updated)}`} fa={`به‌روزشده ${formatDateFa(episode.updated)}`} />
               </span>
             ) : null}
             <span>{episode.duration}</span>
@@ -124,7 +124,7 @@ export default async function PodcastPage({ params }: PageProps) {
         <FeaturedGrid
           items={related}
           emptyTitle={<LocalizedText en="No related episodes yet" fa="هنوز اپیزود مرتبطی نیست" />}
-          emptyDescription={<LocalizedText en="More connected audio lessons will appear as EduPocket grows." fa="با رشد EduPocket، درس های صوتی مرتبط بیشتری اینجا می آیند." />}
+          emptyDescription={<LocalizedText en="More connected audio lessons will appear as EduPocket grows." fa="با رشد EduPocket، درس‌های صوتی مرتبط بیشتری اینجا می‌آیند." />}
         />
       </section>
       </Container>

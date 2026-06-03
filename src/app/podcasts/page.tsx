@@ -35,8 +35,8 @@ export default function PodcastsPage() {
     <Container className="py-16">
       <SectionHeading
         level={1}
-        title={<LocalizedText en="Podcasts" fa="پادکست ها" />}
-        description={<LocalizedText en="Podcast notes, transcripts, and practical study prompts. Episodes without audio are marked clearly until the files are attached." fa="یادداشت پادکست، راهنمای شنیدن و تمرین های کاربردی. اپیزودهایی که هنوز فایل صوتی ندارند، شفاف با وضعیت به زودی مشخص شده اند." />}
+        title={<LocalizedText en="Podcasts" fa="پادکست‌ها" />}
+        description={<LocalizedText en="Podcast notes, transcripts, and practical study prompts. Episodes without audio are marked clearly until the files are attached." fa="یادداشت پادکست، راهنمای شنیدن و تمرین‌های کاربردی. اپیزودهایی که هنوز فایل صوتی ندارند، شفاف با وضعیت به‌زودی مشخص شده‌اند." />}
         action={<DirectContactButtons showSecondary={false} />}
       />
       {featured ? (
