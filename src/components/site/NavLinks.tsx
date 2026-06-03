@@ -17,7 +17,7 @@ export function NavLinks() {
   return (
     <nav
       aria-label="Primary navigation"
-      className="grid w-full min-w-0 grid-cols-3 gap-1.5 rounded-[8px] border border-white/10 bg-white/[0.045] p-1.5 text-center shadow-[0_16px_52px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.06)] min-[560px]:flex min-[560px]:flex-wrap min-[560px]:justify-center xl:w-auto xl:items-center"
+      className="primary-nav grid w-full min-w-0 grid-cols-3 gap-1.5 rounded-[8px] border border-white/15 bg-slate-950/60 p-1.5 text-center shadow-[0_18px_58px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.07)] min-[560px]:flex min-[560px]:flex-wrap min-[560px]:justify-center xl:w-auto xl:flex-nowrap xl:items-center xl:gap-1 xl:p-1"
     >
       {siteConfig.nav.map((item) => {
         const active = isActivePath(pathname, item.href);
@@ -27,15 +27,17 @@ export function NavLinks() {
             key={item.href}
             href={item.href}
             aria-current={active ? "page" : undefined}
+            data-active={active ? "true" : "false"}
             className={cn(
-              "group relative inline-flex min-h-10 min-w-0 items-center justify-center overflow-hidden rounded-[7px] border px-2.5 py-2 text-sm font-bold text-slate-200 transition duration-200 focus:outline-none focus:ring-2 focus:ring-amber-300/70",
-              "before:absolute before:inset-x-2 before:top-0 before:h-px before:bg-white/10 before:opacity-80",
+              "primary-nav-link group relative isolate inline-flex min-h-11 min-w-0 items-center justify-center overflow-hidden rounded-[7px] border px-2.5 py-2 text-sm font-extrabold text-slate-100 transition duration-200 focus:outline-none focus:ring-2 focus:ring-amber-300/70 sm:px-3 xl:min-h-10 xl:px-2 xl:text-[0.8125rem]",
               active
-                ? "border-amber-300/60 bg-amber-300/14 text-amber-100 shadow-[0_12px_34px_rgba(251,191,36,0.16),inset_0_0_0_1px_rgba(255,255,255,0.05)]"
-                : "border-white/10 bg-slate-950/32 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.025)] hover:border-amber-300/45 hover:bg-white/[0.075] hover:text-white hover:shadow-[0_10px_30px_rgba(15,23,42,0.22)]",
+                ? "border-amber-300/70 bg-[linear-gradient(180deg,rgba(251,191,36,0.22),rgba(251,191,36,0.1))] text-amber-50 shadow-[0_14px_42px_rgba(251,191,36,0.18),inset_0_0_0_1px_rgba(255,255,255,0.08)]"
+                : "border-slate-500/25 bg-[linear-gradient(180deg,rgba(15,23,42,0.82),rgba(2,6,23,0.66))] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),inset_0_-1px_0_rgba(0,0,0,0.22)] hover:border-amber-300/50 hover:bg-[linear-gradient(180deg,rgba(30,41,59,0.9),rgba(15,23,42,0.78))] hover:text-white hover:shadow-[0_12px_34px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.08)]",
             )}
           >
-            <span className="relative z-10 truncate">
+            <span aria-hidden="true" className="primary-nav-link-glow" />
+            <span aria-hidden="true" className="primary-nav-link-rail" />
+            <span className="relative z-10 truncate drop-shadow-[0_1px_0_rgba(0,0,0,0.24)]">
               <LocalizedText en={item.label} fa={item.faLabel} />
             </span>
           </Link>

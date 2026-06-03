@@ -121,6 +121,80 @@ html[data-lang="en"] .lang-fa {
   display: none !important;
 }
 
+.primary-nav {
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), transparent 46%),
+    radial-gradient(circle at 50% 0%, rgba(251, 191, 36, 0.12), transparent 58%),
+    linear-gradient(180deg, rgba(2, 6, 23, 0.64), rgba(15, 23, 42, 0.42));
+}
+
+.primary-nav-link {
+  transform: translateZ(0);
+}
+
+.primary-nav-link::before {
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  border-radius: 6px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.075), transparent 54%);
+  content: "";
+  opacity: 0.78;
+  pointer-events: none;
+}
+
+.primary-nav-link-glow {
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.2), transparent),
+    radial-gradient(circle at 50% 0%, rgba(125, 211, 252, 0.15), transparent 62%);
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+  pointer-events: none;
+}
+
+.primary-nav-link-rail {
+  position: absolute;
+  right: 0.55rem;
+  bottom: 0.32rem;
+  left: 0.55rem;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(251, 191, 36, 0.05), rgba(251, 191, 36, 0.92), rgba(125, 211, 252, 0.5));
+  opacity: 0;
+  transform: scaleX(0.36);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+  pointer-events: none;
+}
+
+.primary-nav-link:hover,
+.primary-nav-link:focus-visible,
+.primary-nav-link[data-active="true"] {
+  transform: translateY(-1px);
+}
+
+.primary-nav-link:hover .primary-nav-link-glow,
+.primary-nav-link:focus-visible .primary-nav-link-glow,
+.primary-nav-link[data-active="true"] .primary-nav-link-glow {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.primary-nav-link:hover .primary-nav-link-rail,
+.primary-nav-link:focus-visible .primary-nav-link-rail,
+.primary-nav-link[data-active="true"] .primary-nav-link-rail {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
 .language-toggle::after {
   position: absolute;
   inset: -1px;
@@ -1854,6 +1928,8 @@ html[data-lang="fa"] .prose-edupocket td {
   .language-toggle-glide::after,
   .language-toggle-thumb::before,
   .motion-logo-mark::after,
+  .primary-nav-link-glow,
+  .primary-nav-link-rail,
   .motion-hero-card::before,
   .motion-hero-frame::after,
   .motion-signal-note::before,
@@ -1873,6 +1949,7 @@ html[data-lang="fa"] .prose-edupocket td {
   }
 
   .motion-hero-card,
+  .primary-nav-link,
   .motion-signal-note,
   .motion-button-pop,
   .motion-card,
