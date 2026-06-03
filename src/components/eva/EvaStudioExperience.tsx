@@ -463,7 +463,7 @@ export function EvaStudioExperience({ booklet }: EvaStudioExperienceProps) {
       <section className="rounded-[8px] border border-amber-200/18 bg-[linear-gradient(135deg,rgba(251,191,36,0.11),rgba(15,23,42,0.7),rgba(14,165,233,0.06))] p-4 shadow-[0_24px_90px_rgba(0,0,0,0.18)] sm:p-5">
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
           <div>
-            <p className="text-sm font-semibold text-amber-200">EduPocket private product database</p>
+            <p className="text-sm font-semibold text-amber-200">Ali Rad private study database inside EduPocket</p>
             <h2 className="mt-2 max-w-4xl text-xl font-semibold leading-tight text-white sm:text-3xl">
               EduPocket&apos;s Eva Digital Booklet, segmented into a real 298-page study studio.
             </h2>

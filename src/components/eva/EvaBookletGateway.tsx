@@ -38,10 +38,10 @@ export function EvaBookletGateway({ compact = false, loginError }: EvaBookletGat
                     <span className="text-xs font-semibold text-amber-100/72">01</span>
                   </div>
                   <p className="mt-5 text-sm font-semibold text-amber-100">
-                    <LocalizedText en="EduPocket product system" fa="سیستم محصول EduPocket" />
+                    <LocalizedText en="Ali Rad's study system" fa="سیستم مطالعه علی راد" />
                   </p>
                   <p className="mt-2 text-xs leading-5 text-slate-300">
-                    <LocalizedText en="A premium chapter map designed under Ali Rad's EduPocket system." fa="نقشه فصل های پریمیوم زیر سیستم EduPocket علی راد." />
+                    <LocalizedText en="A premium chapter map organized through EduPocket." fa="نقشه فصل های پریمیوم که داخل EduPocket سازماندهی شده است." />
                   </p>
                 </div>
 
@@ -91,7 +91,7 @@ export function EvaBookletGateway({ compact = false, loginError }: EvaBookletGat
             <div className="grid gap-5 lg:grid-cols-[1fr_17rem]">
               <div>
                 <p className="mb-2 text-xs font-semibold uppercase text-amber-200/90">
-                  <LocalizedText en="EduPocket premium product by Ali Rad" fa="محصول پریمیوم EduPocket از علی راد" />
+                  <LocalizedText en="By Ali Rad, inside EduPocket" fa="از علی راد، داخل EduPocket" />
                 </p>
                 {compact ? (
                   <h2 className={titleClassName}>
