@@ -1,5 +1,5 @@
 import type { EvaBooklet, EvaBookletPage } from "@/lib/eva-private-content";
-import { evaMaterialItems, evaSupplementalExamTasks } from "@/lib/eva-materials";
+import { evaMaterialItems, evaMaterialSourceDocuments, evaSupplementalExamTasks } from "@/lib/eva-materials";
 import { buildEvaSourceMaterialItems, buildEvaSupplementalExamTasksFromMaterials } from "@/lib/eva-source-materials";
 import { evaGrammarModules, evaLexicalResource, evaQuizQuestions, evaReligiousModules } from "@/lib/eva-studio-curriculum";
 
@@ -15,35 +15,9 @@ export type EvaSeedUser = {
   canTeach: boolean;
 };
 
-export type EvaLearningEntity =
-  | "users"
-  | "memberships"
-  | "source_documents"
-  | "chapters"
-  | "sections"
-  | "learning_items"
-  | "activities"
-  | "questions"
-  | "tts_segments"
-  | "user_progress"
-  | "user_responses"
-  | "review_queue"
-  | "teacher_notes";
+export type EvaLearningEntity = "users" | "memberships" | "source_documents" | "chapters" | "sections" | "learning_items" | "activities" | "questions" | "tts_segments" | "user_progress" | "user_responses" | "review_queue" | "teacher_notes";
 
-export type EvaLearningActivityKind =
-  | "source-page"
-  | "reading"
-  | "writing"
-  | "grammar"
-  | "lexical"
-  | "religious-context"
-  | "listening"
-  | "translation"
-  | "pronunciation"
-  | "quiz"
-  | "exam-mode"
-  | "teacher-feedback"
-  | "review";
+export type EvaLearningActivityKind = "source-page" | "reading" | "writing" | "grammar" | "lexical" | "religious-context" | "listening" | "translation" | "pronunciation" | "quiz" | "exam-mode" | "teacher-feedback" | "review";
 
 export type EvaLearningActivity = {
   id: string;
@@ -95,13 +69,57 @@ export type EvaExamTask = {
 export type EvaLearningDatabase = {
   entities: EvaLearningEntity[];
   users: EvaSeedUser[];
-  memberships: Array<{ userId: EvaUserId; productId: "eva-digital-booklet"; status: "active"; pricePaid: number; currency: "USD" }>;
-  sourceDocuments: Array<{ id: string; title: string; privacy: string; importedPages: number; textCharacters: number | null }>;
-  chapters: Array<{ id: string; title: string; pageIds: string[]; skillTags: string[] }>;
-  sections: Array<{ id: string; chapterId: string; type: string; pageIds: string[]; fieldCount: number; checkboxCount: number }>;
-  learningItems: Array<{ id: string; activityId: string; title: string; sourcePageId?: string; type: string; tags: string[] }>;
+  memberships: Array<{
+    userId: EvaUserId;
+    productId: "eva-digital-booklet";
+    status: "active";
+    pricePaid: number;
+    currency: "USD";
+  }>;
+  sourceDocuments: Array<{
+    id: string;
+    title: string;
+    privacy: string;
+    importedPages: number;
+    textCharacters: number | null;
+    sourceUrl: string | null;
+    licenseName: string | null;
+    licenseUrl: string | null;
+    attribution: string | null;
+  }>;
+  chapters: Array<{
+    id: string;
+    title: string;
+    pageIds: string[];
+    skillTags: string[];
+  }>;
+  sections: Array<{
+    id: string;
+    chapterId: string;
+    type: string;
+    pageIds: string[];
+    fieldCount: number;
+    checkboxCount: number;
+  }>;
+  learningItems: Array<{
+    id: string;
+    activityId: string;
+    title: string;
+    sourcePageId?: string;
+    type: string;
+    tags: string[];
+  }>;
   activities: EvaLearningActivity[];
-  questions: Array<{ id: string; activityId: string; track: string; type: string; prompt: string; options: string[]; answerIndex: number; rationale: string }>;
+  questions: Array<{
+    id: string;
+    activityId: string;
+    track: string;
+    type: string;
+    prompt: string;
+    options: string[];
+    answerIndex: number;
+    rationale: string;
+  }>;
   ttsSegments: EvaTtsSegment[];
   examTasks: EvaExamTask[];
 };
@@ -135,9 +153,27 @@ export type EvaStoredStudioState = {
 };
 
 export const evaSeedUsers: EvaSeedUser[] = [
-  { id: "ali", displayName: "Ali", role: "owner", locale: "fa", canTeach: true },
-  { id: "eva", displayName: "Eva", role: "premium-member", locale: "en", canTeach: false },
-  { id: "elham", displayName: "Elham", role: "premium-learner", locale: "fa", canTeach: false },
+  {
+    id: "ali",
+    displayName: "Ali",
+    role: "owner",
+    locale: "fa",
+    canTeach: true,
+  },
+  {
+    id: "eva",
+    displayName: "Eva",
+    role: "premium-member",
+    locale: "en",
+    canTeach: false,
+  },
+  {
+    id: "elham",
+    displayName: "Elham",
+    role: "premium-learner",
+    locale: "fa",
+    canTeach: false,
+  },
 ];
 
 export const evaLearningEntities: EvaLearningEntity[] = [
@@ -257,8 +293,7 @@ export const evaExamModeTasks: EvaExamTask[] = [
     title: "IELTS-style Writing: Digital booklets and progress",
     level: "B2",
     timeLimitMinutes: 22,
-    prompt:
-      "Some learners prefer digital study portals because they can save answers, track progress, and review weak areas. Others believe a simple PDF is enough. Discuss both views and give your own opinion.",
+    prompt: "Some learners prefer digital study portals because they can save answers, track progress, and review weak areas. Others believe a simple PDF is enough. Discuss both views and give your own opinion.",
     rubric: ["task response", "coherence and cohesion", "lexical resource", "grammar range and accuracy"],
     questions: [],
   },
@@ -269,8 +304,7 @@ export const evaExamModeTasks: EvaExamTask[] = [
     title: "TOEFL-style Writing: Academic discussion",
     level: "B2",
     timeLimitMinutes: 10,
-    prompt:
-      "Your class is discussing whether language learners should use AI feedback before teacher feedback. Write a response that states your view and supports it with one clear reason and one example.",
+    prompt: "Your class is discussing whether language learners should use AI feedback before teacher feedback. Write a response that states your view and supports it with one clear reason and one example.",
     rubric: ["clear claim", "support", "example", "academic tone"],
     questions: [],
   },
@@ -417,16 +451,7 @@ export function buildEvaLearningDatabase(booklet: EvaBooklet): EvaLearningDataba
 
   const materialActivities: EvaLearningActivity[] = allMaterialItems.map((item) => ({
     id: `material-${item.id}`,
-    kind:
-      item.track === "reading"
-        ? "reading"
-        : item.track === "writing"
-          ? "writing"
-          : item.track === "listening"
-            ? "listening"
-            : item.track === "pronunciation"
-              ? "pronunciation"
-              : "teacher-feedback",
+    kind: item.track === "reading" ? "reading" : item.track === "writing" ? "writing" : item.track === "listening" ? "listening" : item.track === "pronunciation" ? "pronunciation" : "teacher-feedback",
     title: item.title,
     sourcePageIds: booklet.pages
       .filter((page) => item.sourceTypeTargets.includes(page.type))
@@ -451,6 +476,7 @@ export function buildEvaLearningDatabase(booklet: EvaBooklet): EvaLearningDataba
       routine: item.routine,
       rubric: item.rubric,
       visualAsset: item.visualAsset,
+      sourceProvenance: item.sourceProvenance ?? [],
       tags: item.tags,
       localeNotes: item.localeNotes,
     },
@@ -563,7 +589,13 @@ export function buildEvaLearningDatabase(booklet: EvaBooklet): EvaLearningDataba
   return {
     entities: evaLearningEntities,
     users: evaSeedUsers,
-    memberships: evaSeedUsers.map((user) => ({ userId: user.id, productId: "eva-digital-booklet", status: "active", pricePaid: 4.99, currency: "USD" })),
+    memberships: evaSeedUsers.map((user) => ({
+      userId: user.id,
+      productId: "eva-digital-booklet",
+      status: "active",
+      pricePaid: 4.99,
+      currency: "USD",
+    })),
     sourceDocuments: [
       {
         id: "eva-digital-booklet-source",
@@ -571,9 +603,29 @@ export function buildEvaLearningDatabase(booklet: EvaBooklet): EvaLearningDataba
         privacy: booklet.source.privacy,
         importedPages: booklet.stats.pages,
         textCharacters: booklet.stats.textCharacters,
+        sourceUrl: null,
+        licenseName: null,
+        licenseUrl: null,
+        attribution: null,
       },
+      ...evaMaterialSourceDocuments.map((document) => ({
+        id: document.id,
+        title: document.title,
+        privacy: document.privacy,
+        importedPages: 0,
+        textCharacters: document.textCharacters,
+        sourceUrl: document.sourceUrl,
+        licenseName: document.licenseName,
+        licenseUrl: document.licenseUrl,
+        attribution: document.attribution,
+      })),
     ],
-    chapters: booklet.chapters.map((chapter) => ({ id: chapter.id, title: chapter.title, pageIds: chapter.pageIds, skillTags: chapter.skillTags })),
+    chapters: booklet.chapters.map((chapter) => ({
+      id: chapter.id,
+      title: chapter.title,
+      pageIds: chapter.pageIds,
+      skillTags: chapter.skillTags,
+    })),
     sections: booklet.chapters.flatMap((chapter) => {
       const pages = booklet.pages.filter((page) => page.chapterId === chapter.id);
       const typeGroups = Array.from(new Set(pages.map((page) => page.type)));

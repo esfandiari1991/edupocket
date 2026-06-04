@@ -9,6 +9,28 @@ export type EvaMaterialQuestion = {
   rationale: string;
 };
 
+export type EvaSourceProvenance = {
+  sourceId: string;
+  title: string;
+  url: string;
+  licenseName: string;
+  licenseUrl: string;
+  attribution: string;
+  usage: "original" | "copied-verbatim" | "adapted";
+  note: string;
+};
+
+export type EvaMaterialSourceDocument = {
+  id: string;
+  title: string;
+  privacy: "owned-original" | "private" | "public-domain" | "reference-only";
+  sourceUrl: string;
+  licenseName: string;
+  licenseUrl: string;
+  attribution: string;
+  textCharacters: number | null;
+};
+
 export type EvaMaterialItem = {
   id: string;
   track: EvaMaterialTrack;
@@ -27,11 +49,57 @@ export type EvaMaterialItem = {
   routine: string[];
   rubric: string[];
   visualAsset?: string;
+  sourceProvenance?: EvaSourceProvenance[];
   tags: string[];
   localeNotes: {
     en: string;
     fa: string;
   };
+};
+
+export const evaMaterialSourceDocuments: EvaMaterialSourceDocument[] = [
+  {
+    id: "edupocket-original-eva-material-bank",
+    title: "EduPocket Original Eva Practice Bank",
+    privacy: "owned-original",
+    sourceUrl: "https://edupocket.org/eva-digital-booklet",
+    licenseName: "EduPocket owned original material",
+    licenseUrl: "https://edupocket.org/eva-digital-booklet",
+    attribution: "Original practice content by Ali Esfandiari Rad for EduPocket.",
+    textCharacters: null,
+  },
+  {
+    id: "world-english-bible-public-domain",
+    title: "World English Bible",
+    privacy: "public-domain",
+    sourceUrl: "https://eBible.org/web/",
+    licenseName: "Public Domain",
+    licenseUrl: "https://eBible.org/engwebp/copyright.htm",
+    attribution: "World English Bible, public domain text by eBible.org.",
+    textCharacters: null,
+  },
+];
+
+const edupocketOriginalProvenance: EvaSourceProvenance = {
+  sourceId: "edupocket-original-eva-material-bank",
+  title: "EduPocket Original Eva Practice Bank",
+  url: "https://edupocket.org/eva-digital-booklet",
+  licenseName: "EduPocket owned original material",
+  licenseUrl: "https://edupocket.org/eva-digital-booklet",
+  attribution: "Original practice content by Ali Esfandiari Rad for EduPocket.",
+  usage: "original",
+  note: "Passage, prompt, answer key, rationale, routine, and rubric were created for this product.",
+};
+
+const worldEnglishBibleProvenance: EvaSourceProvenance = {
+  sourceId: "world-english-bible-public-domain",
+  title: "World English Bible",
+  url: "https://eBible.org/web/",
+  licenseName: "Public Domain",
+  licenseUrl: "https://eBible.org/engwebp/copyright.htm",
+  attribution: "World English Bible, public domain text by eBible.org.",
+  usage: "copied-verbatim",
+  note: "Bible text is copied verbatim from the public-domain World English Bible; EduPocket exercises, questions, rationales, and rubrics are original.",
 };
 
 export const evaMaterialSourcePolicy = [
@@ -49,7 +117,7 @@ export const evaMaterialSourcePolicy = [
   },
   {
     label: "Public-domain references",
-    note: "The current pack uses fresh EduPocket passages. Future public-domain literature additions should keep clear attribution and jurisdiction checks.",
+    note: "Public-domain passages can be copied into premium materials only when source, license, and attribution are recorded for the active material.",
   },
   {
     label: "TTS implementation",
@@ -364,6 +432,120 @@ export const evaReadingMaterials: EvaMaterialItem[] = [
       fa: "قبل از بازبيني معلم مناسب است چون بازخورد را تبديل به اقدام بعدي مي كند.",
     },
   },
+  {
+    id: "reading-web-matthew-anxiety-attention",
+    track: "reading",
+    exam: "IELTS",
+    skill: "reading",
+    title: "Public-domain reading: attention and anxiety",
+    level: "B2",
+    timeLimitMinutes: 18,
+    summary: "A public-domain WEB passage converted into IELTS-style reading practice with original EduPocket questions.",
+    sourceUse: "Uses copied public-domain Bible text as a reading passage, then connects it to reflection, vocabulary, and review decisions.",
+    sourceTypeTargets: ["chapter-reading", "exegesis", "reading-lab", "enrichment"],
+    passage:
+      "Therefore I tell you, don't be anxious for your life: what you will eat, or what you will drink; nor yet for your body, what you will wear. Isn't life more than food, and the body more than clothing? See the birds of the sky, that they don't sow, neither do they reap, nor gather into barns. Your heavenly Father feeds them. Aren't you of much more value than they? Which of you by being anxious can add one moment to his lifespan? Why are you anxious about clothing? Consider the lilies of the field, how they grow. They don't toil, neither do they spin, yet I tell you that even Solomon in all his glory was not dressed like one of these. But if God so clothes the grass of the field, which today exists, and tomorrow is thrown into the oven, won't he much more clothe you, you of little faith? Therefore don't be anxious, saying, 'What will we eat?', 'What will we drink?' or, 'What will we wear?' For the Gentiles seek after all these things; for your heavenly Father knows that you need all these things. But seek first God's Kingdom and his righteousness; and all these things will be given to you as well. Therefore don't be anxious for tomorrow, for tomorrow will be anxious for itself. Each day's own evil is sufficient.",
+    prompt: "Answer the questions, then write one evidence sentence about how attention is redirected in the passage.",
+    questions: [
+      {
+        id: "r-web-matthew-q1",
+        type: "Main idea",
+        prompt: "What is the main movement of the passage?",
+        options: ["From anxiety toward trust and ordered attention", "From travel planning toward a weather report", "From grammar rules toward exam registration", "From clothing descriptions toward shopping advice only"],
+        answerIndex: 0,
+        rationale: "The repeated command not to be anxious is paired with examples that redirect attention toward trust and priority.",
+      },
+      {
+        id: "r-web-matthew-q2",
+        type: "Detail",
+        prompt: "Which natural examples are used as evidence?",
+        options: ["Birds and lilies", "Rivers and mountains", "Stars and clouds", "Seeds and stones only"],
+        answerIndex: 0,
+        rationale: "The passage explicitly mentions birds of the sky and lilies of the field.",
+      },
+      {
+        id: "r-web-matthew-q3",
+        type: "Inference",
+        prompt: "Why does the passage ask several rhetorical questions?",
+        options: ["To make the reader examine the usefulness of anxiety", "To give a shopping list", "To introduce unrelated historical dates", "To avoid making a claim"],
+        answerIndex: 0,
+        rationale: "The questions challenge the reader to compare anxiety with trust, value, and priority.",
+      },
+      {
+        id: "r-web-matthew-q4",
+        type: "Vocabulary in context",
+        prompt: "In this passage, 'seek first' is closest to...",
+        options: ["give priority to", "look quickly at", "search online for", "delay every decision"],
+        answerIndex: 0,
+        rationale: "The phrase is about priority and ordering attention.",
+      },
+    ],
+    routine: ["Mark every repeated command.", "Underline the natural examples.", "Answer the questions before opening the rationale.", "Save one reflection sentence in the Writing Vault."],
+    rubric: ["main idea", "detail recognition", "inference", "lexical meaning"],
+    sourceProvenance: [worldEnglishBibleProvenance],
+    tags: ["public domain", "WEB", "Matthew 6", "anxiety", "attention", "IELTS reading", "religious context"],
+    localeNotes: {
+      en: "Use this for a serious reading session where spiritual meaning and academic reading skills meet.",
+      fa: "برای تمرین جدی reading؛ هم معنا و هم مهارت آزمونی را همزمان قابل پیگیری می‌کند.",
+    },
+  },
+  {
+    id: "reading-web-romans-transformed-service",
+    track: "reading",
+    exam: "TOEFL",
+    skill: "reading",
+    title: "Public-domain reading: transformation and service",
+    level: "B2",
+    timeLimitMinutes: 16,
+    summary: "A TOEFL-style reading pack built on a public-domain WEB passage about renewal, humility, and service.",
+    sourceUse: "Uses public-domain Bible text as the base text for inference, rhetorical-purpose, and vocabulary practice.",
+    sourceTypeTargets: ["exegesis", "scenario", "chapter-reading", "translation"],
+    passage:
+      "Therefore I urge you, brothers, by the mercies of God, to present your bodies a living sacrifice, holy, acceptable to God, which is your spiritual service. Don't be conformed to this world, but be transformed by the renewing of your mind, so that you may prove what is the good, well-pleasing, and perfect will of God. For I say through the grace that was given me, to every man who is among you, not to think of himself more highly than he ought to think; but to think reasonably, as God has apportioned to each person a measure of faith. For even as we have many members in one body, and all the members don't have the same function, so we, who are many, are one body in Christ, and individually members of one another. Having gifts differing according to the grace that was given to us, if prophecy, let us prophesy according to the proportion of our faith; or service, let us give ourselves to service; or he who teaches, to his teaching; or he who exhorts, to his exhorting; he who gives, let him do it with generosity; he who rules, with diligence; he who shows mercy, with cheerfulness.",
+    prompt: "Answer the questions, then write one ministry-ready sentence that uses 'transformed', 'service', or 'diligence' naturally.",
+    questions: [
+      {
+        id: "r-web-romans-q1",
+        type: "Rhetorical purpose",
+        prompt: "Why does the passage mention different gifts?",
+        options: ["To show that service has different functions inside one body", "To argue that only one person should serve", "To list unrelated job titles", "To avoid the topic of humility"],
+        answerIndex: 0,
+        rationale: "The passage connects many members, different functions, and different gifts inside one body.",
+      },
+      {
+        id: "r-web-romans-q2",
+        type: "Factual information",
+        prompt: "According to the passage, what should be renewed?",
+        options: ["The mind", "The building", "The payment plan", "The website menu"],
+        answerIndex: 0,
+        rationale: "The text says to be transformed by the renewing of the mind.",
+      },
+      {
+        id: "r-web-romans-q3",
+        type: "Inference",
+        prompt: "What attitude does the passage discourage?",
+        options: ["Thinking too highly of oneself", "Serving with diligence", "Showing mercy", "Teaching carefully"],
+        answerIndex: 0,
+        rationale: "The passage explicitly tells each person not to think of himself more highly than he ought.",
+      },
+      {
+        id: "r-web-romans-q4",
+        type: "Vocabulary in context",
+        prompt: "In this passage, 'function' is closest to...",
+        options: ["role or purpose", "mathematical formula only", "private password", "unrelated decoration"],
+        answerIndex: 0,
+        rationale: "The body metaphor uses function to mean the role or purpose of each member.",
+      },
+    ],
+    routine: ["Identify the main command.", "Map each gift to a service action.", "Answer the questions.", "Add one weak word to the review queue."],
+    rubric: ["rhetorical purpose", "factual detail", "inference", "vocabulary"],
+    sourceProvenance: [worldEnglishBibleProvenance],
+    tags: ["public domain", "WEB", "Romans 12", "service", "TOEFL reading", "lexical resource"],
+    localeNotes: {
+      en: "Use when Eva needs reading practice that also builds usable ministry vocabulary.",
+      fa: "برای وقتی که Eva باید هم reading تمرین کند هم واژگان قابل استفاده برای خدمت یاد بگیرد.",
+    },
+  },
 ];
 
 export const evaWritingMaterials: EvaMaterialItem[] = [
@@ -379,8 +561,7 @@ export const evaWritingMaterials: EvaMaterialItem[] = [
     sourceUse: "Connects to AI feedback reading, writing vault, and teacher notes.",
     sourceTypeTargets: ["journal", "progress", "reading-lab-rc"],
     visualAsset: "/images/materials/eva/eva-writing-vault.svg",
-    prompt:
-      "Some language learners use AI feedback before sending their writing to a teacher. Others believe teacher feedback should always come first. Discuss both views and give your own opinion.",
+    prompt: "Some language learners use AI feedback before sending their writing to a teacher. Others believe teacher feedback should always come first. Discuss both views and give your own opinion.",
     questions: [],
     routine: ["Plan both views in four bullets.", "Write a clear opinion in the introduction.", "Use one example from your own study routine.", "Revise topic sentences before saving."],
     rubric: ["task response", "coherence and cohesion", "lexical resource", "grammar range and accuracy"],
@@ -424,8 +605,7 @@ export const evaWritingMaterials: EvaMaterialItem[] = [
     sourceUse: "Connects to lexical resource, shadowing, and TTS listened/repeated tracking.",
     sourceTypeTargets: ["listening-speaking", "vocabulary"],
     visualAsset: "/images/materials/eva/eva-pronunciation-lab.svg",
-    prompt:
-      "Your class is discussing whether pronunciation practice should be part of every language course. Write a response that states your view, responds to the discussion, and gives one concrete example.",
+    prompt: "Your class is discussing whether pronunciation practice should be part of every language course. Write a response that states your view, responds to the discussion, and gives one concrete example.",
     questions: [],
     routine: ["State your view in sentence one.", "Add one reason.", "Give one specific learning example.", "End with a practical conclusion."],
     rubric: ["clear position", "development", "example", "academic tone"],
@@ -450,8 +630,7 @@ export const evaWritingMaterials: EvaMaterialItem[] = [
       "A review queue helps learners revisit weak points efficiently. Supporters argue that it saves time because learners return to named problems instead of repeating complete pages. It can also give teachers clearer evidence of progress.",
     ttsScript:
       "The lecture adds that review queues work best when the learner writes a reason for each item. If a word is added only because it feels difficult, the learner may ignore it later. But if the note says, 'I confused although and however in a contrast sentence,' the next review becomes more focused.",
-    prompt:
-      "Summarize the points made in the lecture and explain how they add to the reading passage. Do not express your own opinion.",
+    prompt: "Summarize the points made in the lecture and explain how they add to the reading passage. Do not express your own opinion.",
     questions: [],
     routine: ["Read the passage.", "Listen to the lecture script with TTS.", "Write reading point plus lecture addition.", "Use reporting verbs, not opinion language."],
     rubric: ["source integration", "accuracy", "organization", "language control"],
@@ -472,8 +651,7 @@ export const evaWritingMaterials: EvaMaterialItem[] = [
     summary: "IELTS-style Task 2 prompt on study groups versus independent learning.",
     sourceUse: "Connects to scenario pages, service work, and collaboration.",
     sourceTypeTargets: ["scenario", "journal", "progress"],
-    prompt:
-      "Some students learn best in small guided groups, while others make faster progress when they study independently. Discuss both views and give your own opinion.",
+    prompt: "Some students learn best in small guided groups, while others make faster progress when they study independently. Discuss both views and give your own opinion.",
     questions: [],
     routine: ["Brainstorm one benefit for each side.", "Choose a balanced opinion.", "Use one connector of contrast and one connector of result.", "Save the final paragraph in the vault."],
     rubric: ["balanced argument", "paragraph control", "connector accuracy", "examples"],
@@ -494,8 +672,7 @@ export const evaWritingMaterials: EvaMaterialItem[] = [
     summary: "TOEFL Academic Discussion style response about feedback and autonomy.",
     sourceUse: "Connects to Teacher Lens and feedback templates.",
     sourceTypeTargets: ["journal", "progress"],
-    prompt:
-      "Your class is discussing whether detailed teacher notes make students more independent or too dependent on correction. Write your contribution to the discussion.",
+    prompt: "Your class is discussing whether detailed teacher notes make students more independent or too dependent on correction. Write your contribution to the discussion.",
     questions: [],
     routine: ["Choose one side.", "Acknowledge the other side briefly.", "Give a concrete example of a useful teacher note.", "End with a learner action."],
     rubric: ["position", "response to issue", "example", "control"],
@@ -503,6 +680,29 @@ export const evaWritingMaterials: EvaMaterialItem[] = [
     localeNotes: {
       en: "Use before Teacher Lens review so the learner understands why feedback must name action.",
       fa: "قبل از Teacher Lens مناسب است چون هدف بازخورد دقيق را روشن مي كند.",
+    },
+  },
+  {
+    id: "writing-web-james-listening-response",
+    track: "writing",
+    exam: "IELTS",
+    skill: "writing",
+    title: "Public-domain writing: listening before speaking",
+    level: "B2",
+    timeLimitMinutes: 22,
+    summary: "An IELTS-style paragraph task using a public-domain WEB verse as the source idea.",
+    sourceUse: "Uses copied public-domain Bible text as the seed text for original writing practice and teacher review.",
+    sourceTypeTargets: ["listening-speaking", "scenario", "journal", "translation"],
+    passage: "So, then, my beloved brothers, let every man be swift to hear, slow to speak, and slow to anger;",
+    prompt: "Use the source sentence as the idea seed. Write one IELTS-style paragraph explaining why listening before speaking can improve learning, teamwork, or ministry communication. Include one concrete example.",
+    questions: [],
+    routine: ["Copy the source sentence into your notes.", "Underline the three action phrases.", "Write one topic sentence.", "Add one example and one result sentence.", "Save the paragraph in the Writing Vault."],
+    rubric: ["topic sentence", "example quality", "cohesion", "grammar range"],
+    sourceProvenance: [worldEnglishBibleProvenance],
+    tags: ["public domain", "WEB", "James 1", "IELTS writing", "listening", "speaking"],
+    localeNotes: {
+      en: "Use this when the learner needs a short source-based paragraph that connects faith language with academic writing.",
+      fa: "برای تمرین پاراگراف کوتاه و جدی؛ جمله منبع، writing و مهارت ارتباطی را به هم وصل می‌کند.",
     },
   },
 ];
@@ -519,8 +719,7 @@ export const evaListeningMaterials: EvaMaterialItem[] = [
     summary: "A calm TTS briefing for opening a serious study session.",
     sourceUse: "Use before the first page of a study session.",
     sourceTypeTargets: ["progress", "journal"],
-    ttsScript:
-      "Open the portal. Choose one source page. Read the title first. Before you answer, say the goal of the activity in one sentence. After you finish, save one piece of evidence and decide whether this page belongs in review.",
+    ttsScript: "Open the portal. Choose one source page. Read the title first. Before you answer, say the goal of the activity in one sentence. After you finish, save one piece of evidence and decide whether this page belongs in review.",
     questions: [
       {
         id: "l-sr-q1",
@@ -550,8 +749,7 @@ export const evaListeningMaterials: EvaMaterialItem[] = [
     summary: "A two-speaker style TTS script for teacher feedback language.",
     sourceUse: "Pairs with Teacher Lens and writing vault.",
     sourceTypeTargets: ["journal", "progress"],
-    ttsScript:
-      "Teacher: Your main idea is clear, but the second example is too general. Learner: Should I add a personal story or an academic example? Teacher: Use one specific event, then explain why it changed the result.",
+    ttsScript: "Teacher: Your main idea is clear, but the second example is too general. Learner: Should I add a personal story or an academic example? Teacher: Use one specific event, then explain why it changed the result.",
     questions: [
       {
         id: "l-fc-q1",
@@ -581,8 +779,7 @@ export const evaListeningMaterials: EvaMaterialItem[] = [
     summary: "Common command language for reading and writing tasks.",
     sourceUse: "Pairs with IELTS/TOEFL exam mode.",
     sourceTypeTargets: ["reading-lab-rc", "chapter-quiz"],
-    ttsScript:
-      "Identify the main claim. Choose the best answer. Explain the reason. Compare the two views. Summarize the lecture. Support your opinion with one example. Revise for clarity.",
+    ttsScript: "Identify the main claim. Choose the best answer. Explain the reason. Compare the two views. Summarize the lecture. Support your opinion with one example. Revise for clarity.",
     questions: [
       {
         id: "l-ed-q1",
@@ -612,8 +809,7 @@ export const evaListeningMaterials: EvaMaterialItem[] = [
     summary: "A TTS script for rhythm, connectors, and paragraph flow.",
     sourceUse: "Pairs with grammar connectors and paragraph control.",
     sourceTypeTargets: ["grammar-practice", "progress"],
-    ttsScript:
-      "Although short lessons are easier to start, they still need a serious review system. Therefore, each activity should end with evidence. However, evidence is useful only when the learner knows what to do next.",
+    ttsScript: "Although short lessons are easier to start, they still need a serious review system. Therefore, each activity should end with evidence. However, evidence is useful only when the learner knows what to do next.",
     questions: [
       {
         id: "l-cs-q1",
@@ -643,8 +839,7 @@ export const evaListeningMaterials: EvaMaterialItem[] = [
     summary: "A script for soft question formation and caring tone.",
     sourceUse: "Pairs with service scenarios and question formation.",
     sourceTypeTargets: ["scenario", "listening-speaking"],
-    ttsScript:
-      "Instead of saying, 'Why did you miss the meeting?' try, 'I noticed you were not able to join us. Is everything all right?' Warm questions give people room to answer honestly.",
+    ttsScript: "Instead of saying, 'Why did you miss the meeting?' try, 'I noticed you were not able to join us. Is everything all right?' Warm questions give people room to answer honestly.",
     questions: [
       {
         id: "l-mc-q1",
@@ -674,8 +869,7 @@ export const evaListeningMaterials: EvaMaterialItem[] = [
     summary: "A short closing script for saving evidence and selecting next steps.",
     sourceUse: "Use at the end of a study session.",
     sourceTypeTargets: ["progress", "journal"],
-    ttsScript:
-      "Before you close the portal, save one sentence about what improved. Then choose one weak item for review. If you cannot name a weak item, repeat the last question and explain your answer aloud.",
+    ttsScript: "Before you close the portal, save one sentence about what improved. Then choose one weak item for review. If you cannot name a weak item, repeat the last question and explain your answer aloud.",
     questions: [
       {
         id: "l-pr-q1",
@@ -692,6 +886,45 @@ export const evaListeningMaterials: EvaMaterialItem[] = [
     localeNotes: {
       en: "Use at the end of each session so progress is not invisible.",
       fa: "در پايان هر جلسه استفاده شود تا پيشرفت پنهان نماند.",
+    },
+  },
+  {
+    id: "listening-web-ask-seek-knock",
+    track: "listening",
+    exam: "EduPocket",
+    skill: "listening",
+    title: "Public-domain TTS: ask, seek, knock",
+    level: "B1",
+    timeLimitMinutes: 8,
+    summary: "A WEB public-domain listening and shadowing script focused on imperative rhythm and repetition.",
+    sourceUse: "Uses copied public-domain Bible text for listening, shadowing, and review-queue practice.",
+    sourceTypeTargets: ["listening-speaking", "scenario", "chapter-reading"],
+    ttsScript: "Ask, and it will be given you. Seek, and you will find. Knock, and it will be opened for you. For everyone who asks receives. He who seeks finds. To him who knocks it will be opened.",
+    questions: [
+      {
+        id: "l-web-ask-q1",
+        type: "Listening sequence",
+        prompt: "Which three repeated actions organize the script?",
+        options: ["Ask, seek, knock", "Read, pay, close", "Write, erase, hide", "Listen, skip, forget"],
+        answerIndex: 0,
+        rationale: "The script repeats the three imperatives ask, seek, and knock.",
+      },
+      {
+        id: "l-web-ask-q2",
+        type: "Listening detail",
+        prompt: "What happens to the one who seeks?",
+        options: ["He finds", "He sleeps", "He pays", "He disappears"],
+        answerIndex: 0,
+        rationale: "The script says that he who seeks finds.",
+      },
+    ],
+    routine: ["Listen once at normal speed.", "Repeat each imperative pair.", "Shadow the whole script slowly.", "Mark one pronunciation difficulty for review."],
+    rubric: ["sequence recognition", "imperative rhythm", "shadowing clarity"],
+    sourceProvenance: [worldEnglishBibleProvenance],
+    tags: ["public domain", "WEB", "Matthew 7", "listening", "shadowing", "imperatives"],
+    localeNotes: {
+      en: "Use as a short audio ritual for repetition, rhythm, and confidence.",
+      fa: "برای تمرین کوتاه شنیداری؛ تکرار، ریتم و اعتماد به نفس را با هم می‌سازد.",
     },
   },
 ];
@@ -908,6 +1141,28 @@ export const evaPronunciationMaterials: EvaMaterialItem[] = [
       fa: "هر وقت در Writing نياز به مثال مشخص تر باشد.",
     },
   },
+  {
+    id: "pronunciation-web-peace-patience",
+    track: "pronunciation",
+    exam: "EduPocket",
+    skill: "pronunciation",
+    title: "Public-domain shadowing: peace and patience",
+    level: "B1",
+    timeLimitMinutes: 7,
+    summary: "A WEB public-domain shadowing drill for /p/ clarity, phrase rhythm, and calm delivery.",
+    sourceUse: "Uses copied public-domain Bible phrases for pronunciation and shadowing practice.",
+    sourceTypeTargets: ["listening-speaking", "vocabulary", "scenario"],
+    ttsScript: "But the fruit of the Spirit is love, joy, peace, patience, kindness, goodness, faith, gentleness, and self-control. Against such things there is no law.",
+    questions: [],
+    routine: ["Listen once.", "Mark the /p/ sound in peace and patience.", "Shadow the list in groups of three.", "Record one mastered phrase in pronunciation notes."],
+    rubric: ["phrase grouping", "initial /p/ clarity", "calm intonation"],
+    sourceProvenance: [worldEnglishBibleProvenance],
+    tags: ["public domain", "WEB", "Galatians 5", "pronunciation", "shadowing", "ministry vocabulary"],
+    localeNotes: {
+      en: "Use as a calm pronunciation drill that also builds high-frequency religious vocabulary.",
+      fa: "برای تمرین تلفظ آرام و واژگان پرکاربرد مذهبی مناسب است.",
+    },
+  },
 ];
 
 export const evaTeacherMaterials: EvaMaterialItem[] = [
@@ -922,8 +1177,7 @@ export const evaTeacherMaterials: EvaMaterialItem[] = [
     summary: "Reusable feedback language Ali can paste or adapt in Teacher Lens.",
     sourceUse: "Pairs with writing vault and teacher notes.",
     sourceTypeTargets: ["journal", "progress"],
-    prompt:
-      "Feedback template: Your idea is clear, but the support is still general. Add one specific event, name who was involved, and explain the result in one sentence.",
+    prompt: "Feedback template: Your idea is clear, but the support is still general. Add one specific event, name who was involved, and explain the result in one sentence.",
     questions: [],
     routine: ["Read the draft.", "Name the missing evidence.", "Paste the template.", "Add one personal line for the learner."],
     rubric: ["specificity", "teacher action", "learner next step"],
@@ -944,8 +1198,7 @@ export const evaTeacherMaterials: EvaMaterialItem[] = [
     summary: "A feedback template for repeated grammar errors.",
     sourceUse: "Pairs with grammar modules and weak skill map.",
     sourceTypeTargets: ["grammar-practice", "progress"],
-    prompt:
-      "Feedback template: I see the same grammar pattern three times. Do not correct only this sentence. Write the rule, make two new examples, and add this pattern to your review queue.",
+    prompt: "Feedback template: I see the same grammar pattern three times. Do not correct only this sentence. Write the rule, make two new examples, and add this pattern to your review queue.",
     questions: [],
     routine: ["Find the repeated pattern.", "Link the note to a grammar module.", "Ask for two fresh examples."],
     rubric: ["pattern noticing", "rule explanation", "review transfer"],
@@ -966,8 +1219,7 @@ export const evaTeacherMaterials: EvaMaterialItem[] = [
     summary: "A feedback template for shadowing and TTS follow-up.",
     sourceUse: "Pairs with Pronunciation Lab.",
     sourceTypeTargets: ["listening-speaking", "vocabulary"],
-    prompt:
-      "Feedback template: This word is understandable, but the stress is not stable yet. Listen once, repeat twice, then record yourself saying the word inside a full sentence.",
+    prompt: "Feedback template: This word is understandable, but the stress is not stable yet. Listen once, repeat twice, then record yourself saying the word inside a full sentence.",
     questions: [],
     routine: ["Choose the word.", "Assign Listen + Repeat + sentence.", "Check the next recording."],
     rubric: ["stress", "repeat count", "sentence transfer"],
@@ -988,8 +1240,7 @@ export const evaTeacherMaterials: EvaMaterialItem[] = [
     summary: "A feedback template for turning mistakes into review items.",
     sourceUse: "Pairs with Review Engine and Smart Next Step.",
     sourceTypeTargets: ["progress", "chapter-quiz"],
-    prompt:
-      "Feedback template: This mistake should not disappear after today. Add it to review with a reason: what confused you, what the correct answer is, and when you will check it again.",
+    prompt: "Feedback template: This mistake should not disappear after today. Add it to review with a reason: what confused you, what the correct answer is, and when you will check it again.",
     questions: [],
     routine: ["Name the confusion.", "State the correct answer.", "Schedule review."],
     rubric: ["review reason", "correct answer", "schedule"],
@@ -1010,8 +1261,7 @@ export const evaTeacherMaterials: EvaMaterialItem[] = [
     summary: "A feedback template for unclear IELTS/TOEFL positions.",
     sourceUse: "Pairs with Writing Studio, Exam Mode, and paragraph control.",
     sourceTypeTargets: ["reading-lab-rc", "progress", "chapter-quiz"],
-    prompt:
-      "Feedback template: Your position is present, but it is not sharp enough yet. Rewrite the first sentence so it names the topic, your position, and the reason you will defend.",
+    prompt: "Feedback template: Your position is present, but it is not sharp enough yet. Rewrite the first sentence so it names the topic, your position, and the reason you will defend.",
     questions: [],
     routine: ["Find the current position.", "Ask whether the reader can predict the paragraph.", "Rewrite the thesis in one sentence.", "Add one reason only."],
     rubric: ["position clarity", "topic control", "reason focus"],
@@ -1032,8 +1282,7 @@ export const evaTeacherMaterials: EvaMaterialItem[] = [
     summary: "A feedback template for paragraphs that feel disconnected.",
     sourceUse: "Pairs with connector grammar, Writing Vault, and IELTS cohesion review.",
     sourceTypeTargets: ["grammar-practice", "reading-lab", "progress"],
-    prompt:
-      "Feedback template: The sentences are mostly correct, but the paragraph does not move smoothly. Add one connector for contrast or result, then repeat one key noun so the reader can follow the logic.",
+    prompt: "Feedback template: The sentences are mostly correct, but the paragraph does not move smoothly. Add one connector for contrast or result, then repeat one key noun so the reader can follow the logic.",
     questions: [],
     routine: ["Mark the topic sentence.", "Circle unclear jumps.", "Add one connector.", "Repeat one key noun naturally."],
     rubric: ["cohesion", "reference control", "logical movement"],
@@ -1054,8 +1303,7 @@ export const evaTeacherMaterials: EvaMaterialItem[] = [
     summary: "A feedback template for vocabulary range without overcomplication.",
     sourceUse: "Pairs with Pronunciation Lab, lexical cards, and source-page notes.",
     sourceTypeTargets: ["vocabulary", "chapter-language", "progress"],
-    prompt:
-      "Feedback template: Choose one basic word you repeated too often. Replace it with a precise academic or ministry word, then write one collocation and one sentence using it naturally.",
+    prompt: "Feedback template: Choose one basic word you repeated too often. Replace it with a precise academic or ministry word, then write one collocation and one sentence using it naturally.",
     questions: [],
     routine: ["Find one repeated word.", "Choose a precise replacement.", "Write one collocation.", "Use it in a sentence connected to the page."],
     rubric: ["word choice", "collocation", "natural sentence use"],
@@ -1076,8 +1324,7 @@ export const evaTeacherMaterials: EvaMaterialItem[] = [
     summary: "A feedback template for timed practice discipline.",
     sourceUse: "Pairs with Exam Mode timer and review queue.",
     sourceTypeTargets: ["chapter-quiz", "progress", "reading-lab-rc"],
-    prompt:
-      "Feedback template: Do this task again with the timer. Spend two minutes previewing, answer without stopping, then use the answer key only after you write one reason for each choice.",
+    prompt: "Feedback template: Do this task again with the timer. Spend two minutes previewing, answer without stopping, then use the answer key only after you write one reason for each choice.",
     questions: [],
     routine: ["Set the timer.", "Preview for two minutes.", "Answer without pausing.", "Explain each choice before checking."],
     rubric: ["timing", "answer discipline", "rationale before key"],
@@ -1085,6 +1332,29 @@ export const evaTeacherMaterials: EvaMaterialItem[] = [
     localeNotes: {
       en: "For learners who know the content but lose discipline under time.",
       fa: "براي زبان آموزي كه محتوا را مي داند اما زير زمان نظم خود را از دست مي دهد.",
+    },
+  },
+  {
+    id: "teacher-public-domain-source-assignment",
+    track: "teacher",
+    exam: "EduPocket",
+    skill: "teacher-feedback",
+    title: "Teacher assignment: public-domain source pack",
+    level: "B2",
+    timeLimitMinutes: 9,
+    summary: "A Teacher Lens template for assigning WEB-based reading, writing, TTS, and review tasks responsibly.",
+    sourceUse: "Pairs with all public-domain WEB material packs and keeps attribution visible in the learner workflow.",
+    sourceTypeTargets: ["exegesis", "chapter-reading", "listening-speaking", "progress"],
+    prompt:
+      "Assignment template: Complete one public-domain source pack. First, read or listen to the source text. Second, answer the questions without outside help. Third, save one writing response. Fourth, add one weak vocabulary or pronunciation item to review. Keep the source attribution visible in your note.",
+    questions: [],
+    routine: ["Choose one WEB material.", "Check the source provenance card.", "Assign reading or listening first.", "Require one saved draft.", "Review the weak item in Teacher Lens."],
+    rubric: ["source awareness", "completed evidence", "review decision", "teacher follow-up"],
+    sourceProvenance: [worldEnglishBibleProvenance, edupocketOriginalProvenance],
+    tags: ["teacher lens", "public domain", "WEB", "assignment", "source provenance"],
+    localeNotes: {
+      en: "For Ali's review workflow: the student learns from a legal source, but all assessment and tracking stay inside EduPocket.",
+      fa: "برای جریان کار علی: متن منبع قانونی است، اما ارزیابی و tracking داخل EduPocket انجام می‌شود.",
     },
   },
 ];

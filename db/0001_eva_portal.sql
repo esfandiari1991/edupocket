@@ -32,9 +32,19 @@ create table if not exists eva_source_documents (
   privacy text not null default 'private',
   imported_pages integer not null default 0,
   text_characters integer,
+  source_url text,
+  license_name text,
+  license_url text,
+  attribution text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table eva_source_documents
+  add column if not exists source_url text,
+  add column if not exists license_name text,
+  add column if not exists license_url text,
+  add column if not exists attribution text;
 
 create table if not exists eva_chapters (
   id text primary key,

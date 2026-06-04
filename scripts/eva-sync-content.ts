@@ -10,15 +10,8 @@ async function main() {
   const dryRun = process.argv.includes("--dry-run");
   const databaseUrl = process.env.EVA_DATABASE_URL || process.env.DATABASE_URL;
 
-  const bookletPath = path.join(
-    process.cwd(),
-    "src",
-    "lib",
-    "eva-booklet.generated.json",
-  );
-  const booklet = JSON.parse(
-    await fs.readFile(bookletPath, "utf8"),
-  ) as EvaBooklet;
+  const bookletPath = path.join(process.cwd(), "src", "lib", "eva-booklet.generated.json");
+  const booklet = JSON.parse(await fs.readFile(bookletPath, "utf8")) as EvaBooklet;
   const learningDb = buildEvaLearningDatabase(booklet);
 
   function printSummary(label: string) {
@@ -43,15 +36,11 @@ async function main() {
   }
 
   if (!databaseUrl) {
-    console.error(
-      "Missing EVA_DATABASE_URL or DATABASE_URL. Run `pnpm eva:sync-content:dry` to inspect the local content graph.",
-    );
+    console.error("Missing EVA_DATABASE_URL or DATABASE_URL. Run `pnpm eva:sync-content:dry` to inspect the local content graph.");
     process.exit(1);
   }
 
-  const chapterSortOrder = new Map(
-    booklet.chapters.map((chapter, index) => [chapter.id, index + 1]),
-  );
+  const chapterSortOrder = new Map(booklet.chapters.map((chapter, index) => [chapter.id, index + 1]));
 
   const sql = postgres(databaseUrl, {
     max: 1,
@@ -89,13 +78,39 @@ async function main() {
 
       for (const document of learningDb.sourceDocuments) {
         await tx`
-        insert into eva_source_documents (id, title, privacy, imported_pages, text_characters, updated_at)
-        values (${document.id}, ${document.title}, ${document.privacy}, ${document.importedPages}, ${document.textCharacters}, now())
+        insert into eva_source_documents (
+          id,
+          title,
+          privacy,
+          imported_pages,
+          text_characters,
+          source_url,
+          license_name,
+          license_url,
+          attribution,
+          updated_at
+        )
+        values (
+          ${document.id},
+          ${document.title},
+          ${document.privacy},
+          ${document.importedPages},
+          ${document.textCharacters},
+          ${document.sourceUrl},
+          ${document.licenseName},
+          ${document.licenseUrl},
+          ${document.attribution},
+          now()
+        )
         on conflict (id) do update set
           title = excluded.title,
           privacy = excluded.privacy,
           imported_pages = excluded.imported_pages,
           text_characters = excluded.text_characters,
+          source_url = excluded.source_url,
+          license_name = excluded.license_name,
+          license_url = excluded.license_url,
+          attribution = excluded.attribution,
           updated_at = now()
       `;
       }

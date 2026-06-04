@@ -10,6 +10,7 @@ import {
   CircleCheck,
   Database,
   Download,
+  ExternalLink,
   FileText,
   Flame,
   Gauge,
@@ -35,34 +36,10 @@ import {
   Volume2,
 } from "lucide-react";
 import type { EvaBooklet, EvaBookletChapter, EvaBookletPage, EvaBookletStack } from "@/lib/eva-private-content";
-import {
-  buildEvaLearningDatabase,
-  evaSeedUsers,
-  evaUserStorageKey,
-  normalizeStoredState,
-  type EvaSeedUser,
-  type EvaStoredStudioState,
-  type EvaUserId,
-} from "@/lib/eva-learning-db";
-import {
-  evaMaterialCollections,
-  evaMaterialItems,
-  evaMaterialSourcePolicy,
-  type EvaMaterialItem,
-  type EvaMaterialTrack,
-} from "@/lib/eva-materials";
+import { buildEvaLearningDatabase, evaSeedUsers, evaUserStorageKey, normalizeStoredState, type EvaSeedUser, type EvaStoredStudioState, type EvaUserId } from "@/lib/eva-learning-db";
+import { evaMaterialCollections, evaMaterialItems, evaMaterialSourcePolicy, type EvaMaterialItem, type EvaMaterialTrack } from "@/lib/eva-materials";
 import { buildEvaMaterialStats, buildEvaSourceMaterialItems, extendEvaMaterialCollections } from "@/lib/eva-source-materials";
-import {
-  evaGrammarModules,
-  evaLexicalResource,
-  evaQuizQuestions,
-  evaReligiousModules,
-  evaSkillModules,
-  evaWorkflowSteps,
-  type EvaQuizQuestion,
-  type EvaSkillModule,
-  type EvaStudioTrack,
-} from "@/lib/eva-studio-curriculum";
+import { evaGrammarModules, evaLexicalResource, evaQuizQuestions, evaReligiousModules, evaSkillModules, evaWorkflowSteps, type EvaQuizQuestion, type EvaSkillModule, type EvaStudioTrack } from "@/lib/eva-studio-curriculum";
 import { cn } from "@/lib/utils";
 
 type EvaStudioExperienceProps = {
@@ -200,15 +177,47 @@ const studyRoutes: StudyRoute[] = [
 
 type PremiumTabId = "overview" | EvaStudioTrack | "materials" | "quiz" | "exam" | "vault";
 
-const premiumTabs: Array<{ id: PremiumTabId; title: string; description: string }> = [
-  { id: "overview", title: "Use model", description: "How the studio should be worked." },
-  { id: "grammar", title: "Grammar Atlas", description: "10 accuracy chapters." },
-  { id: "religious", title: "Religious Context", description: "10 meaning chapters." },
-  { id: "lexical", title: "Pronunciation Lab", description: "Lexis, stress, IPA, and shadowing." },
-  { id: "materials", title: "Material Library", description: "Original packs and TTS scripts." },
+const premiumTabs: Array<{
+  id: PremiumTabId;
+  title: string;
+  description: string;
+}> = [
+  {
+    id: "overview",
+    title: "Use model",
+    description: "How the studio should be worked.",
+  },
+  {
+    id: "grammar",
+    title: "Grammar Atlas",
+    description: "10 accuracy chapters.",
+  },
+  {
+    id: "religious",
+    title: "Religious Context",
+    description: "10 meaning chapters.",
+  },
+  {
+    id: "lexical",
+    title: "Pronunciation Lab",
+    description: "Lexis, stress, IPA, and shadowing.",
+  },
+  {
+    id: "materials",
+    title: "Material Library",
+    description: "Original packs and TTS scripts.",
+  },
   { id: "quiz", title: "Quiz & Review", description: "Track mastery signals." },
-  { id: "exam", title: "Exam Mode", description: "Timed IELTS/TOEFL practice." },
-  { id: "vault", title: "Writing Vault", description: "Saved drafts and teacher notes." },
+  {
+    id: "exam",
+    title: "Exam Mode",
+    description: "Timed IELTS/TOEFL practice.",
+  },
+  {
+    id: "vault",
+    title: "Writing Vault",
+    description: "Saved drafts and teacher notes.",
+  },
 ];
 
 const materialTrackContracts: Record<EvaMaterialTrack, { output: string; savedAs: string; assessment: string; nextStep: string }> = {
@@ -251,10 +260,7 @@ function unique(values: string[]) {
 function pageMatches(page: EvaBookletPage, query: string) {
   if (!query.trim()) return true;
   const needle = query.trim().toLowerCase();
-  return [page.title, page.subtitle, page.chapterTitle, page.summary, page.type, ...page.skillTags, ...page.blocks]
-    .join(" ")
-    .toLowerCase()
-    .includes(needle);
+  return [page.title, page.subtitle, page.chapterTitle, page.summary, page.type, ...page.skillTags, ...page.blocks].join(" ").toLowerCase().includes(needle);
 }
 
 function formatType(type: string) {
@@ -293,9 +299,7 @@ function pagesForStackAndLane(stack: EvaBookletStack, lane: StudyLane, pages: Ev
 }
 
 function orderedRouteStacks(route: StudyRoute, stacks: EvaBookletStack[]) {
-  const preferred = route.preferredStackIds
-    .map((id) => stacks.find((stack) => stack.id === id))
-    .filter((stack): stack is EvaBookletStack => Boolean(stack));
+  const preferred = route.preferredStackIds.map((id) => stacks.find((stack) => stack.id === id)).filter((stack): stack is EvaBookletStack => Boolean(stack));
   const preferredIds = new Set(preferred.map((stack) => stack.id));
   return [...preferred, ...stacks.filter((stack) => !preferredIds.has(stack.id))];
 }
@@ -339,7 +343,10 @@ function formatTimer(seconds: number) {
 }
 
 function stateKeySegment(value: string) {
-  return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
 }
 
 function materialRoutineKey(materialId: string, index: number) {
@@ -382,7 +389,11 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
   const [rubricRatings, setRubricRatings] = useState<Record<string, number>>({});
   const [reviewQueue, setReviewQueue] = useState<Record<string, boolean>>({});
   const [teacherNotes, setTeacherNotes] = useState<Record<string, string>>({});
-  const [teacherSnapshots, setTeacherSnapshots] = useState<Record<EvaUserId, EvaStoredStudioState>>({ ali: normalizeStoredState(null), eva: normalizeStoredState(null), elham: normalizeStoredState(null) });
+  const [teacherSnapshots, setTeacherSnapshots] = useState<Record<EvaUserId, EvaStoredStudioState>>({
+    ali: normalizeStoredState(null),
+    eva: normalizeStoredState(null),
+    elham: normalizeStoredState(null),
+  });
   const [hydrated, setHydrated] = useState(false);
   const [syncStatus, setSyncStatus] = useState<"loading" | "synced" | "saving" | "error" | "development">(persistenceMode !== "development" ? "loading" : "development");
   const learningDatabase = useMemo(() => buildEvaLearningDatabase(booklet), [booklet]);
@@ -399,33 +410,36 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
   const visibleExamSecondsLeft = examTimerTaskId === activeExamTask.id ? examSecondsLeft : activeExamTask.timeLimitMinutes * 60;
   const visibleExamTimerRunning = examTimerTaskId === activeExamTask.id && examTimerRunning;
 
-  const applyStoredState = useCallback((parsed: EvaStoredStudioState) => {
-    setActiveStackId(parsed.activeStackId ?? booklet.stacks[0]?.id ?? "");
-    setActiveChapterId(parsed.activeChapterId ?? booklet.chapters[0]?.id ?? "");
-    setActivePageId(parsed.activePageId ?? booklet.pages[0]?.id ?? "");
-    setActiveLaneId(parsed.activeLaneId ?? chapterLane.id);
-    setActivePremiumTab((parsed.activePremiumTab as PremiumTabId | undefined) ?? "overview");
-    setActiveModuleId(parsed.activeModuleId ?? evaGrammarModules[0]?.id ?? "");
-    setActiveLexicalId(parsed.activeLexicalId ?? evaLexicalResource[0]?.id ?? "");
-    setActiveQuizTrack((parsed.activeQuizTrack as EvaStudioTrack | undefined) ?? "grammar");
-    setActiveExamId(parsed.activeExamId ?? learningDatabase.examTasks[0]?.id ?? "");
-    setActiveMaterialTrack((parsed.activeMaterialTrack as EvaMaterialTrack | undefined) ?? "reading");
-    setActiveMaterialId(parsed.activeMaterialId ?? materialCollections[0]?.items[0]?.id ?? "");
-    setDone(parsed.done);
-    setModuleDone(parsed.moduleDone);
-    setNotes(parsed.notes);
-    setWritingDrafts(parsed.writingDrafts);
-    setPronunciationDone(parsed.pronunciationDone);
-    setShadowingDone(parsed.shadowingDone);
-    setTtsListened(parsed.ttsListened);
-    setTtsRepeated(parsed.ttsRepeated);
-    setQuizAnswers(parsed.quizAnswers);
-    setExamAnswers(parsed.examAnswers);
-    setActivityChecks(parsed.activityChecks);
-    setRubricRatings(parsed.rubricRatings);
-    setReviewQueue(parsed.reviewQueue);
-    setTeacherNotes(parsed.teacherNotes);
-  }, [booklet.chapters, booklet.pages, booklet.stacks, learningDatabase.examTasks, materialCollections]);
+  const applyStoredState = useCallback(
+    (parsed: EvaStoredStudioState) => {
+      setActiveStackId(parsed.activeStackId ?? booklet.stacks[0]?.id ?? "");
+      setActiveChapterId(parsed.activeChapterId ?? booklet.chapters[0]?.id ?? "");
+      setActivePageId(parsed.activePageId ?? booklet.pages[0]?.id ?? "");
+      setActiveLaneId(parsed.activeLaneId ?? chapterLane.id);
+      setActivePremiumTab((parsed.activePremiumTab as PremiumTabId | undefined) ?? "overview");
+      setActiveModuleId(parsed.activeModuleId ?? evaGrammarModules[0]?.id ?? "");
+      setActiveLexicalId(parsed.activeLexicalId ?? evaLexicalResource[0]?.id ?? "");
+      setActiveQuizTrack((parsed.activeQuizTrack as EvaStudioTrack | undefined) ?? "grammar");
+      setActiveExamId(parsed.activeExamId ?? learningDatabase.examTasks[0]?.id ?? "");
+      setActiveMaterialTrack((parsed.activeMaterialTrack as EvaMaterialTrack | undefined) ?? "reading");
+      setActiveMaterialId(parsed.activeMaterialId ?? materialCollections[0]?.items[0]?.id ?? "");
+      setDone(parsed.done);
+      setModuleDone(parsed.moduleDone);
+      setNotes(parsed.notes);
+      setWritingDrafts(parsed.writingDrafts);
+      setPronunciationDone(parsed.pronunciationDone);
+      setShadowingDone(parsed.shadowingDone);
+      setTtsListened(parsed.ttsListened);
+      setTtsRepeated(parsed.ttsRepeated);
+      setQuizAnswers(parsed.quizAnswers);
+      setExamAnswers(parsed.examAnswers);
+      setActivityChecks(parsed.activityChecks);
+      setRubricRatings(parsed.rubricRatings);
+      setReviewQueue(parsed.reviewQueue);
+      setTeacherNotes(parsed.teacherNotes);
+    },
+    [booklet.chapters, booklet.pages, booklet.stacks, learningDatabase.examTasks, materialCollections],
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -433,7 +447,9 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     if (usesServerPersistence) {
       void (async () => {
         try {
-          const response = await fetch("/eva-digital-booklet/state", { cache: "no-store" });
+          const response = await fetch("/eva-digital-booklet/state", {
+            cache: "no-store",
+          });
           if (!response.ok) throw new Error("State request failed.");
           const payload = (await response.json()) as {
             state?: Partial<EvaStoredStudioState>;
@@ -594,25 +610,16 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     return () => window.clearInterval(interval);
   }, [examTimerRunning]);
 
-  const activeStack = useMemo(
-    () => booklet.stacks.find((stack) => stack.id === activeStackId) ?? booklet.stacks[0],
-    [activeStackId, booklet.stacks],
-  );
+  const activeStack = useMemo(() => booklet.stacks.find((stack) => stack.id === activeStackId) ?? booklet.stacks[0], [activeStackId, booklet.stacks]);
 
   const stackChapters = useMemo(() => {
     const ids = new Set(activeStack?.chapterIds ?? []);
     return booklet.chapters.filter((chapter) => ids.has(chapter.id));
   }, [activeStack?.chapterIds, booklet.chapters]);
 
-  const activeChapter = useMemo(
-    () => booklet.chapters.find((chapter) => chapter.id === activeChapterId) ?? stackChapters[0] ?? booklet.chapters[0],
-    [activeChapterId, booklet.chapters, stackChapters],
-  );
+  const activeChapter = useMemo(() => booklet.chapters.find((chapter) => chapter.id === activeChapterId) ?? stackChapters[0] ?? booklet.chapters[0], [activeChapterId, booklet.chapters, stackChapters]);
 
-  const activePage = useMemo(
-    () => booklet.pages.find((page) => page.id === activePageId) ?? firstPageForChapter(activeChapter, booklet.pages) ?? booklet.pages[0],
-    [activeChapter, activePageId, booklet.pages],
-  );
+  const activePage = useMemo(() => booklet.pages.find((page) => page.id === activePageId) ?? firstPageForChapter(activeChapter, booklet.pages) ?? booklet.pages[0], [activeChapter, activePageId, booklet.pages]);
 
   const stackPagesById = useMemo(() => {
     return new Map(booklet.stacks.map((stack) => [stack.id, pagesForStack(stack, booklet.pages)]));
@@ -631,11 +638,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     );
   }, [booklet.stacks, stackPagesById]);
   const laneCoverageCount = useMemo(() => {
-    const coveredIds = new Set(
-      booklet.pages
-        .filter((page) => semanticStudyLanes.some((lane) => pageMatchesStudyLane(page, lane)))
-        .map((page) => page.id),
-    );
+    const coveredIds = new Set(booklet.pages.filter((page) => semanticStudyLanes.some((lane) => pageMatchesStudyLane(page, lane))).map((page) => page.id));
     return coveredIds.size;
   }, [booklet.pages]);
   const lanePages = useMemo(() => {
@@ -683,7 +686,14 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
           .map((id) => booklet.pages.find((page) => page.id === id))
           .filter((page): page is EvaBookletPage => Boolean(page));
 
-        return [route.id, { chapters: routeChapters.size, fields: countFields(routePages), pages: routePages.length }];
+        return [
+          route.id,
+          {
+            chapters: routeChapters.size,
+            fields: countFields(routePages),
+            pages: routePages.length,
+          },
+        ];
       }),
     );
   }, [booklet.pages, booklet.stacks, stackPagesById]);
@@ -691,7 +701,15 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     return new Map(
       evaSkillModules.map((module) => {
         const pages = pagesForModule(module, booklet.pages);
-        return [module.id, { pages, pageCount: pages.length, fields: countFields(pages), checks: countChecks(pages) }];
+        return [
+          module.id,
+          {
+            pages,
+            pageCount: pages.length,
+            fields: countFields(pages),
+            checks: countChecks(pages),
+          },
+        ];
       }),
     );
   }, [booklet.pages]);
@@ -704,25 +722,14 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     return preferredModules.find((module) => module.id === activeModuleId) ?? preferredModules[0];
   }, [activeModuleId, activePremiumTab]);
   const activeModulePages = useMemo(() => (activeModule ? pagesForModule(activeModule, booklet.pages) : []), [activeModule, booklet.pages]);
-  const activeLexicalItem = useMemo(
-    () => evaLexicalResource.find((item) => item.id === activeLexicalId) ?? evaLexicalResource[0],
-    [activeLexicalId],
-  );
+  const activeLexicalItem = useMemo(() => evaLexicalResource.find((item) => item.id === activeLexicalId) ?? evaLexicalResource[0], [activeLexicalId]);
   const activeQuizQuestions = useMemo(() => evaQuizQuestions.filter((question) => question.track === activeQuizTrack), [activeQuizTrack]);
-  const activeMaterialCollection = useMemo(
-    () => materialCollections.find((collection) => collection.id === activeMaterialTrack) ?? materialCollections[0]!,
-    [activeMaterialTrack, materialCollections],
-  );
+  const activeMaterialCollection = useMemo(() => materialCollections.find((collection) => collection.id === activeMaterialTrack) ?? materialCollections[0]!, [activeMaterialTrack, materialCollections]);
   const visibleMaterialItems = useMemo(() => {
     const needle = materialQuery.trim().toLowerCase();
 
     return activeMaterialCollection.items.filter((item) => {
-      const matchesQuery =
-        !needle ||
-        [item.title, item.summary, item.skill, item.exam, item.level, ...item.tags, ...item.rubric]
-          .join(" ")
-          .toLowerCase()
-          .includes(needle);
+      const matchesQuery = !needle || [item.title, item.summary, item.skill, item.exam, item.level, ...item.tags, ...item.rubric].join(" ").toLowerCase().includes(needle);
       const matchesExam = materialExamFilter === "All" || item.exam === materialExamFilter;
       const matchesSource = !materialSourceOnly || sourcePageIdsForMaterial(item).length > 0;
 
@@ -740,30 +747,17 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
   const reviewItemIds = Object.entries(reviewQueue)
     .filter(([, queued]) => queued)
     .map(([pageId]) => pageId);
-  const reviewMaterialItems = reviewItemIds
-    .map((itemId) => materialItems.find((item) => item.id === itemId))
-    .filter((item): item is EvaMaterialItem => Boolean(item));
-  const reviewPages = reviewItemIds
-    .map((pageId) => booklet.pages.find((page) => page.id === pageId))
-    .filter((page): page is EvaBookletPage => Boolean(page));
+  const reviewMaterialItems = reviewItemIds.map((itemId) => materialItems.find((item) => item.id === itemId)).filter((item): item is EvaMaterialItem => Boolean(item));
+  const reviewPages = reviewItemIds.map((pageId) => booklet.pages.find((page) => page.id === pageId)).filter((page): page is EvaBookletPage => Boolean(page));
   const reviewQueueCount = reviewPages.length + reviewMaterialItems.length;
   const completedPremiumModules = evaSkillModules.filter((module) => moduleDone[module.id]).length;
   const completedMaterials = materialItems.filter((item) => done[item.id]).length;
   const materialQuestionCount = materialItems.reduce((total, item) => total + item.questions.length, 0);
-  const materialCorrectCount = materialItems.reduce(
-    (total, item) => total + item.questions.filter((question) => examAnswers[`${item.id}:${question.id}`] === question.answerIndex).length,
-    0,
-  );
+  const materialCorrectCount = materialItems.reduce((total, item) => total + item.questions.filter((question) => examAnswers[`${item.id}:${question.id}`] === question.answerIndex).length, 0);
   const materialRoutineTotal = materialItems.reduce((total, item) => total + item.routine.length, 0);
-  const materialRoutineCompleted = materialItems.reduce(
-    (total, item) => total + item.routine.filter((_, index) => activityChecks[materialRoutineKey(item.id, index)]).length,
-    0,
-  );
+  const materialRoutineCompleted = materialItems.reduce((total, item) => total + item.routine.filter((_, index) => activityChecks[materialRoutineKey(item.id, index)]).length, 0);
   const materialRubricTotal = materialItems.reduce((total, item) => total + item.rubric.length, 0);
-  const materialRubricRated = materialItems.reduce(
-    (total, item) => total + item.rubric.filter((criterion) => (rubricRatings[materialRubricKey(item.id, criterion)] ?? 0) > 0).length,
-    0,
-  );
+  const materialRubricRated = materialItems.reduce((total, item) => total + item.rubric.filter((criterion) => (rubricRatings[materialRubricKey(item.id, criterion)] ?? 0) > 0).length, 0);
   const completedPronunciations = evaLexicalResource.filter((item) => pronunciationDone[item.id]).length;
   const studioMastery = Math.round(
     ((booklet.pages.filter((page) => done[page.id]).length / Math.max(booklet.pages.length, 1)) * 0.4 +
@@ -784,17 +778,10 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
 
   const relatedPages = useMemo(() => {
     const activeSpecificSkills = new Set(activePage.skillTags.filter((skill) => !broadSkillTags.has(skill)));
-    const adjacent = booklet.pages.filter(
-      (page) => page.chapterId === activePage.chapterId && Math.abs(page.page - activePage.page) <= 2 && page.id !== activePage.id,
-    );
+    const adjacent = booklet.pages.filter((page) => page.chapterId === activePage.chapterId && Math.abs(page.page - activePage.page) <= 2 && page.id !== activePage.id);
     const sameType = stackPages.filter((page) => page.id !== activePage.id && page.type === activePage.type);
     const sameLane = activeLane.id === chapterLane.id ? [] : stackPages.filter((page) => page.id !== activePage.id && pageMatchesStudyLane(page, activeLane));
-    const semantic = stackPages.filter(
-      (page) =>
-        page.id !== activePage.id &&
-        page.skillTags.some((skill) => activeSpecificSkills.has(skill)) &&
-        activeSpecificSkills.size > 0,
-    );
+    const semantic = stackPages.filter((page) => page.id !== activePage.id && page.skillTags.some((skill) => activeSpecificSkills.has(skill)) && activeSpecificSkills.size > 0);
     return unique([...adjacent, ...sameType, ...sameLane, ...semantic].map((page) => page.id))
       .map((id) => booklet.pages.find((page) => page.id === id))
       .filter((page): page is EvaBookletPage => Boolean(page))
@@ -824,7 +811,10 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
       const page = booklet.pages.find((item) => item.id === pageId);
       page?.skillTags.slice(0, 5).forEach((skill) => add(skill));
       const material = materialItems.find((item) => item.id === pageId);
-      if (material) visibleMaterialTags(material).slice(0, 4).forEach((skill) => add(skill));
+      if (material)
+        visibleMaterialTags(material)
+          .slice(0, 4)
+          .forEach((skill) => add(skill));
     }
 
     for (const question of evaQuizQuestions) {
@@ -878,37 +868,21 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
   const activeMaterialTtsKey = `tts-material-${activeMaterial.id}`;
   const activeMaterialSourcePageIds = sourcePageIdsForMaterial(activeMaterial);
   const activeMaterialSourcePages = activeMaterialSourcePageIds.length
-    ? activeMaterialSourcePageIds
-        .map((pageId) => booklet.pages.find((page) => page.id === pageId))
-        .filter((page): page is EvaBookletPage => Boolean(page))
+    ? activeMaterialSourcePageIds.map((pageId) => booklet.pages.find((page) => page.id === pageId)).filter((page): page is EvaBookletPage => Boolean(page))
     : booklet.pages.filter((page) => activeMaterial.sourceTypeTargets.includes(page.type)).slice(0, 5);
   const firstWritingMaterial = materialItems.find((item) => item.track === "writing") ?? activeMaterial;
   const activeMaterialContract = materialTrackContracts[activeMaterial.track];
   const activeMaterialRoutineDone = activeMaterial.routine.filter((_, index) => activityChecks[materialRoutineKey(activeMaterial.id, index)]).length;
   const activeMaterialRubricRated = activeMaterial.rubric.filter((criterion) => (rubricRatings[materialRubricKey(activeMaterial.id, criterion)] ?? 0) > 0).length;
   const activeMaterialRubricAverage = activeMaterialRubricRated
-    ? Math.round(
-        (activeMaterial.rubric.reduce((total, criterion) => total + (rubricRatings[materialRubricKey(activeMaterial.id, criterion)] ?? 0), 0) /
-          activeMaterialRubricRated) *
-          10,
-      ) / 10
+    ? Math.round((activeMaterial.rubric.reduce((total, criterion) => total + (rubricRatings[materialRubricKey(activeMaterial.id, criterion)] ?? 0), 0) / activeMaterialRubricRated) * 10) / 10
     : 0;
   const activeMaterialRequiresDraft = activeMaterial.track === "writing" || activeMaterial.track === "teacher";
   const activeMaterialDraftReady = activeMaterialRequiresDraft && activeMaterialDraft.trim().length > 0;
-  const activeMaterialProgressUnits =
-    activeMaterial.routine.length + activeMaterial.rubric.length + activeMaterial.questions.length + (activeMaterialRequiresDraft ? 1 : 0) + 1;
-  const activeMaterialCompletedUnits =
-    activeMaterialRoutineDone +
-    activeMaterialRubricRated +
-    activeMaterialAnswered.length +
-    (activeMaterialDraftReady ? 1 : 0) +
-    (done[activeMaterial.id] ? 1 : 0);
+  const activeMaterialProgressUnits = activeMaterial.routine.length + activeMaterial.rubric.length + activeMaterial.questions.length + (activeMaterialRequiresDraft ? 1 : 0) + 1;
+  const activeMaterialCompletedUnits = activeMaterialRoutineDone + activeMaterialRubricRated + activeMaterialAnswered.length + (activeMaterialDraftReady ? 1 : 0) + (done[activeMaterial.id] ? 1 : 0);
   const activeMaterialProgressPercent = Math.min(100, Math.round((activeMaterialCompletedUnits / Math.max(activeMaterialProgressUnits, 1)) * 100));
-  const activeExamProgressPercent = activeExamTask.questions.length
-    ? Math.round((activeExamAnswered.length / activeExamTask.questions.length) * 100)
-    : writingDrafts[`exam-${activeExamTask.id}`]?.trim()
-      ? 100
-      : 0;
+  const activeExamProgressPercent = activeExamTask.questions.length ? Math.round((activeExamAnswered.length / activeExamTask.questions.length) * 100) : writingDrafts[`exam-${activeExamTask.id}`]?.trim() ? 100 : 0;
   const activeExamScorePercent = activeExamTask.questions.length ? Math.round((activeExamCorrect.length / activeExamTask.questions.length) * 100) : null;
   const currentStoredState = normalizeStoredState({
     activeStackId,
@@ -937,7 +911,10 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     reviewQueue,
     teacherNotes,
   });
-  const visibleTeacherSnapshots = { ...teacherSnapshots, [activeUser.id]: currentStoredState };
+  const visibleTeacherSnapshots = {
+    ...teacherSnapshots,
+    [activeUser.id]: currentStoredState,
+  };
   const activeTeacherSnapshot = normalizeStoredState(visibleTeacherSnapshots[activeTeacherTargetId]);
   const activeTeacherDraftCount = Object.values(activeTeacherSnapshot.writingDrafts).filter((value) => value.trim()).length;
   const activeTeacherReviewCount = Object.values(activeTeacherSnapshot.reviewQueue).filter(Boolean).length;
@@ -945,30 +922,49 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
   const activeTeacherTtsTotal = Object.values(activeTeacherSnapshot.ttsListened).reduce((sum, value) => sum + value, 0);
   const nextIncompletePage = visiblePages.find((page) => !done[page.id] && page.id !== activePage.id) ?? booklet.pages.find((page) => !done[page.id]);
   const smartNextStep = reviewPages[0]
-    ? { label: "Review weak page", text: reviewPages[0].title, action: () => choosePage(reviewPages[0]) }
+    ? {
+        label: "Review weak page",
+        text: reviewPages[0].title,
+        action: () => choosePage(reviewPages[0]),
+      }
     : reviewMaterialItems[0]
-      ? { label: "Review weak material", text: reviewMaterialItems[0].title, action: () => chooseMaterial(reviewMaterialItems[0]) }
-    : nextIncompletePage
-      ? { label: "Continue source path", text: nextIncompletePage.title, action: () => choosePage(nextIncompletePage) }
-      : activeQuizQuestions.find((question) => quizAnswers[question.id] === undefined)
-        ? { label: "Finish quiz track", text: quizTrackTitle(activeQuizTrack), action: () => setActivePremiumTab("quiz" as const) }
-        : { label: "Open Writing Vault", text: `${writingVaultEntries.length} saved drafts`, action: () => setActivePremiumTab("vault" as const) };
-  const syncLabel =
-    usesServerPersistence
-      ? syncStatus === "saving"
-        ? persistenceMode === "database"
-          ? "Saving member records"
-          : "Saving local study database"
-        : syncStatus === "error"
-          ? "Sync needs attention"
+      ? {
+          label: "Review weak material",
+          text: reviewMaterialItems[0].title,
+          action: () => chooseMaterial(reviewMaterialItems[0]),
+        }
+      : nextIncompletePage
+        ? {
+            label: "Continue source path",
+            text: nextIncompletePage.title,
+            action: () => choosePage(nextIncompletePage),
+          }
+        : activeQuizQuestions.find((question) => quizAnswers[question.id] === undefined)
+          ? {
+              label: "Finish quiz track",
+              text: quizTrackTitle(activeQuizTrack),
+              action: () => setActivePremiumTab("quiz" as const),
+            }
+          : {
+              label: "Open Writing Vault",
+              text: `${writingVaultEntries.length} saved drafts`,
+              action: () => setActivePremiumTab("vault" as const),
+            };
+  const syncLabel = usesServerPersistence
+    ? syncStatus === "saving"
+      ? persistenceMode === "database"
+        ? "Saving member records"
+        : "Saving local study database"
+      : syncStatus === "error"
+        ? "Sync needs attention"
         : syncStatus === "loading"
-            ? persistenceMode === "database"
-              ? "Loading member records"
-              : "Loading local study database"
-            : persistenceMode === "database"
-              ? "Server-synced records"
-              : "Local study database saved"
-      : "Production storage pending";
+          ? persistenceMode === "database"
+            ? "Loading member records"
+            : "Loading local study database"
+          : persistenceMode === "database"
+            ? "Server-synced records"
+            : "Local study database saved"
+    : "Production storage pending";
 
   function chooseStack(stack: EvaBookletStack) {
     const nextChapter = booklet.chapters.find((chapter) => stack.chapterIds.includes(chapter.id)) ?? booklet.chapters[0];
@@ -1054,9 +1050,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     setActivePremiumTab("lexical");
     setActiveLexicalId(itemId);
     const item = evaLexicalResource.find((entry) => entry.id === itemId);
-    const nextPage = item
-      ? booklet.pages.find((page) => item.tags.some((tag) => page.skillTags.join(" ").toLowerCase().includes(tag.toLowerCase()) || page.blocks.join(" ").toLowerCase().includes(tag.toLowerCase())))
-      : undefined;
+    const nextPage = item ? booklet.pages.find((page) => item.tags.some((tag) => page.skillTags.join(" ").toLowerCase().includes(tag.toLowerCase()) || page.blocks.join(" ").toLowerCase().includes(tag.toLowerCase()))) : undefined;
     if (nextPage) choosePage(nextPage);
   }
 
@@ -1075,9 +1069,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
 
   function startExamTimer() {
     setExamTimerTaskId(activeExamTask.id);
-    setExamSecondsLeft((current) =>
-      examTimerTaskId === activeExamTask.id && current > 0 ? current : activeExamTask.timeLimitMinutes * 60,
-    );
+    setExamSecondsLeft((current) => (examTimerTaskId === activeExamTask.id && current > 0 ? current : activeExamTask.timeLimitMinutes * 60));
     setExamTimerRunning(true);
   }
 
@@ -1095,8 +1087,15 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     utterance.rate = rate;
     utterance.pitch = 1;
     window.speechSynthesis.speak(utterance);
-    setTtsListened((current) => ({ ...current, [segmentId]: (current[segmentId] ?? 0) + 1 }));
-    if (repeat) setTtsRepeated((current) => ({ ...current, [segmentId]: (current[segmentId] ?? 0) + 1 }));
+    setTtsListened((current) => ({
+      ...current,
+      [segmentId]: (current[segmentId] ?? 0) + 1,
+    }));
+    if (repeat)
+      setTtsRepeated((current) => ({
+        ...current,
+        [segmentId]: (current[segmentId] ?? 0) + 1,
+      }));
   }
 
   function speakLexicalItem(term: string) {
@@ -1107,21 +1106,35 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
   function answerQuiz(question: EvaQuizQuestion, answerIndex: number) {
     setQuizAnswers((current) => ({ ...current, [question.id]: answerIndex }));
     if (answerIndex !== question.answerIndex) {
-      setReviewQueue((current) => ({ ...current, [activePage.id]: true, [`quiz-${question.id}`]: true }));
+      setReviewQueue((current) => ({
+        ...current,
+        [activePage.id]: true,
+        [`quiz-${question.id}`]: true,
+      }));
     }
   }
 
   function answerExamQuestion(questionId: string, answerIndex: number) {
     const question = activeExamTask.questions.find((item) => item.id === questionId);
-    setExamAnswers((current) => ({ ...current, [`${activeExamTask.id}:${questionId}`]: answerIndex }));
+    setExamAnswers((current) => ({
+      ...current,
+      [`${activeExamTask.id}:${questionId}`]: answerIndex,
+    }));
     if (question && answerIndex !== question.answerIndex) {
-      setReviewQueue((current) => ({ ...current, [activePage.id]: true, [`exam-${activeExamTask.id}-${questionId}`]: true }));
+      setReviewQueue((current) => ({
+        ...current,
+        [activePage.id]: true,
+        [`exam-${activeExamTask.id}-${questionId}`]: true,
+      }));
     }
   }
 
   function answerMaterialQuestion(questionId: string, answerIndex: number) {
     const question = activeMaterial.questions.find((item) => item.id === questionId);
-    setExamAnswers((current) => ({ ...current, [`${activeMaterial.id}:${questionId}`]: answerIndex }));
+    setExamAnswers((current) => ({
+      ...current,
+      [`${activeMaterial.id}:${questionId}`]: answerIndex,
+    }));
     if (question && answerIndex !== question.answerIndex) {
       setReviewQueue((current) => ({ ...current, [activeMaterial.id]: true }));
     }
@@ -1184,7 +1197,10 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
       ...currentSnapshot,
       teacherNotes: { ...currentSnapshot.teacherNotes, [activePage.id]: note },
     });
-    setTeacherSnapshots((current) => ({ ...current, [targetId]: nextSnapshot }));
+    setTeacherSnapshots((current) => ({
+      ...current,
+      [targetId]: nextSnapshot,
+    }));
     if (targetId === activeUser.id) setTeacherNotes(nextSnapshot.teacherNotes);
 
     if (usesServerPersistence) {
@@ -1192,7 +1208,11 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
       void fetch("/eva-digital-booklet/teacher-note", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ learnerUserId: targetId, pageId: activePage.id, note }),
+        body: JSON.stringify({
+          learnerUserId: targetId,
+          pageId: activePage.id,
+          note,
+        }),
       })
         .then((response) => {
           if (!response.ok) throw new Error("Teacher note save failed.");
@@ -1242,9 +1262,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
           <div>
             <p className="text-sm font-semibold text-amber-200">Premium member study database inside EduPocket</p>
-            <h2 className="mt-2 max-w-4xl text-xl font-semibold leading-tight text-white sm:text-3xl">
-              EduPocket&apos;s Eva Digital Booklet, segmented into a real 298-page study studio.
-            </h2>
+            <h2 className="mt-2 max-w-4xl text-xl font-semibold leading-tight text-white sm:text-3xl">EduPocket&apos;s Eva Digital Booklet, segmented into a real 298-page study studio.</h2>
             <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-300">
               The full workbook is indexed by learning stack, semantic lane, chapter, page, skill, practice level, search, related pages, and saved study evidence.
               {` ${laneCoverageCount}/${booklet.stats.pages} imported pages are covered by the studio lanes, with chapter order preserved for every page.`}
@@ -1276,8 +1294,16 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:w-[34rem]">
             {[
               { label: "Pages", value: booklet.stats.pages, icon: FileText },
-              { label: "Chapters", value: booklet.stats.chapters, icon: Layers3 },
-              { label: "Fields", value: booklet.stats.answerFields, icon: PenLine },
+              {
+                label: "Chapters",
+                value: booklet.stats.chapters,
+                icon: Layers3,
+              },
+              {
+                label: "Fields",
+                value: booklet.stats.answerFields,
+                icon: PenLine,
+              },
               { label: "Checks", value: booklet.stats.checkboxes, icon: Check },
             ].map((item) => {
               const Icon = item.icon;
@@ -1304,19 +1330,21 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
               </div>
               <h2 className="mt-2 text-2xl font-semibold leading-tight text-white">{coverage.percent}% of the booklet is activity-mapped</h2>
               <p className="mt-2 text-sm leading-7 text-slate-300">
-                {coverage.transformedPages}/{booklet.stats.pages} pages become trackable activities. The database also exposes {coverage.learningItems} learning items, {coverage.activityCount} activities, and {coverage.trackableSignals} progress signals.
+                {coverage.transformedPages}/{booklet.stats.pages} pages become trackable activities. The database also exposes {coverage.learningItems} learning items, {coverage.activityCount} activities, and {coverage.trackableSignals}{" "}
+                progress signals.
               </p>
             </div>
-            <div className="flex size-20 shrink-0 items-center justify-center rounded-full border border-amber-200/25 bg-slate-950/48 text-xl font-semibold text-amber-100">
-              {coverage.percent}%
-            </div>
+            <div className="flex size-20 shrink-0 items-center justify-center rounded-full border border-amber-200/25 bg-slate-950/48 text-xl font-semibold text-amber-100">{coverage.percent}%</div>
           </div>
           <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-800">
             <div className="h-full rounded-full bg-gradient-to-r from-amber-300 via-yellow-100 to-sky-300" style={{ width: `${coverage.percent}%` }} />
           </div>
           <div className="mt-4 grid gap-2 sm:grid-cols-4">
             {[
-              { label: "TTS segments", value: learningDatabase.ttsSegments.length },
+              {
+                label: "TTS segments",
+                value: learningDatabase.ttsSegments.length,
+              },
               { label: "Exam tasks", value: learningDatabase.examTasks.length },
               { label: "Questions", value: learningDatabase.questions.length },
               { label: "Material packs", value: materialStats.items },
@@ -1350,9 +1378,21 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
           </div>
           <div className="mt-4 grid gap-2 sm:grid-cols-3">
             {[
-              { label: "Drafts", value: writingVaultEntries.length, icon: NotebookPen },
-              { label: "Review", value: Object.values(reviewQueue).filter(Boolean).length, icon: Star },
-              { label: "Weak skills", value: weakSkillMap.length, icon: Target },
+              {
+                label: "Drafts",
+                value: writingVaultEntries.length,
+                icon: NotebookPen,
+              },
+              {
+                label: "Review",
+                value: Object.values(reviewQueue).filter(Boolean).length,
+                icon: Star,
+              },
+              {
+                label: "Weak skills",
+                value: weakSkillMap.length,
+                icon: Target,
+              },
             ].map((item) => {
               const Icon = item.icon;
 
@@ -1382,9 +1422,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h2 className="text-base font-semibold text-white">How to use the digital booklet</h2>
-              <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-400">
-                The product is designed as a study operating system: route, source page, skill layer, evidence, review.
-              </p>
+              <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-400">The product is designed as a study operating system: route, source page, skill layer, evidence, review.</p>
             </div>
             <span className="inline-flex items-center gap-2 rounded-[8px] border border-amber-200/18 bg-amber-200/[0.08] px-3 py-2 text-xs font-semibold text-amber-100">
               <CircleCheck aria-hidden="true" className="size-4" />
@@ -1417,17 +1455,40 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
               <h2 className="text-base font-semibold text-white">Mastery tracker</h2>
               <p className="mt-1 text-sm leading-6 text-slate-400">Separate member signals for pages, modules, quiz, TTS, review, and writing.</p>
             </div>
-            <div className="flex size-16 shrink-0 items-center justify-center rounded-full border border-amber-200/25 bg-slate-950/46 text-lg font-semibold text-amber-100">
-              {studioMastery}%
-            </div>
+            <div className="flex size-16 shrink-0 items-center justify-center rounded-full border border-amber-200/25 bg-slate-950/46 text-lg font-semibold text-amber-100">{studioMastery}%</div>
           </div>
           <div className="mt-4 grid grid-cols-2 gap-2">
             {[
-              { label: "Pages done", value: booklet.pages.filter((page) => done[page.id]).length, total: booklet.pages.length, icon: FileText },
-              { label: "Modules", value: completedPremiumModules, total: evaSkillModules.length, icon: ListChecks },
-              { label: "Materials", value: completedMaterials, total: materialItems.length, icon: LibraryBig },
-              { label: "Quiz correct", value: correctQuizQuestions.length, total: evaQuizQuestions.length, icon: BarChart3 },
-              { label: "Pronounced", value: completedPronunciations, total: evaLexicalResource.length, icon: Headphones },
+              {
+                label: "Pages done",
+                value: booklet.pages.filter((page) => done[page.id]).length,
+                total: booklet.pages.length,
+                icon: FileText,
+              },
+              {
+                label: "Modules",
+                value: completedPremiumModules,
+                total: evaSkillModules.length,
+                icon: ListChecks,
+              },
+              {
+                label: "Materials",
+                value: completedMaterials,
+                total: materialItems.length,
+                icon: LibraryBig,
+              },
+              {
+                label: "Quiz correct",
+                value: correctQuizQuestions.length,
+                total: evaQuizQuestions.length,
+                icon: BarChart3,
+              },
+              {
+                label: "Pronounced",
+                value: completedPronunciations,
+                total: evaLexicalResource.length,
+                icon: Headphones,
+              },
             ].map((item) => {
               const Icon = item.icon;
 
@@ -1444,9 +1505,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
           </div>
           <div className="mt-3 rounded-[8px] border border-white/10 bg-slate-950/30 p-3">
             <p className="text-xs font-semibold uppercase text-slate-500">Review queue for {activeUser.displayName}</p>
-            <p className="mt-2 text-sm leading-6 text-slate-300">
-              {reviewQueueCount ? `${reviewQueueCount} items waiting for deliberate review.` : "No review items yet. Add weak pages or material tasks from the studio."}
-            </p>
+            <p className="mt-2 text-sm leading-6 text-slate-300">{reviewQueueCount ? `${reviewQueueCount} items waiting for deliberate review.` : "No review items yet. Add weak pages or material tasks from the studio."}</p>
           </div>
         </aside>
       </section>
@@ -1460,9 +1519,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                 Teacher Lens
               </div>
               <h2 className="mt-2 text-2xl font-semibold leading-tight text-white">Teacher Lens separates every premium learner record.</h2>
-              <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-300">
-                Eva and Elham keep separate progress, drafts, quiz answers, TTS history, pronunciation work, review queues, weak-skill signals, and teacher notes.
-              </p>
+              <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-300">Eva and Elham keep separate progress, drafts, quiz answers, TTS history, pronunciation work, review queues, weak-skill signals, and teacher notes.</p>
             </div>
             <span className="inline-flex items-center gap-2 rounded-[8px] border border-amber-200/20 bg-amber-200/[0.08] px-3 py-2 text-sm font-semibold text-amber-100">
               <Database aria-hidden="true" className="size-4" />
@@ -1565,9 +1622,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 className="text-base font-semibold text-white">Premium workbench</h2>
-            <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-400">
-              Grammar, religious context, lexical pronunciation, quizzes, and review all point back to source pages.
-            </p>
+            <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-400">Grammar, religious context, lexical pronunciation, quizzes, and review all point back to source pages.</p>
           </div>
           <p className="text-sm font-semibold text-slate-500">
             20 modules · {materialStats.items} material packs · {sourceMaterialItems.length} source-linked packs · {learningDatabase.examTasks.length} exam tasks
@@ -1623,10 +1678,30 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
             </div>
             <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
               {[
-                { title: "Grammar Atlas", value: evaGrammarModules.length, text: "Accuracy chapters with source-page jumps.", icon: GraduationCap },
-                { title: "Religious Context", value: evaReligiousModules.length, text: "Meaning, service, prayer, and translation chapters.", icon: Flame },
-                { title: "Lexical Resource", value: evaLexicalResource.length, text: "IPA, stress, collocations, and listen practice.", icon: Volume2 },
-                { title: "Material Library", value: materialStats.items, text: "Original IELTS/TOEFL-style packs plus source-linked chapter conversions.", icon: LibraryBig },
+                {
+                  title: "Grammar Atlas",
+                  value: evaGrammarModules.length,
+                  text: "Accuracy chapters with source-page jumps.",
+                  icon: GraduationCap,
+                },
+                {
+                  title: "Religious Context",
+                  value: evaReligiousModules.length,
+                  text: "Meaning, service, prayer, and translation chapters.",
+                  icon: Flame,
+                },
+                {
+                  title: "Lexical Resource",
+                  value: evaLexicalResource.length,
+                  text: "IPA, stress, collocations, and listen practice.",
+                  icon: Volume2,
+                },
+                {
+                  title: "Material Library",
+                  value: materialStats.items,
+                  text: "Original IELTS/TOEFL-style packs plus source-linked chapter conversions.",
+                  icon: LibraryBig,
+                },
               ].map((item) => {
                 const Icon = item.icon;
 
@@ -1634,22 +1709,12 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                   <button
                     key={item.title}
                     type="button"
-                    onClick={() =>
-                      setActivePremiumTab(
-                        item.title === "Grammar Atlas"
-                          ? "grammar"
-                          : item.title === "Religious Context"
-                            ? "religious"
-                            : item.title === "Material Library"
-                              ? "materials"
-                              : "lexical",
-                      )
-                    }
+                    onClick={() => setActivePremiumTab(item.title === "Grammar Atlas" ? "grammar" : item.title === "Religious Context" ? "religious" : item.title === "Material Library" ? "materials" : "lexical")}
                     className="rounded-[8px] border border-white/10 bg-slate-950/28 p-4 text-start transition hover:border-amber-300/35 focus:outline-none focus:ring-2 focus:ring-amber-300/50"
                   >
                     <Icon aria-hidden="true" className="size-5 text-amber-200" />
                     <p className="mt-4 text-2xl font-semibold text-white">{item.value}</p>
-                  <h3 className="mt-1 text-sm font-semibold text-white">{item.title === "Lexical Resource" ? "Pronunciation Lab" : item.title}</h3>
+                    <h3 className="mt-1 text-sm font-semibold text-white">{item.title === "Lexical Resource" ? "Pronunciation Lab" : item.title}</h3>
                     <p className="mt-2 text-xs leading-5 text-slate-400">{item.text}</p>
                   </button>
                 );
@@ -1665,10 +1730,30 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
               </div>
               <div className="mt-4 grid gap-2 md:grid-cols-2 xl:grid-cols-4">
                 {[
-                  { title: "Source workbook", action: "read + annotate", saved: `${booklet.stats.pages} pages`, proof: "page done, note, TTS" },
-                  { title: "Skill modules", action: "practice + evidence", saved: `${evaSkillModules.length} modules`, proof: "module done, source jump" },
-                  { title: "Material packs", action: "answer + draft", saved: `${materialStats.items} packs`, proof: "answers, drafts, review" },
-                  { title: "Teacher system", action: "inspect + assign", saved: "3 member records", proof: "notes, weak map, next step" },
+                  {
+                    title: "Source workbook",
+                    action: "read + annotate",
+                    saved: `${booklet.stats.pages} pages`,
+                    proof: "page done, note, TTS",
+                  },
+                  {
+                    title: "Skill modules",
+                    action: "practice + evidence",
+                    saved: `${evaSkillModules.length} modules`,
+                    proof: "module done, source jump",
+                  },
+                  {
+                    title: "Material packs",
+                    action: "answer + draft",
+                    saved: `${materialStats.items} packs`,
+                    proof: "answers, drafts, review",
+                  },
+                  {
+                    title: "Teacher system",
+                    action: "inspect + assign",
+                    saved: "3 member records",
+                    proof: "notes, weak map, next step",
+                  },
                 ].map((item) => (
                   <div key={item.title} className="rounded-[8px] border border-white/10 bg-slate-950/30 p-3">
                     <p className="text-sm font-semibold text-white">{item.title}</p>
@@ -1721,7 +1806,9 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
             <article className="rounded-[8px] border border-white/10 bg-slate-950/30 p-4">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                 <div>
-                  <p className="text-xs font-semibold uppercase text-amber-200">{moduleTrackTitle(activeModule.track)} / module {activeModule.order}</p>
+                  <p className="text-xs font-semibold uppercase text-amber-200">
+                    {moduleTrackTitle(activeModule.track)} / module {activeModule.order}
+                  </p>
                   <h3 className="mt-2 text-2xl font-semibold leading-tight text-white">{activeModule.title}</h3>
                   <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">{activeModule.outcome}</p>
                 </div>
@@ -1730,7 +1817,12 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                   <input
                     type="checkbox"
                     checked={Boolean(moduleDone[activeModule.id])}
-                    onChange={(event) => setModuleDone((current) => ({ ...current, [activeModule.id]: event.target.checked }))}
+                    onChange={(event) =>
+                      setModuleDone((current) => ({
+                        ...current,
+                        [activeModule.id]: event.target.checked,
+                      }))
+                    }
                     className="sr-only"
                   />
                   <span className={cn("flex size-6 items-center justify-center rounded-[6px] border", moduleDone[activeModule.id] ? "border-amber-200 bg-amber-200 text-slate-950" : "border-white/20")}>
@@ -1742,7 +1834,10 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                 {[
                   { label: "Focus", value: activeModule.focus },
                   { label: "Evidence", value: activeModule.evidence },
-                  { label: "Coverage", value: `${activeModuleStats?.pageCount ?? 0} pages / ${activeModuleStats?.fields ?? 0} fields / ${activeModuleStats?.checks ?? 0} checks` },
+                  {
+                    label: "Coverage",
+                    value: `${activeModuleStats?.pageCount ?? 0} pages / ${activeModuleStats?.fields ?? 0} fields / ${activeModuleStats?.checks ?? 0} checks`,
+                  },
                 ].map((item) => (
                   <div key={item.label} className="rounded-[8px] border border-white/10 bg-white/[0.035] p-3">
                     <p className="text-xs font-semibold uppercase text-slate-500">{item.label}</p>
@@ -1827,7 +1922,12 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                   </button>
                   <button
                     type="button"
-                    onClick={() => setPronunciationDone((current) => ({ ...current, [activeLexicalItem.id]: !current[activeLexicalItem.id] }))}
+                    onClick={() =>
+                      setPronunciationDone((current) => ({
+                        ...current,
+                        [activeLexicalItem.id]: !current[activeLexicalItem.id],
+                      }))
+                    }
                     className={cn(
                       "inline-flex min-h-11 items-center justify-center gap-2 rounded-[8px] border px-4 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-amber-300/50",
                       pronunciationDone[activeLexicalItem.id] ? "border-emerald-300 bg-emerald-300 text-slate-950" : "border-white/10 text-slate-200 hover:border-amber-300/40",
@@ -1838,7 +1938,12 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                   </button>
                   <button
                     type="button"
-                    onClick={() => setShadowingDone((current) => ({ ...current, [activeLexicalItem.id]: !current[activeLexicalItem.id] }))}
+                    onClick={() =>
+                      setShadowingDone((current) => ({
+                        ...current,
+                        [activeLexicalItem.id]: !current[activeLexicalItem.id],
+                      }))
+                    }
                     className={cn(
                       "inline-flex min-h-11 items-center justify-center gap-2 rounded-[8px] border px-4 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-sky-300/40",
                       shadowingDone[activeLexicalItem.id] ? "border-sky-200 bg-sky-200 text-slate-950" : "border-white/10 text-slate-200 hover:border-sky-200/40",
@@ -1877,9 +1982,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                   <h4 className="text-sm font-semibold text-amber-100">Pronunciation coaching</h4>
                   <p className="mt-3 text-sm leading-7 text-slate-300">{activeLexicalItem.pronunciationTip}</p>
                   <p className="mt-4 text-xs font-semibold uppercase text-slate-500">Tracking idea</p>
-                  <p className="mt-2 text-sm leading-6 text-slate-300">
-                    Listen once, say it twice, then use it in one source-page note before marking it practiced.
-                  </p>
+                  <p className="mt-2 text-sm leading-6 text-slate-300">Listen once, say it twice, then use it in one source-page note before marking it practiced.</p>
                   <div className="mt-4 grid grid-cols-3 gap-2 text-center text-sm">
                     {[
                       ["Listened", ttsListened[`tts-lexical-${activeLexicalItem.id}`] ?? 0],
@@ -1970,9 +2073,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                         </span>
                       </span>
                       <span className="mt-1 block text-xs leading-5 text-slate-500">{collection.description}</span>
-                      <span className="mt-2 block rounded-[6px] border border-white/10 bg-slate-950/30 px-2 py-1 text-xs leading-5 text-slate-400">
-                        Output: {materialTrackContracts[collection.id].output}
-                      </span>
+                      <span className="mt-2 block rounded-[6px] border border-white/10 bg-slate-950/30 px-2 py-1 text-xs leading-5 text-slate-400">Output: {materialTrackContracts[collection.id].output}</span>
                     </button>
                   );
                 })}
@@ -1985,46 +2086,48 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                   </span>
                 </div>
                 <div className="mt-3 grid max-h-96 gap-2 overflow-y-auto pr-1">
-                  {visibleMaterialItems.length ? visibleMaterialItems.map((item) => {
-                    const active = item.id === activeMaterial.id;
-                    const sourceLinked = sourcePageIdsForMaterial(item).length > 0;
-                    const itemRoutineDone = item.routine.filter((_, index) => activityChecks[materialRoutineKey(item.id, index)]).length;
-                    const itemRubricDone = item.rubric.filter((criterion) => (rubricRatings[materialRubricKey(item.id, criterion)] ?? 0) > 0).length;
+                  {visibleMaterialItems.length ? (
+                    visibleMaterialItems.map((item) => {
+                      const active = item.id === activeMaterial.id;
+                      const sourceLinked = sourcePageIdsForMaterial(item).length > 0;
+                      const itemRoutineDone = item.routine.filter((_, index) => activityChecks[materialRoutineKey(item.id, index)]).length;
+                      const itemRubricDone = item.rubric.filter((criterion) => (rubricRatings[materialRubricKey(item.id, criterion)] ?? 0) > 0).length;
 
-                    return (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => chooseMaterial(item)}
-                        className={cn(
-                          "rounded-[8px] border p-3 text-start transition focus:outline-none focus:ring-2 focus:ring-amber-300/50",
-                          active ? "border-amber-300/55 bg-amber-300/12 text-white" : "border-white/10 bg-slate-950/32 text-slate-300 hover:border-amber-300/35",
-                        )}
-                      >
-                        <span className="flex items-start justify-between gap-3">
-                          <span className="min-w-0 text-sm font-semibold leading-5">{item.title}</span>
-                          <span className={cn("shrink-0 rounded-[6px] border px-2 py-1 text-[11px] font-bold", sourceLinked ? "border-sky-200/20 bg-sky-300/[0.08] text-sky-100" : "border-white/10 bg-white/[0.045] text-slate-400")}>
-                            {sourceLinked ? "Source" : item.exam}
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => chooseMaterial(item)}
+                          className={cn(
+                            "rounded-[8px] border p-3 text-start transition focus:outline-none focus:ring-2 focus:ring-amber-300/50",
+                            active ? "border-amber-300/55 bg-amber-300/12 text-white" : "border-white/10 bg-slate-950/32 text-slate-300 hover:border-amber-300/35",
+                          )}
+                        >
+                          <span className="flex items-start justify-between gap-3">
+                            <span className="min-w-0 text-sm font-semibold leading-5">{item.title}</span>
+                            <span className={cn("shrink-0 rounded-[6px] border px-2 py-1 text-[11px] font-bold", sourceLinked ? "border-sky-200/20 bg-sky-300/[0.08] text-sky-100" : "border-white/10 bg-white/[0.045] text-slate-400")}>
+                              {sourceLinked ? "Source" : item.exam}
+                            </span>
                           </span>
-                        </span>
-                        <span className="mt-2 block text-xs leading-5 text-slate-500">
-                          {item.exam} · {item.level} · {item.timeLimitMinutes} min · {item.questions.length ? `${item.questions.length} questions` : item.skill}
-                        </span>
-                        <span className="mt-2 block h-1.5 overflow-hidden rounded-full bg-slate-800">
-                          <span
-                            className="block h-full rounded-full bg-gradient-to-r from-amber-200 to-sky-200 transition-all"
-                            style={{ width: `${Math.min(100, Math.round(((itemRoutineDone + itemRubricDone + (done[item.id] ? 1 : 0)) / Math.max(item.routine.length + item.rubric.length + 1, 1)) * 100))}%` }}
-                          />
-                        </span>
-                        <span className="mt-2 block text-[11px] font-semibold text-slate-500">
-                          Routine {itemRoutineDone}/{item.routine.length} · Rubric {itemRubricDone}/{item.rubric.length}
-                        </span>
-                      </button>
-                    );
-                  }) : (
-                    <div className="rounded-[8px] border border-dashed border-slate-500/35 bg-slate-950/30 p-4 text-sm leading-6 text-slate-400">
-                      No material matches this filter. Try All, clear search, or turn off Source-linked.
-                    </div>
+                          <span className="mt-2 block text-xs leading-5 text-slate-500">
+                            {item.exam} · {item.level} · {item.timeLimitMinutes} min · {item.questions.length ? `${item.questions.length} questions` : item.skill}
+                          </span>
+                          <span className="mt-2 block h-1.5 overflow-hidden rounded-full bg-slate-800">
+                            <span
+                              className="block h-full rounded-full bg-gradient-to-r from-amber-200 to-sky-200 transition-all"
+                              style={{
+                                width: `${Math.min(100, Math.round(((itemRoutineDone + itemRubricDone + (done[item.id] ? 1 : 0)) / Math.max(item.routine.length + item.rubric.length + 1, 1)) * 100))}%`,
+                              }}
+                            />
+                          </span>
+                          <span className="mt-2 block text-[11px] font-semibold text-slate-500">
+                            Routine {itemRoutineDone}/{item.routine.length} · Rubric {itemRubricDone}/{item.rubric.length}
+                          </span>
+                        </button>
+                      );
+                    })
+                  ) : (
+                    <div className="rounded-[8px] border border-dashed border-slate-500/35 bg-slate-950/30 p-4 text-sm leading-6 text-slate-400">No material matches this filter. Try All, clear search, or turn off Source-linked.</div>
                   )}
                 </div>
               </div>
@@ -2070,16 +2173,26 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                   </p>
                   <h3 className="mt-2 text-2xl font-semibold leading-tight text-white">{activeMaterial.title}</h3>
                   <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-300">{activeMaterial.summary}</p>
-                  <p className="mt-3 rounded-[8px] border border-amber-200/16 bg-amber-200/[0.06] p-3 text-sm leading-7 text-amber-50">
-                    {activeUser.locale === "fa" ? activeMaterial.localeNotes.fa : activeMaterial.localeNotes.en}
-                  </p>
+                  <p className="mt-3 rounded-[8px] border border-amber-200/16 bg-amber-200/[0.06] p-3 text-sm leading-7 text-amber-50">{activeUser.locale === "fa" ? activeMaterial.localeNotes.fa : activeMaterial.localeNotes.en}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {[
-                    { label: "Minutes", value: activeMaterial.timeLimitMinutes },
-                    { label: "Questions", value: activeMaterial.questions.length },
-                    { label: "Routine", value: `${activeMaterialRoutineDone}/${activeMaterial.routine.length}` },
-                    { label: "Rubric", value: activeMaterialRubricAverage ? `${activeMaterialRubricAverage}/3` : `${activeMaterialRubricRated}/${activeMaterial.rubric.length}` },
+                    {
+                      label: "Minutes",
+                      value: activeMaterial.timeLimitMinutes,
+                    },
+                    {
+                      label: "Questions",
+                      value: activeMaterial.questions.length,
+                    },
+                    {
+                      label: "Routine",
+                      value: `${activeMaterialRoutineDone}/${activeMaterial.routine.length}`,
+                    },
+                    {
+                      label: "Rubric",
+                      value: activeMaterialRubricAverage ? `${activeMaterialRubricAverage}/3` : `${activeMaterialRubricRated}/${activeMaterial.rubric.length}`,
+                    },
                   ].map((item) => (
                     <div key={item.label} className="rounded-[8px] border border-white/10 bg-white/[0.035] p-3">
                       <p className="text-lg font-semibold text-white">{item.value}</p>
@@ -2108,7 +2221,12 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                 </button>
                 <button
                   type="button"
-                  onClick={() => setReviewQueue((current) => ({ ...current, [activeMaterial.id]: !current[activeMaterial.id] }))}
+                  onClick={() =>
+                    setReviewQueue((current) => ({
+                      ...current,
+                      [activeMaterial.id]: !current[activeMaterial.id],
+                    }))
+                  }
                   className={cn(
                     "inline-flex min-h-11 items-center justify-center gap-2 rounded-[8px] border px-4 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-sky-300/40",
                     reviewQueue[activeMaterial.id] ? "border-sky-200 bg-sky-200 text-slate-950" : "border-white/10 text-slate-200 hover:border-sky-200/40 hover:text-sky-100",
@@ -2122,7 +2240,12 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                   <input
                     type="checkbox"
                     checked={Boolean(done[activeMaterial.id])}
-                    onChange={(event) => setDone((current) => ({ ...current, [activeMaterial.id]: event.target.checked }))}
+                    onChange={(event) =>
+                      setDone((current) => ({
+                        ...current,
+                        [activeMaterial.id]: event.target.checked,
+                      }))
+                    }
                     className="sr-only"
                   />
                   <span className={cn("flex size-6 items-center justify-center rounded-[6px] border", done[activeMaterial.id] ? "border-amber-200 bg-amber-200 text-slate-950" : "border-white/20")}>
@@ -2153,10 +2276,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                   <span>{activeMaterialProgressPercent}%</span>
                 </div>
                 <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-950/65">
-                  <div
-                    className="h-full rounded-full bg-gradient-to-r from-amber-200 via-emerald-200 to-sky-200 transition-all duration-500"
-                    style={{ width: `${activeMaterialProgressPercent}%` }}
-                  />
+                  <div className="h-full rounded-full bg-gradient-to-r from-amber-200 via-emerald-200 to-sky-200 transition-all duration-500" style={{ width: `${activeMaterialProgressPercent}%` }} />
                 </div>
               </div>
 
@@ -2178,13 +2298,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                 <div className="grid gap-4">
                   {activeMaterial.visualAsset ? (
                     <div className="overflow-hidden rounded-[8px] border border-white/10 bg-slate-950/40">
-                      <NextImage
-                        src={activeMaterial.visualAsset}
-                        alt={`${activeMaterial.title} visual guide`}
-                        width={1280}
-                        height={720}
-                        className="h-auto w-full"
-                      />
+                      <NextImage src={activeMaterial.visualAsset} alt={`${activeMaterial.title} visual guide`} width={1280} height={720} className="h-auto w-full" />
                     </div>
                   ) : null}
 
@@ -2270,7 +2384,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                     </section>
                   ) : null}
 
-                  {(activeMaterial.track === "writing" || activeMaterial.track === "teacher") ? (
+                  {activeMaterial.track === "writing" || activeMaterial.track === "teacher" ? (
                     <section className="rounded-[8px] border border-white/10 bg-white/[0.035] p-4">
                       <h4 className="text-sm font-semibold text-white">{activeMaterial.track === "teacher" ? "Teacher note draft" : "Writing response"}</h4>
                       <textarea
@@ -2319,9 +2433,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                   <div className="rounded-[8px] border border-white/10 bg-white/[0.035] p-4">
                     <div className="flex items-center justify-between gap-3">
                       <h4 className="text-sm font-semibold text-white">Rubric</h4>
-                      <span className="rounded-[6px] border border-white/10 bg-slate-950/35 px-2 py-1 text-xs font-bold text-slate-200">
-                        {activeMaterialRubricAverage ? `${activeMaterialRubricAverage}/3` : "Not rated"}
-                      </span>
+                      <span className="rounded-[6px] border border-white/10 bg-slate-950/35 px-2 py-1 text-xs font-bold text-slate-200">{activeMaterialRubricAverage ? `${activeMaterialRubricAverage}/3` : "Not rated"}</span>
                     </div>
                     <div className="mt-3 grid gap-2">
                       {activeMaterial.rubric.map((item) => {
@@ -2381,12 +2493,49 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                           </button>
                         ))
                       ) : (
-                        <p className="rounded-[8px] border border-dashed border-slate-500/35 bg-slate-900/30 p-3 text-sm leading-6 text-slate-400">
-                          This material stands alone and can be used with the active page.
-                        </p>
+                        <p className="rounded-[8px] border border-dashed border-slate-500/35 bg-slate-900/30 p-3 text-sm leading-6 text-slate-400">This material stands alone and can be used with the active page.</p>
                       )}
                     </div>
                   </div>
+
+                  {activeMaterial.sourceProvenance?.length ? (
+                    <div className="rounded-[8px] border border-emerald-200/15 bg-emerald-300/[0.055] p-4">
+                      <h4 className="text-sm font-semibold text-emerald-100">Source provenance</h4>
+                      <p className="mt-1 text-xs leading-5 text-slate-500">Every copied or original source is tracked before it enters the paid studio.</p>
+                      <div className="mt-3 grid gap-2">
+                        {activeMaterial.sourceProvenance.map((source) => (
+                          <div key={`${activeMaterial.id}-${source.sourceId}-${source.usage}`} className="rounded-[8px] border border-white/10 bg-slate-950/30 p-3">
+                            <div className="flex items-start justify-between gap-3">
+                              <div>
+                                <p className="text-xs font-semibold text-white">{source.title}</p>
+                                <p className="mt-1 text-xs leading-5 text-slate-500">{source.attribution}</p>
+                              </div>
+                              <span className="shrink-0 rounded-[6px] border border-emerald-200/20 bg-emerald-300/[0.08] px-2 py-1 text-[11px] font-bold text-emerald-100">{source.usage}</span>
+                            </div>
+                            <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-semibold">
+                              <a
+                                href={source.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1 rounded-[6px] border border-white/10 px-2 py-1 text-slate-300 transition hover:border-emerald-200/40 hover:text-emerald-100"
+                              >
+                                Source <ExternalLink aria-hidden="true" className="size-3" />
+                              </a>
+                              <a
+                                href={source.licenseUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1 rounded-[6px] border border-white/10 px-2 py-1 text-slate-300 transition hover:border-emerald-200/40 hover:text-emerald-100"
+                              >
+                                {source.licenseName} <ExternalLink aria-hidden="true" className="size-3" />
+                              </a>
+                            </div>
+                            <p className="mt-2 text-xs leading-5 text-slate-500">{source.note}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
 
                   <div className="rounded-[8px] border border-sky-200/15 bg-sky-300/[0.055] p-4">
                     <h4 className="text-sm font-semibold text-sky-100">Source safety</h4>
@@ -2569,18 +2718,16 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                     >
                       Pause
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => resetExamTimer()}
-                      className="min-h-9 rounded-[7px] border border-white/10 px-2 text-xs font-bold transition hover:border-amber-200/40 hover:text-amber-50"
-                    >
+                    <button type="button" onClick={() => resetExamTimer()} className="min-h-9 rounded-[7px] border border-white/10 px-2 text-xs font-bold transition hover:border-amber-200/40 hover:text-amber-50">
                       Reset
                     </button>
                   </div>
                   <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-800">
                     <div
                       className="h-full rounded-full bg-gradient-to-r from-amber-200 to-sky-200"
-                      style={{ width: `${Math.max(0, Math.min(100, (visibleExamSecondsLeft / Math.max(activeExamTask.timeLimitMinutes * 60, 1)) * 100))}%` }}
+                      style={{
+                        width: `${Math.max(0, Math.min(100, (visibleExamSecondsLeft / Math.max(activeExamTask.timeLimitMinutes * 60, 1)) * 100))}%`,
+                      }}
                     />
                   </div>
                 </div>
@@ -2664,7 +2811,12 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                   <h4 className="text-base font-semibold text-white">Writing response</h4>
                   <textarea
                     value={writingDrafts[`exam-${activeExamTask.id}`] ?? ""}
-                    onChange={(event) => setWritingDrafts((current) => ({ ...current, [`exam-${activeExamTask.id}`]: event.target.value }))}
+                    onChange={(event) =>
+                      setWritingDrafts((current) => ({
+                        ...current,
+                        [`exam-${activeExamTask.id}`]: event.target.value,
+                      }))
+                    }
                     className="mt-3 min-h-44 w-full resize-y rounded-[8px] border border-white/10 bg-slate-950/72 p-4 text-base leading-8 text-slate-100 outline-none transition placeholder:text-slate-600 focus:border-amber-300/50 focus:ring-2 focus:ring-amber-300/20"
                     placeholder="Write your timed response here..."
                   />
@@ -2720,14 +2872,24 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                   })
                 ) : (
                   <div className="rounded-[8px] border border-dashed border-slate-500/35 bg-slate-900/30 p-5">
-                    <p className="text-sm leading-7 text-slate-300">
-                      The vault is empty for {activeUser.displayName}. Start with one small saved answer; the studio will keep it attached to the page, material, or exam task.
-                    </p>
+                    <p className="text-sm leading-7 text-slate-300">The vault is empty for {activeUser.displayName}. Start with one small saved answer; the studio will keep it attached to the page, material, or exam task.</p>
                     <div className="mt-4 grid gap-2 sm:grid-cols-3">
                       {[
-                        { label: "Source-page note", text: activePage.title, action: () => choosePage(activePage) },
-                        { label: "Writing material", text: firstWritingMaterial.title, action: () => chooseMaterial(firstWritingMaterial) },
-                        { label: "Timed exam draft", text: activeExamTask.title, action: () => setActivePremiumTab("exam" as const) },
+                        {
+                          label: "Source-page note",
+                          text: activePage.title,
+                          action: () => choosePage(activePage),
+                        },
+                        {
+                          label: "Writing material",
+                          text: firstWritingMaterial.title,
+                          action: () => chooseMaterial(firstWritingMaterial),
+                        },
+                        {
+                          label: "Timed exam draft",
+                          text: activeExamTask.title,
+                          action: () => setActivePremiumTab("exam" as const),
+                        },
                       ].map((item) => (
                         <button
                           key={item.label}
@@ -2801,9 +2963,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 className="text-base font-semibold text-white">Booklet architecture</h2>
-            <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-400">
-              Every imported page can be reached by route, learning stack, semantic lane, chapter, search, and related-page links.
-            </p>
+            <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-400">Every imported page can be reached by route, learning stack, semantic lane, chapter, search, and related-page links.</p>
           </div>
           <p className="text-xs font-semibold text-slate-500">
             Active stack: {stackPages.length} pages · full studio coverage {laneCoverageCount}/{booklet.stats.pages}
@@ -2822,9 +2982,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                 onClick={() => chooseStudyRoute(route)}
                 className={cn(
                   "group min-w-0 rounded-[8px] border p-3 text-start transition focus:outline-none focus:ring-2 focus:ring-amber-300/50",
-                  routeActive
-                    ? "border-amber-300/55 bg-amber-300/12 text-white"
-                    : "border-white/10 bg-slate-950/30 text-slate-300 hover:border-amber-300/35 hover:bg-slate-950/45",
+                  routeActive ? "border-amber-300/55 bg-amber-300/12 text-white" : "border-white/10 bg-slate-950/30 text-slate-300 hover:border-amber-300/35 hover:bg-slate-950/45",
                 )}
               >
                 <span className="flex items-start justify-between gap-3">
@@ -2848,7 +3006,9 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
               <h3 className="text-sm font-semibold text-white">Stack x lane map</h3>
               <p className="mt-1 text-xs leading-5 text-slate-500">Tap a count to jump into that exact segment. Quiet dashes mean no imported pages in that cell.</p>
             </div>
-            <p className="text-xs font-semibold text-slate-500">{semanticStudyLanes.length} lanes · {booklet.stacks.length} stacks</p>
+            <p className="text-xs font-semibold text-slate-500">
+              {semanticStudyLanes.length} lanes · {booklet.stacks.length} stacks
+            </p>
           </div>
           <div className="mt-3 grid gap-2 sm:hidden">
             {semanticStudyLanes.map((lane) => {
@@ -2864,29 +3024,26 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                   onClick={() => chooseLane(lane)}
                   className={cn(
                     "flex items-center justify-between gap-3 rounded-[8px] border p-3 text-start transition focus:outline-none focus:ring-2 focus:ring-amber-300/40",
-                    disabled
-                      ? "cursor-not-allowed border-white/10 bg-slate-950/16 text-slate-700"
-                      : active
-                        ? "border-amber-300/55 bg-amber-300/12 text-amber-50"
-                        : "border-white/10 bg-slate-950/32 text-slate-300 hover:border-amber-300/35",
+                    disabled ? "cursor-not-allowed border-white/10 bg-slate-950/16 text-slate-700" : active ? "border-amber-300/55 bg-amber-300/12 text-amber-50" : "border-white/10 bg-slate-950/32 text-slate-300 hover:border-amber-300/35",
                   )}
                 >
                   <span>
                     <span className="block text-sm font-semibold">{lane.title}</span>
                     <span className="mt-1 block text-xs text-slate-500">{lane.primarySkills.join(" / ")}</span>
                   </span>
-                  <span className="shrink-0 rounded-[6px] border border-white/10 bg-slate-950/42 px-2 py-1 text-xs font-semibold text-amber-100">
-                    {stats?.pages ?? 0} pages
-                  </span>
+                  <span className="shrink-0 rounded-[6px] border border-white/10 bg-slate-950/42 px-2 py-1 text-xs font-semibold text-amber-100">{stats?.pages ?? 0} pages</span>
                 </button>
               );
             })}
           </div>
           <div className="mt-3 hidden overflow-x-auto pb-1 sm:block">
-            <div className="grid min-w-[55rem] gap-1" style={{ gridTemplateColumns: `13rem repeat(${booklet.stacks.length}, minmax(6.75rem, 1fr))` }}>
-              <div className="rounded-[6px] border border-white/10 bg-slate-950/50 px-3 py-2 text-[11px] font-semibold uppercase text-slate-500">
-                Lane
-              </div>
+            <div
+              className="grid min-w-[55rem] gap-1"
+              style={{
+                gridTemplateColumns: `13rem repeat(${booklet.stacks.length}, minmax(6.75rem, 1fr))`,
+              }}
+            >
+              <div className="rounded-[6px] border border-white/10 bg-slate-950/50 px-3 py-2 text-[11px] font-semibold uppercase text-slate-500">Lane</div>
               {booklet.stacks.map((stack) => (
                 <button
                   key={stack.id}
@@ -2894,9 +3051,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                   onClick={() => chooseStack(stack)}
                   className={cn(
                     "rounded-[6px] border px-2 py-2 text-center text-[11px] font-semibold leading-4 transition focus:outline-none focus:ring-2 focus:ring-amber-300/40",
-                    stack.id === activeStack.id
-                      ? "border-amber-300/45 bg-amber-300/12 text-amber-100"
-                      : "border-white/10 bg-slate-950/42 text-slate-400 hover:border-amber-300/30 hover:text-slate-200",
+                    stack.id === activeStack.id ? "border-amber-300/45 bg-amber-300/12 text-amber-100" : "border-white/10 bg-slate-950/42 text-slate-400 hover:border-amber-300/30 hover:text-slate-200",
                   )}
                 >
                   {stack.title}
@@ -2909,9 +3064,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                     onClick={() => chooseLane(lane)}
                     className={cn(
                       "rounded-[6px] border px-3 py-2 text-start text-xs font-semibold leading-4 transition focus:outline-none focus:ring-2 focus:ring-amber-300/40",
-                      lane.id === activeLane.id
-                        ? "border-amber-300/45 bg-amber-300/12 text-amber-100"
-                        : "border-white/10 bg-slate-950/38 text-slate-300 hover:border-amber-300/30",
+                      lane.id === activeLane.id ? "border-amber-300/45 bg-amber-300/12 text-amber-100" : "border-white/10 bg-slate-950/38 text-slate-300 hover:border-amber-300/30",
                     )}
                   >
                     {lane.title}
@@ -2977,14 +3130,10 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
               >
                 <span className="flex items-start justify-between gap-3">
                   <span className="text-sm font-semibold leading-5">{lane.title}</span>
-                  <span className="rounded-[6px] border border-white/10 bg-slate-950/40 px-2 py-1 text-[11px] font-semibold text-amber-100">
-                    {stats?.pages ?? 0}
-                  </span>
+                  <span className="rounded-[6px] border border-white/10 bg-slate-950/40 px-2 py-1 text-[11px] font-semibold text-amber-100">{stats?.pages ?? 0}</span>
                 </span>
                 <span className="mt-2 block text-xs leading-5 text-slate-400">{lane.description}</span>
-                <span className="mt-3 block text-xs font-semibold text-slate-500">
-                  {disabled ? "Not in this stack yet" : lane.primarySkills.join(" / ")}
-                </span>
+                <span className="mt-3 block text-xs font-semibold text-slate-500">{disabled ? "Not in this stack yet" : lane.primarySkills.join(" / ")}</span>
               </button>
             );
           })}
@@ -3020,10 +3169,14 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                   >
                     <span className="flex items-center justify-between gap-3 text-xs font-semibold text-amber-200">
                       <span>{chapter.number}</span>
-                      <span className="text-slate-500">{chapter.start}-{chapter.end}</span>
+                      <span className="text-slate-500">
+                        {chapter.start}-{chapter.end}
+                      </span>
                     </span>
                     <span className="mt-1 block text-sm font-semibold">{chapter.shortTitle}</span>
-                    <span className="mt-1 block text-xs leading-5 text-slate-500">{chapter.mode} · {chapter.time}</span>
+                    <span className="mt-1 block text-xs leading-5 text-slate-500">
+                      {chapter.mode} · {chapter.time}
+                    </span>
                     <span className="mt-1 block text-xs font-semibold text-slate-600">
                       {chapter.pageCount} pages · {chapter.fieldCount} fields
                     </span>
@@ -3040,9 +3193,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
               </span>
               <div>
                 <h2 className="text-sm font-semibold text-amber-100">Speaking is a 1:1 add-on</h2>
-                <p className="mt-1 text-sm leading-6 text-slate-300">
-                  The booklet includes solo speaking rehearsal. Personal correction, pronunciation, and live feedback stay separate.
-                </p>
+                <p className="mt-1 text-sm leading-6 text-slate-300">The booklet includes solo speaking rehearsal. Personal correction, pronunciation, and live feedback stay separate.</p>
               </div>
             </div>
           </section>
@@ -3074,9 +3225,17 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
 
             <div className="mt-5 grid gap-3 md:grid-cols-3">
               {[
-                { label: "Use when", value: activeChapter.useWhen, icon: Target },
+                {
+                  label: "Use when",
+                  value: activeChapter.useWhen,
+                  icon: Target,
+                },
                 { label: "Inside", value: activeChapter.inside, icon: Layers3 },
-                { label: "Primary skills", value: activeChapter.skillTags.slice(0, 5).join(" / "), icon: Sparkles },
+                {
+                  label: "Primary skills",
+                  value: activeChapter.skillTags.slice(0, 5).join(" / "),
+                  icon: Sparkles,
+                },
               ].map((item) => {
                 const Icon = item.icon;
 
@@ -3097,12 +3256,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
             <aside className="rounded-[8px] border border-white/10 bg-white/[0.035] p-4">
               <label className="flex min-h-11 items-center gap-2 rounded-[8px] border border-white/10 bg-slate-950/50 px-3 text-sm text-slate-300 focus-within:border-amber-300/45 focus-within:ring-2 focus-within:ring-amber-300/15">
                 <Search aria-hidden="true" className="size-4 text-slate-500" />
-                <input
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Search this stack..."
-                  className="min-w-0 flex-1 bg-transparent outline-none placeholder:text-slate-600"
-                />
+                <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search this stack..." className="min-w-0 flex-1 bg-transparent outline-none placeholder:text-slate-600" />
               </label>
 
               <div className="mt-4 flex flex-wrap gap-2">
@@ -3151,7 +3305,9 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                         </span>
                       </span>
                       <span className="mt-1 block text-sm font-semibold leading-5">{page.title}</span>
-                      <span className="mt-1 block text-xs leading-5 text-slate-500">{formatType(page.type)} · {page.fieldCount} fields</span>
+                      <span className="mt-1 block text-xs leading-5 text-slate-500">
+                        {formatType(page.type)} · {page.fieldCount} fields
+                      </span>
                     </button>
                   );
                 })}
@@ -3192,7 +3348,12 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                     ) : null}
                     <button
                       type="button"
-                      onClick={() => setReviewQueue((current) => ({ ...current, [activePage.id]: !current[activePage.id] }))}
+                      onClick={() =>
+                        setReviewQueue((current) => ({
+                          ...current,
+                          [activePage.id]: !current[activePage.id],
+                        }))
+                      }
                       className={cn(
                         "inline-flex min-h-11 items-center justify-center gap-2 rounded-[8px] border px-3 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-amber-300/50",
                         reviewQueue[activePage.id] ? "border-sky-200 bg-sky-200 text-slate-950" : "border-white/10 text-slate-200 hover:border-sky-200/40 hover:text-sky-100",
@@ -3206,7 +3367,12 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                       <input
                         type="checkbox"
                         checked={Boolean(done[activePage.id])}
-                        onChange={(event) => setDone((current) => ({ ...current, [activePage.id]: event.target.checked }))}
+                        onChange={(event) =>
+                          setDone((current) => ({
+                            ...current,
+                            [activePage.id]: event.target.checked,
+                          }))
+                        }
                         className="sr-only"
                       />
                       <span className={cn("flex size-6 items-center justify-center rounded-[6px] border", done[activePage.id] ? "border-amber-200 bg-amber-200 text-slate-950" : "border-white/20")}>
@@ -3246,11 +3412,13 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                 ) : null}
 
                 <div className="mt-5 flex flex-wrap gap-2">
-                  {unique([...activePage.skillTags, ...activePage.levelTags]).slice(0, 12).map((tag) => (
-                    <span key={tag} className="rounded-[8px] border border-white/10 bg-slate-950/38 px-3 py-2 text-xs font-semibold text-slate-200">
-                      {tag}
-                    </span>
-                  ))}
+                  {unique([...activePage.skillTags, ...activePage.levelTags])
+                    .slice(0, 12)
+                    .map((tag) => (
+                      <span key={tag} className="rounded-[8px] border border-white/10 bg-slate-950/38 px-3 py-2 text-xs font-semibold text-slate-200">
+                        {tag}
+                      </span>
+                    ))}
                 </div>
 
                 <div className="mt-5">
@@ -3263,13 +3431,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                       const active = activePage.levelTags.includes(level) || activePage.blocks.some((block) => block.toLowerCase().includes(level.toLowerCase()));
 
                       return (
-                        <div
-                          key={level}
-                          className={cn(
-                            "rounded-[8px] border px-3 py-2 text-center text-xs font-semibold",
-                            active ? "border-amber-300/45 bg-amber-300/12 text-amber-100" : "border-white/10 bg-slate-950/22 text-slate-600",
-                          )}
-                        >
+                        <div key={level} className={cn("rounded-[8px] border px-3 py-2 text-center text-xs font-semibold", active ? "border-amber-300/45 bg-amber-300/12 text-amber-100" : "border-white/10 bg-slate-950/22 text-slate-600")}>
                           {level}
                         </div>
                       );
@@ -3362,7 +3524,9 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                             className="group flex items-start justify-between gap-3 rounded-[8px] border border-white/10 bg-slate-950/28 p-3 text-start transition hover:border-sky-200/35"
                           >
                             <span>
-                              <span className="block text-xs font-semibold text-sky-100">{item.exam} / {item.skill}</span>
+                              <span className="block text-xs font-semibold text-sky-100">
+                                {item.exam} / {item.skill}
+                              </span>
                               <span className="mt-1 block text-sm font-semibold leading-5 text-slate-200">{item.title}</span>
                             </span>
                             <Play aria-hidden="true" className="mt-1 size-4 shrink-0 text-slate-500 transition group-hover:text-sky-100" />
@@ -3377,14 +3541,24 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                       <div className="mt-3 grid gap-2">
                         <button
                           type="button"
-                          onClick={() => setReviewQueue((current) => ({ ...current, [activePage.id]: true }))}
+                          onClick={() =>
+                            setReviewQueue((current) => ({
+                              ...current,
+                              [activePage.id]: true,
+                            }))
+                          }
                           className="rounded-[8px] border border-white/10 bg-slate-950/30 p-3 text-start text-sm font-semibold text-slate-200 transition hover:border-sky-200/35 focus:outline-none focus:ring-2 focus:ring-sky-300/40"
                         >
                           Add active page
                         </button>
                         <button
                           type="button"
-                          onClick={() => setReviewQueue((current) => ({ ...current, [activeMaterial.id]: true }))}
+                          onClick={() =>
+                            setReviewQueue((current) => ({
+                              ...current,
+                              [activeMaterial.id]: true,
+                            }))
+                          }
                           className="rounded-[8px] border border-white/10 bg-slate-950/30 p-3 text-start text-sm font-semibold text-slate-200 transition hover:border-sky-200/35 focus:outline-none focus:ring-2 focus:ring-sky-300/40"
                         >
                           Add active material
