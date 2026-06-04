@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { evaSessionCookieName, getEvaSessionUser } from "@/lib/eva-auth";
-import { getEvaStoredSnapshots, getEvaStoredState, isEvaPersistenceConfigured, saveEvaStoredState } from "@/lib/eva-persistence";
-import { normalizeStoredState, type EvaStoredStudioState } from "@/lib/eva-learning-db";
+import { getEvaClientPersistenceMode, getEvaStoredSnapshots, getEvaStoredState, saveEvaStoredState } from "@/lib/eva-persistence";
+import type { EvaStoredStudioState } from "@/lib/eva-learning-db";
 
 export const dynamic = "force-dynamic";
 
@@ -13,9 +13,9 @@ export async function GET(request: NextRequest) {
   const activeUser = getEvaSessionUser(request.cookies.get(evaSessionCookieName)?.value);
   if (!activeUser) return unauthorized();
 
-  const persistence = isEvaPersistenceConfigured() ? "database" : "development";
-  const state = persistence === "database" ? await getEvaStoredState(activeUser.id) : normalizeStoredState(null);
-  const teacherSnapshots = persistence === "database" && activeUser.canTeach ? await getEvaStoredSnapshots() : null;
+  const persistence = getEvaClientPersistenceMode();
+  const state = await getEvaStoredState(activeUser.id);
+  const teacherSnapshots = activeUser.canTeach ? await getEvaStoredSnapshots() : null;
 
   return NextResponse.json({
     persistence,
@@ -28,12 +28,12 @@ export async function POST(request: NextRequest) {
   const activeUser = getEvaSessionUser(request.cookies.get(evaSessionCookieName)?.value);
   if (!activeUser) return unauthorized();
 
-  if (!isEvaPersistenceConfigured()) {
+  const body = (await request.json()) as { state?: Partial<EvaStoredStudioState> };
+  try {
+    const state = await saveEvaStoredState(activeUser.id, body.state ?? {});
+
+    return NextResponse.json({ ok: true, state, persistence: getEvaClientPersistenceMode() });
+  } catch {
     return NextResponse.json({ error: "persistence_not_configured" }, { status: 503 });
   }
-
-  const body = (await request.json()) as { state?: Partial<EvaStoredStudioState> };
-  const state = await saveEvaStoredState(activeUser.id, body.state ?? {});
-
-  return NextResponse.json({ ok: true, state });
 }

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { evaSessionCookieName, getEvaSessionUser } from "@/lib/eva-auth";
-import { isEvaPersistenceConfigured, saveEvaTeacherNote } from "@/lib/eva-persistence";
+import { saveEvaTeacherNote } from "@/lib/eva-persistence";
 import type { EvaUserId } from "@/lib/eva-learning-db";
 
 export const dynamic = "force-dynamic";
@@ -13,16 +13,16 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  if (!isEvaPersistenceConfigured()) {
-    return NextResponse.json({ error: "persistence_not_configured" }, { status: 503 });
-  }
-
   const body = (await request.json()) as { learnerUserId?: string; pageId?: string; note?: string };
   if (!body.learnerUserId || !learnerIds.has(body.learnerUserId) || !body.pageId) {
     return NextResponse.json({ error: "invalid_request" }, { status: 400 });
   }
 
-  await saveEvaTeacherNote(activeUser.id, body.learnerUserId as EvaUserId, body.pageId, body.note ?? "");
+  try {
+    await saveEvaTeacherNote(activeUser.id, body.learnerUserId as EvaUserId, body.pageId, body.note ?? "");
+  } catch {
+    return NextResponse.json({ error: "persistence_not_configured" }, { status: 503 });
+  }
 
   return NextResponse.json({ ok: true });
 }

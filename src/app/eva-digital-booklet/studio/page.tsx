@@ -6,7 +6,7 @@ import { Container } from "@/components/site/Container";
 import { EvaStudioExperience } from "@/components/eva/EvaStudioExperience";
 import { evaSessionCookieName, getEvaSessionUser } from "@/lib/eva-auth";
 import { evaBooklet } from "@/lib/eva-private-content";
-import { isEvaPersistenceConfigured } from "@/lib/eva-persistence";
+import { getEvaClientPersistenceMode } from "@/lib/eva-persistence";
 
 export const dynamic = "force-dynamic";
 
@@ -46,7 +46,7 @@ export default async function EvaBookletStudioPage() {
           </button>
         </form>
       </div>
-      <EvaStudioExperience booklet={evaBooklet} activeUser={activeUser} persistenceMode={isEvaPersistenceConfigured() ? "database" : "development"} />
+      <EvaStudioExperience booklet={evaBooklet} activeUser={activeUser} persistenceMode={getEvaClientPersistenceMode()} />
     </Container>
   );
 }

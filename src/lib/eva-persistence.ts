@@ -1,6 +1,8 @@
 import "server-only";
 
 import { createHash } from "node:crypto";
+import fs from "node:fs/promises";
+import path from "node:path";
 import postgres from "postgres";
 import {
   evaSeedUsers,
@@ -10,12 +12,59 @@ import {
   type EvaUserId,
 } from "@/lib/eva-learning-db";
 
-const productId = "eva-digital-booklet";
+const productId = "eva-digital-booklet" as const;
 
 type EvaSql = ReturnType<typeof postgres>;
+type EvaClientPersistenceMode = "database" | "local-database" | "development";
+
+type EvaLocalMembership = {
+  userId: EvaUserId;
+  productId: typeof productId;
+  status: "active";
+  pricePaid: 4.99;
+  currency: "USD";
+};
+
+type EvaLocalResponse = {
+  userId: EvaUserId;
+  productId: typeof productId;
+  responseKey: string;
+  responseJson: { answerIndex?: number; text?: string };
+  updatedAt: string;
+};
+
+type EvaLocalReviewQueueItem = {
+  userId: EvaUserId;
+  productId: typeof productId;
+  itemId: string;
+  status: "open";
+  updatedAt: string;
+};
+
+type EvaLocalTeacherNote = {
+  teacherUserId: EvaUserId;
+  learnerUserId: EvaUserId;
+  productId: typeof productId;
+  pageId: string;
+  note: string;
+  updatedAt: string;
+};
+
+type EvaLocalStore = {
+  version: 1;
+  productId: typeof productId;
+  users: EvaSeedUser[];
+  memberships: EvaLocalMembership[];
+  userProgress: Record<EvaUserId, EvaStoredStudioState>;
+  userResponses: EvaLocalResponse[];
+  reviewQueue: EvaLocalReviewQueueItem[];
+  teacherNotes: EvaLocalTeacherNote[];
+  updatedAt: string;
+};
 
 declare global {
   var evaPostgresSql: EvaSql | undefined;
+  var evaLocalStoreQueue: Promise<unknown> | undefined;
 }
 
 function databaseUrl() {
@@ -24,6 +73,16 @@ function databaseUrl() {
 
 export function isEvaPersistenceConfigured() {
   return Boolean(databaseUrl());
+}
+
+function isLocalFilePersistenceAllowed() {
+  return !databaseUrl() && process.env.VERCEL !== "1" && process.env.EVA_DISABLE_LOCAL_EVA_STORE !== "1";
+}
+
+export function getEvaClientPersistenceMode(): EvaClientPersistenceMode {
+  if (databaseUrl()) return "database";
+  if (isLocalFilePersistenceAllowed()) return "local-database";
+  return "development";
 }
 
 export function hashEvaPasscode(passcode: string) {
@@ -44,6 +103,159 @@ function sqlClient() {
   }
 
   return globalThis.evaPostgresSql;
+}
+
+function localStorePath() {
+  return path.join(/*turbopackIgnore: true*/ process.cwd(), ".data", "eva-portal-store.json");
+}
+
+function emptyProgressRecord(): Record<EvaUserId, EvaStoredStudioState> {
+  return {
+    ali: normalizeStoredState(null),
+    eva: normalizeStoredState(null),
+    elham: normalizeStoredState(null),
+  };
+}
+
+function createLocalStore(): EvaLocalStore {
+  return {
+    version: 1,
+    productId,
+    users: evaSeedUsers,
+    memberships: evaSeedUsers.map((user) => ({
+      userId: user.id,
+      productId,
+      status: "active",
+      pricePaid: 4.99,
+      currency: "USD",
+    })),
+    userProgress: emptyProgressRecord(),
+    userResponses: [],
+    reviewQueue: [],
+    teacherNotes: [],
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+function normalizeLocalStore(value: Partial<EvaLocalStore> | null | undefined): EvaLocalStore {
+  const fallback = createLocalStore();
+  const userProgress = emptyProgressRecord();
+  for (const user of evaSeedUsers) {
+    userProgress[user.id] = normalizeStoredState(value?.userProgress?.[user.id]);
+  }
+
+  return {
+    ...fallback,
+    ...(value ?? {}),
+    version: 1,
+    productId,
+    users: evaSeedUsers,
+    memberships: evaSeedUsers.map((user) => ({
+      userId: user.id,
+      productId,
+      status: "active",
+      pricePaid: 4.99,
+      currency: "USD",
+    })),
+    userProgress,
+    userResponses: value?.userResponses ?? [],
+    reviewQueue: value?.reviewQueue ?? [],
+    teacherNotes: value?.teacherNotes ?? [],
+    updatedAt: value?.updatedAt ?? fallback.updatedAt,
+  };
+}
+
+async function readLocalStore() {
+  if (!isLocalFilePersistenceAllowed()) throw new Error("Eva local file persistence is not available in this environment.");
+
+  const storePath = localStorePath();
+  await fs.mkdir(path.dirname(storePath), { recursive: true });
+
+  try {
+    const raw = await fs.readFile(storePath, "utf8");
+    return normalizeLocalStore(JSON.parse(raw) as Partial<EvaLocalStore>);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+    const store = createLocalStore();
+    await writeLocalStore(store);
+    return store;
+  }
+}
+
+async function writeLocalStore(store: EvaLocalStore) {
+  const storePath = localStorePath();
+  await fs.mkdir(path.dirname(storePath), { recursive: true });
+  const temporaryPath = `${storePath}.${process.pid}.tmp`;
+  await fs.writeFile(temporaryPath, `${JSON.stringify(store, null, 2)}\n`, "utf8");
+  await fs.rename(temporaryPath, storePath);
+}
+
+async function updateLocalStore<T>(mutator: (store: EvaLocalStore) => T | Promise<T>) {
+  const previous = globalThis.evaLocalStoreQueue ?? Promise.resolve();
+  const next = previous
+    .catch(() => undefined)
+    .then(async () => {
+      const store = await readLocalStore();
+      const result = await mutator(store);
+      store.updatedAt = new Date().toISOString();
+      await writeLocalStore(store);
+      return result;
+    });
+
+  globalThis.evaLocalStoreQueue = next.then(
+    () => undefined,
+    () => undefined,
+  );
+
+  return next;
+}
+
+function teacherNotesForLearner(store: EvaLocalStore, learnerUserId: EvaUserId) {
+  return Object.fromEntries(
+    store.teacherNotes
+      .filter((entry) => entry.learnerUserId === learnerUserId && entry.note.trim())
+      .map((entry) => [entry.pageId, entry.note]),
+  );
+}
+
+function responsesFromState(userId: EvaUserId, state: EvaStoredStudioState, updatedAt: string): EvaLocalResponse[] {
+  return [
+    ...Object.entries(state.quizAnswers).map(([key, value]) => ({
+      userId,
+      productId,
+      responseKey: `quiz:${key}`,
+      responseJson: { answerIndex: value },
+      updatedAt,
+    })),
+    ...Object.entries(state.examAnswers).map(([key, value]) => ({
+      userId,
+      productId,
+      responseKey: `exam:${key}`,
+      responseJson: { answerIndex: value },
+      updatedAt,
+    })),
+    ...Object.entries(state.writingDrafts)
+      .filter(([, value]) => value.trim())
+      .map(([key, value]) => ({
+        userId,
+        productId,
+        responseKey: `draft:${key}`,
+        responseJson: { text: value },
+        updatedAt,
+      })),
+  ];
+}
+
+function reviewQueueFromState(userId: EvaUserId, state: EvaStoredStudioState, updatedAt: string): EvaLocalReviewQueueItem[] {
+  return Object.entries(state.reviewQueue)
+    .filter(([, queued]) => queued)
+    .map(([itemId]) => ({
+      userId,
+      productId,
+      itemId,
+      status: "open" as const,
+      updatedAt,
+    }));
 }
 
 function seedUserFromRow(row: {
@@ -84,7 +296,14 @@ export async function getEvaUserByPasscode(passcode: string): Promise<EvaSeedUse
 }
 
 export async function getEvaStoredState(userId: EvaUserId): Promise<EvaStoredStudioState> {
-  if (!isEvaPersistenceConfigured()) return normalizeStoredState(null);
+  if (!isEvaPersistenceConfigured()) {
+    if (!isLocalFilePersistenceAllowed()) return normalizeStoredState(null);
+
+    const store = await readLocalStore();
+    const state = normalizeStoredState(store.userProgress[userId]);
+    state.teacherNotes = teacherNotesForLearner(store, userId);
+    return state;
+  }
 
   const sql = sqlClient();
   const [rows, noteRows] = await Promise.all([
@@ -115,9 +334,27 @@ export async function getEvaStoredSnapshots(): Promise<Record<EvaUserId, EvaStor
 }
 
 export async function saveEvaStoredState(userId: EvaUserId, state: Partial<EvaStoredStudioState>) {
-  if (!isEvaPersistenceConfigured()) throw new Error("Eva persistence is not configured.");
-
   const normalized = normalizeStoredState(state);
+
+  if (!isEvaPersistenceConfigured()) {
+    if (!isLocalFilePersistenceAllowed()) throw new Error("Eva persistence is not configured.");
+
+    return updateLocalStore((store) => {
+      const updatedAt = new Date().toISOString();
+      const teacherNotes = teacherNotesForLearner(store, userId);
+      store.userProgress[userId] = normalizeStoredState({ ...normalized, teacherNotes });
+      store.userResponses = [
+        ...store.userResponses.filter((entry) => entry.userId !== userId),
+        ...responsesFromState(userId, normalized, updatedAt),
+      ];
+      store.reviewQueue = [
+        ...store.reviewQueue.filter((entry) => entry.userId !== userId),
+        ...reviewQueueFromState(userId, normalized, updatedAt),
+      ];
+      return store.userProgress[userId];
+    });
+  }
+
   const sql = sqlClient();
 
   await sql.begin(async (tx) => {
@@ -193,7 +430,42 @@ export async function saveEvaStoredState(userId: EvaUserId, state: Partial<EvaSt
 }
 
 export async function saveEvaTeacherNote(teacherUserId: EvaUserId, learnerUserId: EvaUserId, pageId: string, note: string) {
-  if (!isEvaPersistenceConfigured()) throw new Error("Eva persistence is not configured.");
+  if (!isEvaPersistenceConfigured()) {
+    if (!isLocalFilePersistenceAllowed()) throw new Error("Eva persistence is not configured.");
+
+    await updateLocalStore((store) => {
+      const cleaned = note.trim();
+      store.teacherNotes = store.teacherNotes.filter(
+        (entry) =>
+          !(
+            entry.teacherUserId === teacherUserId &&
+            entry.learnerUserId === learnerUserId &&
+            entry.productId === productId &&
+            entry.pageId === pageId
+          ),
+      );
+
+      if (cleaned) {
+        store.teacherNotes.push({
+          teacherUserId,
+          learnerUserId,
+          productId,
+          pageId,
+          note,
+          updatedAt: new Date().toISOString(),
+        });
+      }
+
+      const learnerState = normalizeStoredState(store.userProgress[learnerUserId]);
+      if (cleaned) {
+        learnerState.teacherNotes[pageId] = note;
+      } else {
+        delete learnerState.teacherNotes[pageId];
+      }
+      store.userProgress[learnerUserId] = learnerState;
+    });
+    return;
+  }
 
   const sql = sqlClient();
   if (!note.trim()) {

@@ -68,7 +68,7 @@ import { cn } from "@/lib/utils";
 type EvaStudioExperienceProps = {
   booklet: EvaBooklet;
   activeUser: EvaSeedUser;
-  persistenceMode: "database" | "development";
+  persistenceMode: "database" | "local-database" | "development";
 };
 
 const legacyStorageKey = "edupocket-eva-studio-v1";
@@ -289,6 +289,12 @@ function recordCount(record: Record<string, unknown>) {
   return Object.values(record).filter(Boolean).length;
 }
 
+function formatTimer(seconds: number) {
+  const minutes = Math.floor(seconds / 60);
+  const rest = seconds % 60;
+  return `${String(minutes).padStart(2, "0")}:${String(rest).padStart(2, "0")}`;
+}
+
 export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: EvaStudioExperienceProps) {
   const [activeStackId, setActiveStackId] = useState(booklet.stacks[0]?.id ?? "");
   const [activeChapterId, setActiveChapterId] = useState(booklet.chapters[0]?.id ?? "");
@@ -318,10 +324,16 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
   const [teacherNotes, setTeacherNotes] = useState<Record<string, string>>({});
   const [teacherSnapshots, setTeacherSnapshots] = useState<Record<EvaUserId, EvaStoredStudioState>>({ ali: normalizeStoredState(null), eva: normalizeStoredState(null), elham: normalizeStoredState(null) });
   const [hydrated, setHydrated] = useState(false);
-  const [syncStatus, setSyncStatus] = useState<"loading" | "synced" | "saving" | "error" | "development">(persistenceMode === "database" ? "loading" : "development");
+  const [syncStatus, setSyncStatus] = useState<"loading" | "synced" | "saving" | "error" | "development">(persistenceMode !== "development" ? "loading" : "development");
   const learningDatabase = useMemo(() => buildEvaLearningDatabase(booklet), [booklet]);
   const storageKey = evaUserStorageKey(activeUser.id);
   const activeExamTask = learningDatabase.examTasks.find((task) => task.id === activeExamId) ?? learningDatabase.examTasks[0]!;
+  const [examTimerTaskId, setExamTimerTaskId] = useState(activeExamTask?.id ?? "");
+  const [examSecondsLeft, setExamSecondsLeft] = useState((activeExamTask?.timeLimitMinutes ?? 0) * 60);
+  const [examTimerRunning, setExamTimerRunning] = useState(false);
+  const usesServerPersistence = persistenceMode !== "development";
+  const visibleExamSecondsLeft = examTimerTaskId === activeExamTask.id ? examSecondsLeft : activeExamTask.timeLimitMinutes * 60;
+  const visibleExamTimerRunning = examTimerTaskId === activeExamTask.id && examTimerRunning;
 
   const applyStoredState = useCallback((parsed: EvaStoredStudioState) => {
     setActiveStackId(parsed.activeStackId ?? booklet.stacks[0]?.id ?? "");
@@ -352,7 +364,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
   useEffect(() => {
     let cancelled = false;
 
-    if (persistenceMode === "database") {
+    if (usesServerPersistence) {
       void (async () => {
         try {
           const response = await fetch("/eva-digital-booklet/state", { cache: "no-store" });
@@ -411,7 +423,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     });
 
     return () => window.cancelAnimationFrame(frame);
-  }, [activeUser.id, applyStoredState, persistenceMode, storageKey]);
+  }, [activeUser.id, applyStoredState, storageKey, usesServerPersistence]);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -441,7 +453,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
       teacherNotes,
     });
 
-    if (persistenceMode === "database") {
+    if (usesServerPersistence) {
       const controller = new AbortController();
       const timeout = window.setTimeout(() => {
         setSyncStatus("saving");
@@ -495,7 +507,22 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     ttsListened,
     ttsRepeated,
     writingDrafts,
+    usesServerPersistence,
   ]);
+
+  useEffect(() => {
+    if (!examTimerRunning) return;
+
+    const interval = window.setInterval(() => {
+      setExamSecondsLeft((current) => {
+        const next = Math.max(0, current - 1);
+        if (next === 0) setExamTimerRunning(false);
+        return next;
+      });
+    }, 1000);
+
+    return () => window.clearInterval(interval);
+  }, [examTimerRunning]);
 
   const activeStack = useMemo(
     () => booklet.stacks.find((stack) => stack.id === activeStackId) ?? booklet.stacks[0],
@@ -783,14 +810,20 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
         ? { label: "Finish quiz track", text: quizTrackTitle(activeQuizTrack), action: () => setActivePremiumTab("quiz" as const) }
         : { label: "Open Writing Vault", text: `${writingVaultEntries.length} saved drafts`, action: () => setActivePremiumTab("vault" as const) };
   const syncLabel =
-    persistenceMode === "database"
+    usesServerPersistence
       ? syncStatus === "saving"
-        ? "Saving member records"
+        ? persistenceMode === "database"
+          ? "Saving member records"
+          : "Saving local study database"
         : syncStatus === "error"
           ? "Sync needs attention"
-          : syncStatus === "loading"
-            ? "Loading member records"
-            : "Server-synced records"
+        : syncStatus === "loading"
+            ? persistenceMode === "database"
+              ? "Loading member records"
+              : "Loading local study database"
+            : persistenceMode === "database"
+              ? "Server-synced records"
+              : "Local study database saved"
       : "Production storage pending";
 
   function chooseStack(stack: EvaBookletStack) {
@@ -893,6 +926,20 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     if (nextPage) choosePage(nextPage);
   }
 
+  function startExamTimer() {
+    setExamTimerTaskId(activeExamTask.id);
+    setExamSecondsLeft((current) =>
+      examTimerTaskId === activeExamTask.id && current > 0 ? current : activeExamTask.timeLimitMinutes * 60,
+    );
+    setExamTimerRunning(true);
+  }
+
+  function resetExamTimer(taskId = activeExamTask.id, minutes = activeExamTask.timeLimitMinutes) {
+    setExamTimerTaskId(taskId);
+    setExamTimerRunning(false);
+    setExamSecondsLeft(minutes * 60);
+  }
+
   function speakStudioText(text: string, segmentId: string, repeat = false, rate = 0.82) {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
     window.speechSynthesis.cancel();
@@ -951,7 +998,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     setTeacherSnapshots((current) => ({ ...current, [targetId]: nextSnapshot }));
     if (targetId === activeUser.id) setTeacherNotes(nextSnapshot.teacherNotes);
 
-    if (persistenceMode === "database") {
+    if (usesServerPersistence) {
       setSyncStatus("saving");
       void fetch("/eva-digital-booklet/teacher-note", {
         method: "POST",
@@ -1005,7 +1052,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
       <section className="rounded-[8px] border border-amber-200/18 bg-[linear-gradient(135deg,rgba(251,191,36,0.11),rgba(15,23,42,0.7),rgba(14,165,233,0.06))] p-4 shadow-[0_24px_90px_rgba(0,0,0,0.18)] sm:p-5">
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
           <div>
-            <p className="text-sm font-semibold text-amber-200">Ali Rad private study database inside EduPocket</p>
+            <p className="text-sm font-semibold text-amber-200">Premium member study database inside EduPocket</p>
             <h2 className="mt-2 max-w-4xl text-xl font-semibold leading-tight text-white sm:text-3xl">
               EduPocket&apos;s Eva Digital Booklet, segmented into a real 298-page study studio.
             </h2>
@@ -1025,7 +1072,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
               <span
                 className={cn(
                   "inline-flex items-center gap-2 rounded-[8px] border px-3 py-2 text-sm font-semibold",
-                  persistenceMode === "database"
+                  usesServerPersistence
                     ? syncStatus === "error"
                       ? "border-rose-200/20 bg-rose-300/[0.07] text-rose-100"
                       : "border-emerald-200/15 bg-emerald-300/[0.06] text-emerald-100"
@@ -1223,7 +1270,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                 <Users aria-hidden="true" className="size-4" />
                 Teacher Lens
               </div>
-              <h2 className="mt-2 text-2xl font-semibold leading-tight text-white">Ali can inspect premium learners separately.</h2>
+              <h2 className="mt-2 text-2xl font-semibold leading-tight text-white">Teacher Lens separates every premium learner record.</h2>
               <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-300">
                 Eva and Elham keep separate progress, drafts, quiz answers, TTS history, pronunciation work, review queues, weak-skill signals, and teacher notes.
               </p>
@@ -2016,7 +2063,10 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                     <button
                       key={task.id}
                       type="button"
-                      onClick={() => setActiveExamId(task.id)}
+                      onClick={() => {
+                        setActiveExamId(task.id);
+                        resetExamTimer(task.id, task.timeLimitMinutes);
+                      }}
                       className={cn(
                         "rounded-[8px] border p-3 text-start transition focus:outline-none focus:ring-2 focus:ring-amber-300/50",
                         active ? "border-amber-300/55 bg-amber-300/12 text-white" : "border-white/10 bg-white/[0.035] text-slate-300 hover:border-amber-300/35",
@@ -2045,10 +2095,40 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                   <h3 className="mt-2 text-2xl font-semibold leading-tight text-white">{activeExamTask.title}</h3>
                   <p className="mt-2 text-sm leading-7 text-slate-300">{activeExamTask.prompt}</p>
                 </div>
-                <span className="inline-flex min-h-11 items-center gap-2 rounded-[8px] border border-amber-200/20 bg-amber-200/[0.08] px-3 text-sm font-semibold text-amber-100">
-                  <Timer aria-hidden="true" className="size-4" />
-                  {activeExamTask.timeLimitMinutes} min
-                </span>
+                <div className="min-w-0 rounded-[8px] border border-amber-200/20 bg-amber-200/[0.08] p-3 text-amber-100 sm:min-w-60">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="inline-flex items-center gap-2 text-sm font-semibold">
+                      <Timer aria-hidden="true" className="size-4" />
+                      Exam timer
+                    </span>
+                    <span className="font-mono text-xl font-semibold tabular-nums">{formatTimer(visibleExamSecondsLeft)}</span>
+                  </div>
+                  <div className="mt-3 grid grid-cols-3 gap-2">
+                    <button
+                      type="button"
+                      onClick={startExamTimer}
+                      disabled={visibleExamSecondsLeft === 0 || visibleExamTimerRunning}
+                      className="min-h-9 rounded-[7px] border border-amber-100/20 px-2 text-xs font-bold transition enabled:hover:bg-amber-200 enabled:hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-45"
+                    >
+                      Start
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setExamTimerRunning(false)}
+                      disabled={!visibleExamTimerRunning}
+                      className="min-h-9 rounded-[7px] border border-white/10 px-2 text-xs font-bold transition enabled:hover:border-sky-200/45 enabled:hover:text-sky-100 disabled:cursor-not-allowed disabled:opacity-45"
+                    >
+                      Pause
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => resetExamTimer()}
+                      className="min-h-9 rounded-[7px] border border-white/10 px-2 text-xs font-bold transition hover:border-amber-200/40 hover:text-amber-50"
+                    >
+                      Reset
+                    </button>
+                  </div>
+                </div>
               </div>
 
               {activeExamTask.passage ? (

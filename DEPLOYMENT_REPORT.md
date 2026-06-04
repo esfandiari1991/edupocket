@@ -86,6 +86,7 @@ Previous local prototype/workspace was found at /Users/ali/Documents/Claude/Proj
 - Development-only access fallbacks for `pnpm dev`: `ali-local-preview`, `eva-local-preview`, `elham-local-preview`.
 - Production-mode local QA uses `EVA_PORTAL_SESSION_SECRET` and `EVA_PORTAL_USER_PASSCODE_HASHES`.
 - Production access requirements: Postgres `EVA_DATABASE_URL` or `DATABASE_URL`, `EVA_PORTAL_SESSION_SECRET`, migrated Eva schema, and per-member passcode hashes saved in `eva_memberships`.
+- Local branch-review persistence: when no Postgres URL is configured and the app is not running on Vercel, Eva member state saves to `.data/eva-portal-store.json`.
 - Private data location: `src/lib/eva-booklet.generated.json`, loaded through `src/lib/eva-private-content.ts`.
 - Private content public exposure: not stored in `public/`; unauthenticated `/eva-digital-booklet/studio` returns `307` to `/eva-digital-booklet`.
 - Import script: `scripts/import-eva-booklet.mjs`.
@@ -117,6 +118,7 @@ Previous local prototype/workspace was found at /Users/ali/Documents/Claude/Proj
   - server-backed quiz/writing responses when Postgres is configured
   - server-backed review queue entries when Postgres is configured
   - server-backed teacher notes when Postgres is configured
+  - local server file persistence for progress, quiz/writing responses, review queue, and teacher notes before Postgres is connected
   - Markdown export per page
 - Local QA on 2026-06-03:
   - `pnpm lint`: passed
@@ -127,7 +129,7 @@ Previous local prototype/workspace was found at /Users/ali/Documents/Claude/Proj
   - production-mode local QA with `EVA_PORTAL_SESSION_SECRET` and `EVA_PORTAL_USER_PASSCODE_HASHES`: Ali, Eva, and Elham passcodes each open `/eva-digital-booklet/studio`
   - authenticated `GET /eva-digital-booklet/state`: `200`
   - unauthenticated `GET /eva-digital-booklet/state`: `401`
-  - `POST /eva-digital-booklet/state` without a configured database: `503`, as intended
+  - `POST /eva-digital-booklet/state` without a configured database: previously returned `503`; now saves to the local server file database during branch review
   - public gateway leak check found no private workbook page text
   - desktop and mobile Chrome screenshots reviewed after responsive nav/gateway tightening
 - Local QA screenshots:

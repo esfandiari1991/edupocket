@@ -13,6 +13,7 @@ The studio content is generated from the full Eva workbook into `src/lib/eva-boo
 The paid-product architecture uses:
 
 - Postgres-backed premium memberships
+- local server file database for branch review before Postgres is connected
 - signed HTTP-only member sessions
 - server-backed progress snapshots
 - server-backed quiz/writing responses
@@ -33,6 +34,8 @@ The Eva portal branch is local review only until final approval. Do not deploy, 
 Production member access must use dedicated member credentials and server-backed storage before paid public launch. The development passcodes are only for local branch review.
 
 For production-mode local QA with `next start`, set `EVA_PORTAL_SESSION_SECRET` and `EVA_PORTAL_USER_PASSCODE_HASHES` instead of relying on development passcodes.
+
+When no Postgres URL is configured and the app is running locally, member progress is saved to `.data/eva-portal-store.json`. That file is ignored by git and exists only for local product review. Vercel production should use Postgres, not the local file database.
 
 ### Eva production setup
 

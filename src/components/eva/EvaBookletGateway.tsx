@@ -24,11 +24,11 @@ export function EvaBookletGateway({ compact = false, loginError }: EvaBookletGat
       )}
     >
       <Container>
-        <div className="eva-premium-frame motion-view grid min-w-0 gap-6 overflow-hidden rounded-[8px] border border-amber-200/20 p-4 shadow-[0_28px_100px_rgba(0,0,0,0.28)] sm:p-6 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:items-stretch lg:p-7">
-          <div className="hidden min-h-[18rem] min-w-0 overflow-hidden rounded-[8px] border border-white/10 bg-[radial-gradient(circle_at_18%_16%,rgba(251,191,36,0.16),transparent_12rem),linear-gradient(145deg,rgba(6,17,31,0.74),rgba(15,31,39,0.82))] p-4 sm:min-h-[22rem] sm:p-5 lg:relative lg:order-1 lg:block lg:min-h-full">
+        <div className="eva-premium-frame motion-view grid min-w-0 gap-6 overflow-hidden rounded-[8px] border border-amber-200/20 p-4 shadow-[0_28px_100px_rgba(0,0,0,0.28)] sm:p-6 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:items-start lg:p-7">
+          <div className="hidden min-w-0 overflow-hidden rounded-[8px] border border-white/10 bg-[radial-gradient(circle_at_18%_16%,rgba(251,191,36,0.16),transparent_12rem),linear-gradient(145deg,rgba(6,17,31,0.74),rgba(15,31,39,0.82))] p-4 sm:p-5 lg:relative lg:order-1 lg:block">
             <div className="absolute inset-x-6 top-8 h-px bg-gradient-to-r from-transparent via-amber-200/46 to-transparent" />
             <div className="absolute bottom-8 left-7 top-8 w-px bg-gradient-to-b from-amber-200/30 via-sky-200/18 to-transparent" />
-            <div className="relative flex h-full min-h-[16rem] flex-col justify-between gap-4">
+            <div className="relative flex min-h-[16rem] flex-col gap-4">
               <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_13rem] sm:items-stretch">
                 <div className="rounded-[8px] border border-amber-100/16 bg-slate-950/48 p-4 shadow-[0_20px_64px_rgba(0,0,0,0.22)] backdrop-blur-sm">
                   <div className="flex items-center justify-between gap-4">
