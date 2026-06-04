@@ -29,7 +29,7 @@ export function EvaBookletGateway({ compact = false, loginError }: EvaBookletGat
             <div className="absolute inset-x-6 top-8 h-px bg-gradient-to-r from-transparent via-amber-200/46 to-transparent" />
             <div className="absolute bottom-8 left-7 top-8 w-px bg-gradient-to-b from-amber-200/30 via-sky-200/18 to-transparent" />
             <div className="relative flex h-full min-h-[16rem] flex-col justify-between gap-4">
-              <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_11rem] sm:items-stretch">
+              <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_13rem] sm:items-stretch">
                 <div className="rounded-[8px] border border-amber-100/16 bg-slate-950/48 p-4 shadow-[0_20px_64px_rgba(0,0,0,0.22)] backdrop-blur-sm">
                   <div className="flex items-center justify-between gap-4">
                     <span className="flex size-10 items-center justify-center rounded-[8px] bg-amber-200/10 text-amber-200">
@@ -56,7 +56,7 @@ export function EvaBookletGateway({ compact = false, loginError }: EvaBookletGat
                       priority
                       quality={88}
                       className="aspect-[4/5] w-full object-cover object-[50%_34%] contrast-[1.03] saturate-[1.02]"
-                      sizes="(max-width: 640px) 18rem, 11rem"
+                      sizes="(max-width: 640px) 18rem, 13rem"
                     />
                     <div className="absolute inset-0 rounded-[8px] ring-1 ring-inset ring-white/12" />
                   </div>
@@ -119,7 +119,7 @@ export function EvaBookletGateway({ compact = false, loginError }: EvaBookletGat
                       height={824}
                       priority
                       quality={88}
-                      className="aspect-[16/10] w-full object-cover object-[50%_28%] contrast-[1.03] saturate-[1.02]"
+                      className="aspect-[16/11] w-full object-cover object-[50%_28%] contrast-[1.03] saturate-[1.02]"
                       sizes="(max-width: 1024px) calc(100vw - 4rem), 1px"
                     />
                     <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_58%,rgba(2,6,23,0.7))]" />
