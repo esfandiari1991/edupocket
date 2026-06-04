@@ -105,6 +105,12 @@ Previous local prototype/workspace was found at /Users/ali/Documents/Claude/Proj
   - 10 chapter reading labs
   - 20 enrichment pages
   - 12 chapter language labs
+- Latest local product update:
+  - read-only ebook reader added inside `/eva-digital-booklet/studio`
+  - all 298 imported workbook pages can be read from the protected studio
+  - ebook search, chapter navigation, page navigation, previous/next controls, and practice jumps added
+  - CELTA wording changed to CELTA Holder
+  - English exam coverage expanded across SEO, homepage, about page, structured data, and contact copy
 - Product structure added:
   - learning stacks
   - chapter buttons
@@ -132,6 +138,17 @@ Previous local prototype/workspace was found at /Users/ali/Documents/Claude/Proj
   - `POST /eva-digital-booklet/state` without a configured database: previously returned `503`; now saves to the local server file database during branch review
   - public gateway leak check found no private workbook page text
   - desktop and mobile Chrome screenshots reviewed after responsive nav/gateway tightening
+- Local QA on 2026-06-04:
+  - `pnpm lint`: passed
+  - `pnpm check`: passed
+  - `pnpm build`: passed
+  - `pnpm eva:sync-content:dry`: passed with 3 users, 12 chapters, 473 activities, 410 learning items, 222 questions, 440 TTS segments, and 43 exam tasks
+  - `BASE_URL=http://localhost:3006 pnpm verify:routes`: passed
+  - unauthenticated `/eva-digital-booklet/studio`: redirects to `/eva-digital-booklet`
+  - authenticated local Studio opened with development passcode
+  - read-only ebook tab verified in Chrome headless on desktop and mobile
+  - mobile reader overflow check: passed
+  - no production deployment, Vercel change, DNS change, tag, or version bump was performed
 - Local QA screenshots:
   - `/Users/ali/.codex/tmp/edupocket-final-qa/home-desktop-final.png`
   - `/Users/ali/.codex/tmp/edupocket-final-qa/eva-gateway-desktop.png`
@@ -144,6 +161,10 @@ Previous local prototype/workspace was found at /Users/ali/Documents/Claude/Proj
   - `/Users/ali/.codex/tmp/eva-booklet-real-data-qa/studio-mobile.png`
   - `/Users/ali/.codex/tmp/eva-booklet-real-data-qa/studio-mobile-scrolled.png`
   - `/Users/ali/.codex/tmp/eva-booklet-real-data-qa/studio-mobile-content.png`
+  - `/Users/ali/.codex/tmp/edupocket-eva-reader-qa/eva-reader-desktop.png`
+  - `/Users/ali/.codex/tmp/edupocket-eva-reader-qa/eva-workbench-tabs-desktop.png`
+  - `/Users/ali/.codex/tmp/edupocket-eva-reader-qa/eva-reader-mobile-after-direct-action.png`
+  - `/Users/ali/.codex/tmp/edupocket-eva-reader-qa/eva-reader-mobile-article.png`
 
 ## Environment
 

@@ -9,9 +9,9 @@ import { LocalizedText } from "@/components/site/LocalizedText";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Online English Teacher, IELTS, TOEFL, FCE, ESP, GRE & GMAT Coaching",
+  title: "Online English Teacher, CELTA Holder, IELTS, TOEFL, FCE, ESP, GRE & GMAT Coaching",
   description:
-    "EduPocket by Ali Rad: Cambridge CELTA English teacher with 15+ years of experience in IELTS, TOEFL, Cambridge FCE/B2 First, GRE, GMAT, specialized English, academic English, and AI-assisted study systems.",
+    "EduPocket by Ali Rad: Cambridge CELTA Holder with 15+ years of English teaching experience in IELTS, TOEFL, Cambridge exams, PTE, Duolingo, TOEIC, OET, GRE, GMAT, specialized English, academic English, and AI-assisted study systems.",
   keywords: [
     ...siteConfig.seoKeywords,
     "online IELTS teacher",
@@ -24,6 +24,11 @@ export const metadata: Metadata = {
     "specialized English teacher online",
     "English for Specific Purposes tutor",
     "medical engineering business technology English",
+    "OET English tutor",
+    "LanguageCert English tutor",
+    "CELPIP English tutor",
+    "CAEL English tutor",
+    "MSRT TOLIMO EPT English tutor",
   ],
   alternates: {
     canonical: "/",
@@ -52,8 +57,8 @@ const workModes = [
   {
     title: { en: "Exam coaching", fa: "کوچینگ آزمون" },
     text: {
-      en: "IELTS Academic/General, TOEFL iBT, Cambridge FCE/B2 First, CAE, CPE, KET, PET, PTE, Duolingo, GRE Verbal, GMAT Verbal, SAT, ACT, and TOEIC.",
-      fa: "IELTS Academic/General، TOEFL iBT، Cambridge FCE/B2 First، CAE، CPE، KET، PET، PTE، Duolingo، GRE Verbal، GMAT Verbal، SAT، ACT و TOEIC.",
+      en: "IELTS Academic/General, TOEFL iBT/Essentials/ITP, Cambridge KET, PET, FCE/B2 First, CAE, CPE, YLE, Linguaskill, PTE, Duolingo, TOEIC, OET, LanguageCert, Oxford Test of English, CELPIP, CAEL, MSRT, TOLIMO, EPT, GRE, GMAT, SAT, ACT, and AP English.",
+      fa: "IELTS Academic/General، TOEFL iBT/Essentials/ITP، آزمون‌های کمبریج KET، PET، FCE/B2 First، CAE، CPE، YLE، Linguaskill، PTE، Duolingo، TOEIC، OET، LanguageCert، Oxford Test of English، CELPIP، CAEL، MSRT، TOLIMO، EPT، GRE، GMAT، SAT، ACT و AP English.",
     },
     icon: GraduationCap,
   },
@@ -93,13 +98,13 @@ const teacherSignals = [
   {
     value: "CELTA",
     label: { en: "Cambridge teaching credential", fa: "مدرک تدریس کمبریج" },
-    text: { en: "Cambridge CELTA-holder approach: clear aims, controlled practice, feedback, and measurable output.", fa: "رویکرد CELTA کمبریج: هدف روشن، تمرین کنترل‌شده، بازخورد و خروجی قابل سنجش." },
+    text: { en: "Cambridge CELTA Holder approach: clear aims, controlled practice, feedback, and measurable output.", fa: "رویکرد دارنده CELTA کمبریج: هدف روشن، تمرین کنترل‌شده، بازخورد و خروجی قابل سنجش." },
     icon: GraduationCap,
   },
   {
     value: "IELTS+",
     label: { en: "major exam pathways", fa: "مسیرهای اصلی آزمون" },
-    text: { en: "IELTS, TOEFL, FCE/B2 First, CAE, GRE, GMAT, PTE, Duolingo, SAT, ACT, TOEIC, KET, PET, and ESP.", fa: "IELTS، TOEFL، FCE/B2 First، CAE، GRE، GMAT، PTE، Duolingo، SAT، ACT، TOEIC، KET، PET و زبان تخصصی." },
+    text: { en: "IELTS, TOEFL, Cambridge exams, PTE, Duolingo, TOEIC, OET, LanguageCert, CELPIP, CAEL, MSRT, TOLIMO, EPT, GRE, GMAT, SAT, ACT, AP English, and ESP.", fa: "IELTS، TOEFL، آزمون‌های کمبریج، PTE، Duolingo، TOEIC، OET، LanguageCert، CELPIP، CAEL، MSRT، TOLIMO، EPT، GRE، GMAT، SAT، ACT، AP English و زبان تخصصی." },
     icon: FlaskConical,
   },
   {
@@ -124,7 +129,7 @@ export default function HomePage() {
                 <LocalizedText en="The teacher behind EduPocket" fa="مدرس پشت EduPocket" />
               </p>
               <h2 className="mt-3 text-3xl font-semibold leading-tight text-white sm:text-4xl">
-                <LocalizedText en="Cambridge CELTA, 15+ years, and real exam coaching." fa="CELTA کمبریج، بیش از ۱۵ سال تجربه، و کوچینگ واقعی آزمون." />
+                <LocalizedText en="Cambridge CELTA Holder, 15+ years, and real exam coaching." fa="دارنده CELTA کمبریج، بیش از ۱۵ سال تجربه، و کوچینگ واقعی آزمون." />
               </h2>
               <p className="mt-4 text-sm leading-7 text-slate-300 sm:text-base">
                 <LocalizedText

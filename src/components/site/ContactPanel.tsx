@@ -12,8 +12,8 @@ const copy = {
   general: {
     title: { en: "Build your next learning step with me.", fa: "قدم بعدی یادگیری‌ات را با من بساز." },
     text: {
-      en: "Send one clear message for IELTS, TOEFL, FCE, GRE, GMAT, specialized English, academic English, tutoring, AI learning systems, content ideas, or education projects.",
-      fa: "برای IELTS، TOEFL، FCE، GRE، GMAT، زبان تخصصی، انگلیسی آکادمیک، تدریس، سیستم یادگیری با هوش مصنوعی، ایده محتوا یا پروژه آموزشی یک پیام واضح بفرست.",
+      en: "Send one clear message for IELTS, TOEFL, Cambridge FCE/CAE/CPE, PTE, Duolingo, TOEIC, OET, GRE, GMAT, MSRT, TOLIMO, specialized English, academic English, tutoring, AI learning systems, content ideas, or education projects.",
+      fa: "برای IELTS، TOEFL، آزمون‌های کمبریج FCE/CAE/CPE، PTE، Duolingo، TOEIC، OET، GRE، GMAT، MSRT، TOLIMO، زبان تخصصی، انگلیسی آکادمیک، تدریس، سیستم یادگیری با هوش مصنوعی، ایده محتوا یا پروژه آموزشی یک پیام واضح بفرست.",
     },
   },
   article: {
@@ -40,8 +40,8 @@ const copy = {
   about: {
     title: { en: "Work with me directly", fa: "مستقیم با من در ارتباط باش" },
     text: {
-      en: "For CELTA-informed English tutoring, IELTS, TOEFL, FCE, GRE, GMAT, specialized English, AI learning systems, or education projects, start with a direct message.",
-      fa: "برای تدریس انگلیسی مبتنی بر تجربه CELTA، IELTS، TOEFL، FCE، GRE، GMAT، زبان تخصصی، سیستم‌های یادگیری با هوش مصنوعی یا پروژه آموزشی، با یک پیام مستقیم شروع کن.",
+      en: "For English tutoring with a CELTA Holder, IELTS, TOEFL, Cambridge exams, PTE, Duolingo, TOEIC, OET, LanguageCert, CELPIP, CAEL, GRE, GMAT, SAT, ACT, MSRT, TOLIMO, specialized English, AI learning systems, or education projects, start with a direct message.",
+      fa: "برای تدریس انگلیسی با دارنده CELTA، IELTS، TOEFL، آزمون‌های کمبریج، PTE، Duolingo، TOEIC، OET، LanguageCert، CELPIP، CAEL، GRE، GMAT، SAT، ACT، MSRT، TOLIMO، زبان تخصصی، سیستم‌های یادگیری با هوش مصنوعی یا پروژه آموزشی، با یک پیام مستقیم شروع کن.",
     },
   },
 };

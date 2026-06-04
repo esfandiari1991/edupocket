@@ -8,16 +8,24 @@ import { SectionHeading } from "@/components/site/SectionHeading";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "About Ali Rad - CELTA English Teacher, IELTS, TOEFL, FCE, ESP, GRE & GMAT Tutor",
+  title: "About Ali Rad - CELTA Holder, IELTS, TOEFL, FCE, ESP, GRE & GMAT Tutor",
   description:
-    "Ali Esfandiari Rad is a Cambridge CELTA English teacher with 15+ years of experience in IELTS, TOEFL, Cambridge FCE/B2 First, GRE, GMAT, specialized English, academic writing, business English, and AI-assisted learning systems.",
+    "Ali Esfandiari Rad is a Cambridge CELTA Holder with 15+ years of English teaching experience in IELTS, TOEFL, Cambridge exams, PTE, Duolingo, TOEIC, OET, GRE, GMAT, specialized English, academic writing, business English, and AI-assisted learning systems.",
   keywords: [
     "Ali Esfandiari Rad",
     "Ali Rad",
-    "Cambridge CELTA English teacher",
+    "Cambridge CELTA Holder",
     "English teacher 15 years experience",
     "IELTS tutor online",
     "TOEFL iBT teacher",
+    "PTE Academic tutor",
+    "Duolingo English Test tutor",
+    "TOEIC tutor",
+    "OET English tutor",
+    "LanguageCert tutor",
+    "CELPIP tutor",
+    "CAEL tutor",
+    "MSRT TOLIMO EPT tutor",
     "FCE teacher for teens",
     "Cambridge B2 First tutor",
     "GRE verbal tutor",
@@ -35,14 +43,14 @@ export const metadata: Metadata = {
     canonical: "/about",
   },
   openGraph: {
-    title: "About Ali Rad - CELTA English Teacher and EduPocket Founder",
+    title: "About Ali Rad - CELTA Holder and EduPocket Founder",
     description: "15+ years of English teaching, exam coaching, specialized English, Cambridge CELTA training, and AI-assisted learning-system design.",
     url: "/about",
   },
   twitter: {
     card: "summary_large_image",
-    title: "About Ali Rad | CELTA English Teacher | EduPocket",
-    description: "Cambridge CELTA English teacher with 15+ years of IELTS, TOEFL, FCE, GRE, GMAT, specialized English, and academic English coaching experience.",
+    title: "About Ali Rad | CELTA Holder | EduPocket",
+    description: "Cambridge CELTA Holder with 15+ years of IELTS, TOEFL, Cambridge exams, PTE, Duolingo, TOEIC, OET, GRE, GMAT, specialized English, and academic English coaching experience.",
   },
 };
 
@@ -54,7 +62,7 @@ const strengths = [
   },
   {
     title: { en: "Cambridge CELTA", fa: "CELTA کمبریج" },
-    text: { en: "CELTA-holder teaching habits: clear lesson aims, learner-centered practice, useful feedback, and measurable progress.", fa: "رویکرد دارنده CELTA: هدف روشن، تمرین زبان‌آموزمحور، بازخورد کاربردی و پیشرفت قابل سنجش." },
+    text: { en: "CELTA Holder teaching habits: clear lesson aims, learner-centered practice, useful feedback, and measurable progress.", fa: "رویکرد دارنده CELTA: هدف روشن، تمرین زبان‌آموزمحور، بازخورد کاربردی و پیشرفت قابل سنجش." },
     icon: Award,
   },
   {
@@ -87,15 +95,23 @@ const strengths = [
 const examGroups = [
   {
     title: { en: "English proficiency exams", fa: "آزمون‌های مهارت انگلیسی" },
-    items: ["IELTS Academic", "IELTS General Training", "TOEFL iBT", "PTE Academic", "Duolingo English Test", "TOEIC"],
+    items: ["IELTS Academic", "IELTS General Training", "TOEFL iBT", "TOEFL Essentials", "TOEFL ITP", "PTE Academic", "PTE Core", "Duolingo English Test", "TOEIC", "OET", "LanguageCert", "Oxford Test of English", "CELPIP", "CAEL", "iTEP"],
   },
   {
     title: { en: "Cambridge English exams", fa: "آزمون‌های کمبریج" },
-    items: ["FCE / B2 First", "CAE / C1 Advanced", "CPE / C2 Proficiency", "KET / A2 Key", "PET / B1 Preliminary"],
+    items: ["Pre A1 Starters", "A1 Movers", "A2 Flyers", "KET / A2 Key", "PET / B1 Preliminary", "FCE / B2 First", "CAE / C1 Advanced", "CPE / C2 Proficiency", "Linguaskill"],
+  },
+  {
+    title: { en: "Iran-focused English exams", fa: "آزمون‌های انگلیسی رایج در ایران" },
+    items: ["MSRT", "TOLIMO", "EPT", "UTEPT", "MHLE"],
   },
   {
     title: { en: "Academic entrance exams", fa: "آزمون‌های ورودی آکادمیک" },
-    items: ["GRE Verbal", "GMAT Verbal", "SAT English", "ACT English"],
+    items: ["GRE Verbal", "GMAT Verbal", "SAT English", "ACT English", "AP English Language", "AP English Literature"],
+  },
+  {
+    title: { en: "Global language exam map", fa: "نقشه آزمون‌های زبان جهان" },
+    items: [...siteConfig.teacherProfile.globalLanguageExams],
   },
   {
     title: { en: "Learner pathways", fa: "مسیرهای زبان‌آموزی" },
@@ -115,7 +131,7 @@ export default function AboutPage() {
         title={<LocalizedText en="About Ali Rad" fa="درباره علی راد" />}
         description={
           <LocalizedText
-            en="EduPocket is the public learning library of Ali Esfandiari Rad: English teacher, computer engineer, Arabic teacher, AI practitioner, Cambridge CELTA holder, online tutor, and language coach."
+            en="EduPocket is the public learning library of Ali Esfandiari Rad: English teacher, computer engineer, Arabic teacher, AI practitioner, Cambridge CELTA Holder, online tutor, and language coach."
             fa="EduPocket کتابخانه عمومی یادگیری علی اسفندیاری راد است: مدرس انگلیسی، مهندس کامپیوتر، مدرس عربی، فعال در هوش مصنوعی، دارنده CELTA کمبریج، مدرس آنلاین و کوچ زبان."
           />
         }

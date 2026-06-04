@@ -3,13 +3,20 @@ import { EnglishLabExperience } from "@/components/english-lab/EnglishLabExperie
 import { Container } from "@/components/site/Container";
 
 export const metadata: Metadata = {
-  title: "English Test Lab - IELTS, TOEFL, FCE, ESP & Cambridge English Practice",
+  title: "English Test Lab - IELTS, TOEFL, PTE, Duolingo, OET, FCE, ESP & Cambridge English Practice",
   description:
-    "An interactive EduPocket English practice hub for IELTS, TOEFL, Cambridge FCE/B2 First, specialized English vocabulary, grammar, vocabulary, reading, listening, writing, exams, and level checks by Ali Rad.",
+    "An interactive EduPocket English practice hub for IELTS, TOEFL, PTE, Duolingo English Test, TOEIC, OET, LanguageCert, Cambridge FCE/B2 First, specialized English vocabulary, grammar, reading, listening, writing, exams, and level checks by Ali Rad.",
   keywords: [
     "English test practice",
     "IELTS practice",
     "TOEFL practice",
+    "PTE Academic practice",
+    "Duolingo English Test practice",
+    "TOEIC practice",
+    "OET practice",
+    "LanguageCert practice",
+    "CELPIP practice",
+    "CAEL practice",
     "FCE practice",
     "Cambridge B2 First practice",
     "grammar practice",
@@ -23,14 +30,14 @@ export const metadata: Metadata = {
     canonical: "/english-lab",
   },
   openGraph: {
-    title: "EduPocket English Test Lab - IELTS, TOEFL, FCE, ESP & Cambridge Practice",
-    description: "Interactive English practice for IELTS, TOEFL, Cambridge FCE/B2 First, specialized English, grammar, vocabulary, reading, writing, and level checks.",
+    title: "EduPocket English Test Lab - IELTS, TOEFL, PTE, Duolingo, OET, FCE, ESP & Cambridge Practice",
+    description: "Interactive English practice for IELTS, TOEFL, PTE, Duolingo, TOEIC, OET, Cambridge FCE/B2 First, specialized English, grammar, vocabulary, reading, writing, and level checks.",
     url: "/english-lab",
   },
   twitter: {
     card: "summary_large_image",
-    title: "English Test Lab - IELTS, TOEFL, FCE, ESP Practice | EduPocket",
-    description: "Interactive English practice for IELTS, TOEFL, Cambridge FCE/B2 First, specialized English, grammar, vocabulary, reading, writing, and level checks.",
+    title: "English Test Lab - IELTS, TOEFL, PTE, Duolingo, OET, FCE, ESP Practice | EduPocket",
+    description: "Interactive English practice for IELTS, TOEFL, PTE, Duolingo, TOEIC, OET, Cambridge FCE/B2 First, specialized English, grammar, vocabulary, reading, writing, and level checks.",
   },
 };
 

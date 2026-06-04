@@ -16,6 +16,7 @@ const tagLabels: Record<string, string> = {
   "Exam Strategy": "استراتژی آزمون",
   IELTS: "آیلتس",
   "IELTS & TOEFL": "آیلتس و تافل",
+  "IELTS, TOEFL & English Exams": "آزمون‌های انگلیسی، آیلتس و تافل",
   KET: "KET",
   "Language Learning": "یادگیری زبان",
   Learning: "یادگیری",

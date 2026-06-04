@@ -175,7 +175,7 @@ const studyRoutes: StudyRoute[] = [
   },
 ];
 
-type PremiumTabId = "overview" | EvaStudioTrack | "materials" | "quiz" | "exam" | "vault";
+type PremiumTabId = "overview" | "ebook" | EvaStudioTrack | "materials" | "quiz" | "exam" | "vault";
 
 const premiumTabs: Array<{
   id: PremiumTabId;
@@ -186,6 +186,11 @@ const premiumTabs: Array<{
     id: "overview",
     title: "Use model",
     description: "How the studio should be worked.",
+  },
+  {
+    id: "ebook",
+    title: "Read-only Ebook",
+    description: "All 298 pages in reader mode.",
   },
   {
     id: "grammar",
@@ -372,6 +377,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
   const [activeTeacherTargetId, setActiveTeacherTargetId] = useState<EvaUserId>("eva");
   const [skillFilter, setSkillFilter] = useState("All");
   const [query, setQuery] = useState("");
+  const [ebookQuery, setEbookQuery] = useState("");
   const [materialQuery, setMaterialQuery] = useState("");
   const [materialExamFilter, setMaterialExamFilter] = useState<EvaMaterialExamFilter>("All");
   const [materialSourceOnly, setMaterialSourceOnly] = useState(false);
@@ -409,6 +415,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
   const materialStats = useMemo(() => buildEvaMaterialStats(materialItems, materialCollections.length), [materialCollections.length, materialItems]);
   const visibleExamSecondsLeft = examTimerTaskId === activeExamTask.id ? examSecondsLeft : activeExamTask.timeLimitMinutes * 60;
   const visibleExamTimerRunning = examTimerTaskId === activeExamTask.id && examTimerRunning;
+  const ebookSearchTerm = ebookQuery.trim();
 
   const applyStoredState = useCallback(
     (parsed: EvaStoredStudioState) => {
@@ -620,6 +627,9 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
   const activeChapter = useMemo(() => booklet.chapters.find((chapter) => chapter.id === activeChapterId) ?? stackChapters[0] ?? booklet.chapters[0], [activeChapterId, booklet.chapters, stackChapters]);
 
   const activePage = useMemo(() => booklet.pages.find((page) => page.id === activePageId) ?? firstPageForChapter(activeChapter, booklet.pages) ?? booklet.pages[0], [activeChapter, activePageId, booklet.pages]);
+  const activePageIndex = useMemo(() => booklet.pages.findIndex((page) => page.id === activePage.id), [activePage.id, booklet.pages]);
+  const previousBookPage = activePageIndex > 0 ? booklet.pages[activePageIndex - 1] : undefined;
+  const nextBookPage = activePageIndex >= 0 && activePageIndex < booklet.pages.length - 1 ? booklet.pages[activePageIndex + 1] : undefined;
 
   const stackPagesById = useMemo(() => {
     return new Map(booklet.stacks.map((stack) => [stack.id, pagesForStack(stack, booklet.pages)]));
@@ -628,6 +638,10 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
   const stackPageIds = useMemo(() => new Set(stackChapters.flatMap((chapter) => chapter.pageIds)), [stackChapters]);
   const stackPages = useMemo(() => booklet.pages.filter((page) => stackPageIds.has(page.id)), [booklet.pages, stackPageIds]);
   const chapterPages = useMemo(() => booklet.pages.filter((page) => page.chapterId === activeChapter.id), [activeChapter.id, booklet.pages]);
+  const ebookVisiblePages = useMemo(() => {
+    const basePages = ebookSearchTerm ? booklet.pages : chapterPages;
+    return basePages.filter((page) => pageMatches(page, ebookSearchTerm));
+  }, [booklet.pages, chapterPages, ebookSearchTerm]);
   const activeLane = useMemo(() => studyLanes.find((lane) => lane.id === activeLaneId) ?? chapterLane, [activeLaneId]);
   const stackStats = useMemo(() => {
     return new Map(
@@ -992,6 +1006,11 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     setActivePageId(page.id);
   }
 
+  function chooseEbookPage(page: EvaBookletPage) {
+    setActivePremiumTab("ebook");
+    choosePage(page);
+  }
+
   function chooseLane(lane: StudyLane) {
     setActiveLaneId(lane.id);
     setSkillFilter("All");
@@ -1289,6 +1308,32 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                 <CircleCheck aria-hidden="true" className="size-4" />
                 {syncLabel}
               </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setActivePremiumTab("ebook");
+                  window.requestAnimationFrame(() => {
+                    document.querySelector('[data-testid="eva-premium-tab-ebook"]')?.scrollIntoView({ block: "center", behavior: "smooth" });
+                  });
+                }}
+                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-[8px] bg-amber-300 px-3 text-sm font-bold text-slate-950 transition hover:bg-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-100"
+              >
+                <BookOpen aria-hidden="true" className="size-4" />
+                Open full ebook
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setActivePremiumTab("materials");
+                  window.requestAnimationFrame(() => {
+                    document.querySelector('[data-testid="eva-premium-tab-materials"]')?.scrollIntoView({ block: "center", behavior: "smooth" });
+                  });
+                }}
+                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-[8px] border border-white/10 px-3 text-sm font-semibold text-slate-200 transition hover:border-sky-200/40 hover:text-sky-100 focus:outline-none focus:ring-2 focus:ring-sky-300/40"
+              >
+                <LibraryBig aria-hidden="true" className="size-4" />
+                Practice library
+              </button>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:w-[34rem]">
@@ -1622,14 +1667,14 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 className="text-base font-semibold text-white">Premium workbench</h2>
-            <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-400">Grammar, religious context, lexical pronunciation, quizzes, and review all point back to source pages.</p>
+            <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-400">Read the full booklet, then move into grammar, religious context, lexical pronunciation, materials, quizzes, exams, and saved review.</p>
           </div>
           <p className="text-sm font-semibold text-slate-500">
-            20 modules · {materialStats.items} material packs · {sourceMaterialItems.length} source-linked packs · {learningDatabase.examTasks.length} exam tasks
+            {booklet.stats.pages}/{booklet.stats.pages} ebook pages · 20 modules · {materialStats.items} material packs · {sourceMaterialItems.length} source-linked packs · {learningDatabase.examTasks.length} exam tasks
           </p>
         </div>
 
-        <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8">
+        <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-9">
           {premiumTabs.map((tab) => {
             const active = activePremiumTab === tab.id;
 
@@ -1676,8 +1721,14 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                 ))}
               </div>
             </div>
-            <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-5">
               {[
+                {
+                  title: "Read-only Ebook",
+                  value: booklet.stats.pages,
+                  text: "Every imported page preserved for calm reading.",
+                  icon: BookOpen,
+                },
                 {
                   title: "Grammar Atlas",
                   value: evaGrammarModules.length,
@@ -1709,7 +1760,11 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                   <button
                     key={item.title}
                     type="button"
-                    onClick={() => setActivePremiumTab(item.title === "Grammar Atlas" ? "grammar" : item.title === "Religious Context" ? "religious" : item.title === "Material Library" ? "materials" : "lexical")}
+                    onClick={() =>
+                      setActivePremiumTab(
+                        item.title === "Read-only Ebook" ? "ebook" : item.title === "Grammar Atlas" ? "grammar" : item.title === "Religious Context" ? "religious" : item.title === "Material Library" ? "materials" : "lexical",
+                      )
+                    }
                     className="rounded-[8px] border border-white/10 bg-slate-950/28 p-4 text-start transition hover:border-amber-300/35 focus:outline-none focus:ring-2 focus:ring-amber-300/50"
                   >
                     <Icon aria-hidden="true" className="size-5 text-amber-200" />
@@ -1732,7 +1787,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                 {[
                   {
                     title: "Source workbook",
-                    action: "read + annotate",
+                    action: "read-only ebook + annotate in source mode",
                     saved: `${booklet.stats.pages} pages`,
                     proof: "page done, note, TTS",
                   },
@@ -1766,6 +1821,250 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                 ))}
               </div>
             </div>
+          </div>
+        ) : null}
+
+        {activePremiumTab === "ebook" ? (
+          <div className="mt-4 grid gap-3 xl:grid-cols-[21rem_minmax(0,1fr)]">
+            <aside className="rounded-[8px] border border-white/10 bg-slate-950/30 p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h3 className="text-base font-semibold text-white">Read-only booklet</h3>
+                  <p className="mt-1 text-sm leading-6 text-slate-400">The original Eva Digital Booklet is preserved here as a calm ebook reader.</p>
+                </div>
+                <BookOpen aria-hidden="true" className="size-5 shrink-0 text-amber-200" />
+              </div>
+
+              <div className="mt-4 grid grid-cols-2 gap-2">
+                {[
+                  ["Pages", `${booklet.pages.length}/${booklet.stats.pages}`],
+                  ["Chapters", booklet.chapters.length],
+                  ["Fields", booklet.stats.answerFields],
+                  ["Checks", booklet.stats.checkboxes],
+                ].map(([label, value]) => (
+                  <div key={label} className="rounded-[8px] border border-white/10 bg-white/[0.035] p-3">
+                    <p className="text-sm font-semibold text-white">{value}</p>
+                    <p className="mt-1 text-xs text-slate-500">{label}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4 rounded-[8px] border border-amber-200/16 bg-amber-200/[0.06] p-3">
+                <p className="text-xs font-semibold uppercase text-amber-100">Source guarantee</p>
+                <p className="mt-2 text-sm leading-6 text-slate-300">
+                  No imported page is discarded. All {booklet.stats.pages} pages stay readable here, while trackable work lives in the practice areas.
+                </p>
+              </div>
+
+              <div className="mt-4 rounded-[8px] border border-white/10 bg-white/[0.035] p-3">
+                <div className="relative">
+                  <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
+                  <input
+                    type="search"
+                    value={ebookQuery}
+                    onChange={(event) => setEbookQuery(event.target.value)}
+                    placeholder="Search all pages..."
+                    className="h-11 w-full rounded-[8px] border border-white/10 bg-slate-950/55 pl-9 pr-3 text-sm font-medium text-slate-100 outline-none transition placeholder:text-slate-600 focus:border-amber-300/50 focus:ring-2 focus:ring-amber-300/20"
+                  />
+                </div>
+                <p className="mt-2 text-xs leading-5 text-slate-500">
+                  {ebookSearchTerm ? `${ebookVisiblePages.length} matching pages across the full ebook` : `${chapterPages.length} pages in ${activeChapter.shortTitle}`}
+                </p>
+              </div>
+
+              <div className="mt-4 grid gap-2">
+                <h4 className="text-xs font-semibold uppercase text-slate-500">Chapters</h4>
+                <div className="grid max-h-64 gap-2 overflow-y-auto pr-1">
+                  {booklet.chapters.map((chapter) => {
+                    const active = chapter.id === activeChapter.id;
+
+                    return (
+                      <button
+                        key={chapter.id}
+                        type="button"
+                        onClick={() => {
+                          chooseChapter(chapter);
+                          setEbookQuery("");
+                        }}
+                        className={cn(
+                          "rounded-[8px] border p-3 text-start transition focus:outline-none focus:ring-2 focus:ring-amber-300/50",
+                          active ? "border-amber-300/55 bg-amber-300/12 text-white" : "border-white/10 bg-slate-950/32 text-slate-300 hover:border-amber-300/35",
+                        )}
+                      >
+                        <span className="flex items-center justify-between gap-3">
+                          <span className="text-sm font-semibold">
+                            {chapter.number}. {chapter.shortTitle}
+                          </span>
+                          <span className="rounded-[6px] border border-white/10 bg-slate-950/35 px-2 py-1 text-xs font-semibold text-amber-100">{chapter.pageCount}</span>
+                        </span>
+                        <span className="mt-1 line-clamp-2 block text-xs leading-5 text-slate-500">{chapter.outcome}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="mt-4 grid gap-2">
+                <div className="flex items-center justify-between gap-3">
+                  <h4 className="text-xs font-semibold uppercase text-slate-500">{ebookSearchTerm ? "Search results" : "Pages in chapter"}</h4>
+                  <span className="rounded-[6px] border border-white/10 bg-slate-950/35 px-2 py-1 text-xs font-semibold text-slate-300">{ebookVisiblePages.length}</span>
+                </div>
+                <div className="grid max-h-96 gap-2 overflow-y-auto pr-1">
+                  {ebookVisiblePages.length ? (
+                    ebookVisiblePages.map((page) => {
+                      const active = page.id === activePage.id;
+
+                      return (
+                        <button
+                          key={page.id}
+                          type="button"
+                          onClick={() => chooseEbookPage(page)}
+                          className={cn(
+                            "rounded-[8px] border p-3 text-start transition focus:outline-none focus:ring-2 focus:ring-amber-300/50",
+                            active ? "border-amber-300/55 bg-amber-300/12 text-white" : "border-white/10 bg-slate-950/32 text-slate-300 hover:border-amber-300/35",
+                          )}
+                        >
+                          <span className="flex items-start justify-between gap-3">
+                            <span className="min-w-0 text-sm font-semibold leading-5">
+                              P{String(page.page).padStart(3, "0")} · {page.title}
+                            </span>
+                            <span className="shrink-0 rounded-[6px] border border-white/10 bg-white/[0.045] px-2 py-1 text-[11px] font-bold text-slate-400">{formatType(page.type)}</span>
+                          </span>
+                          <span className="mt-2 line-clamp-2 block text-xs leading-5 text-slate-500">{page.summary}</span>
+                        </button>
+                      );
+                    })
+                  ) : (
+                    <div className="rounded-[8px] border border-dashed border-slate-500/35 bg-slate-950/30 p-4 text-sm leading-6 text-slate-400">No page matches this ebook search.</div>
+                  )}
+                </div>
+              </div>
+            </aside>
+
+            <article className="overflow-hidden rounded-[8px] border border-white/10 bg-slate-950/30">
+              <div className="border-b border-white/10 bg-[radial-gradient(circle_at_12%_0%,rgba(251,191,36,0.12),transparent_20rem),rgba(255,255,255,0.035)] p-4 sm:p-5">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                  <div>
+                    <p className="text-xs font-semibold uppercase text-amber-200">
+                      Read-only ebook / page {String(activePage.page).padStart(3, "0")} of {booklet.stats.pages}
+                    </p>
+                    <h3 className="mt-2 text-2xl font-semibold leading-tight text-white sm:text-3xl">{activePage.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-slate-400">
+                      {activePage.chapterNumber}. {activePage.chapterTitle} · {formatType(activePage.type)}
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      disabled={!previousBookPage}
+                      onClick={() => previousBookPage && chooseEbookPage(previousBookPage)}
+                      className={cn(
+                        "inline-flex min-h-10 items-center justify-center rounded-[8px] border px-3 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-amber-300/40",
+                        previousBookPage ? "border-white/10 text-slate-200 hover:border-amber-300/35 hover:text-amber-100" : "cursor-not-allowed border-white/5 text-slate-700",
+                      )}
+                    >
+                      Previous
+                    </button>
+                    <button
+                      type="button"
+                      disabled={!nextBookPage}
+                      onClick={() => nextBookPage && chooseEbookPage(nextBookPage)}
+                      className={cn(
+                        "inline-flex min-h-10 items-center justify-center rounded-[8px] border px-3 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-amber-300/40",
+                        nextBookPage ? "border-white/10 text-slate-200 hover:border-amber-300/35 hover:text-amber-100" : "cursor-not-allowed border-white/5 text-slate-700",
+                      )}
+                    >
+                      Next
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActivePremiumTab("materials");
+                        choosePage(activePage);
+                      }}
+                      className="inline-flex min-h-10 items-center justify-center gap-2 rounded-[8px] bg-amber-300 px-3 text-sm font-bold text-slate-950 transition hover:bg-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-100"
+                    >
+                      Practice this page
+                      <ChevronRight aria-hidden="true" className="size-4" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold">
+                  {activePage.skillTags.slice(0, 8).map((skill) => (
+                    <span key={skill} className="rounded-[8px] border border-white/10 bg-slate-950/35 px-2.5 py-1.5 text-slate-300">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="mt-4 grid gap-2 sm:grid-cols-4">
+                  {[
+                    ["Words", activePage.wordCount],
+                    ["Fields", activePage.fieldCount],
+                    ["Checks", activePage.checkboxCount],
+                    ["Blocks", activePage.blocks.length],
+                  ].map(([label, value]) => (
+                    <div key={label} className="rounded-[8px] border border-white/10 bg-slate-950/32 p-3">
+                      <p className="text-sm font-semibold text-white">{value}</p>
+                      <p className="mt-1 text-xs text-slate-500">{label}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-4 sm:p-6">
+                <div className="rounded-[8px] border border-amber-200/16 bg-amber-200/[0.055] p-4">
+                  <p className="text-xs font-semibold uppercase text-amber-100">Reader mode</p>
+                  <p className="mt-2 text-sm leading-7 text-slate-300">
+                    This view is intentionally read-only. Use it like an ebook; use Practice this page, Material Library, Exam Mode, or Writing Vault when you want saved answers and progress tracking.
+                  </p>
+                </div>
+
+                <div className="mt-5 grid gap-3">
+                  {activeBlocks.length ? (
+                    activeBlocks.map((block, index) => {
+                      const isAnswerField = block === "[answer field]";
+                      const isCheckbox = block.startsWith("[checkbox]");
+                      const isShortHeading = index > 0 && block.length <= 48 && !block.includes(".") && !block.includes("?") && !isAnswerField && !isCheckbox;
+
+                      if (isAnswerField) {
+                        return (
+                          <div key={`${activePage.id}-ebook-${index}`} className="rounded-[8px] border border-dashed border-amber-200/25 bg-slate-950/32 px-4 py-3 text-sm font-semibold text-amber-100">
+                            Answer field in original booklet
+                          </div>
+                        );
+                      }
+
+                      if (isCheckbox) {
+                        return (
+                          <div key={`${activePage.id}-ebook-${index}`} className="flex items-start gap-3 rounded-[8px] border border-white/10 bg-white/[0.035] px-4 py-3 text-sm leading-6 text-slate-300">
+                            <span className="mt-1 flex size-4 shrink-0 rounded-[4px] border border-amber-200/40" />
+                            <span>{block.replace("[checkbox]", "").trim()}</span>
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <p
+                          key={`${activePage.id}-ebook-${index}`}
+                          className={cn(
+                            "break-words",
+                            isShortHeading
+                              ? "mt-3 text-base font-semibold leading-7 text-white sm:text-lg"
+                              : "text-base leading-8 text-slate-200 sm:text-[1.02rem] sm:leading-8",
+                          )}
+                        >
+                          {block}
+                        </p>
+                      );
+                    })
+                  ) : (
+                    <p className="rounded-[8px] border border-dashed border-slate-500/35 bg-slate-950/30 p-4 text-sm leading-6 text-slate-400">This imported page has no readable text blocks.</p>
+                  )}
+                </div>
+              </div>
+            </article>
           </div>
         ) : null}
 

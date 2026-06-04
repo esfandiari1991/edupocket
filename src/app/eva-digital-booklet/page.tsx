@@ -51,14 +51,14 @@ function EvaProductStructuredData() {
 
 export const metadata: Metadata = {
   title: "Eva Digital Booklet by Ali Rad",
-  description: "Ali Rad's first official digital study product inside EduPocket: a private Eva Digital Booklet gateway for structured IELTS and TOEFL-style reading and writing practice.",
-  keywords: ["Eva Digital Booklet", "IELTS writing practice", "TOEFL reading practice", "premium English booklet", "EduPocket", "digital English booklet"],
+  description: "Ali Rad's first official digital study product inside EduPocket: a private Eva Digital Booklet gateway for structured IELTS, TOEFL, reading, writing, grammar, lexical resource, pronunciation, and ministry-English practice.",
+  keywords: ["Eva Digital Booklet", "IELTS writing practice", "TOEFL reading practice", "IELTS reading practice", "TOEFL writing practice", "premium English booklet", "EduPocket", "digital English booklet", "grammar practice", "lexical resource", "pronunciation lab"],
   alternates: {
     canonical: "/eva-digital-booklet",
   },
   openGraph: {
     title: "Eva Digital Booklet | EduPocket",
-    description: "Ali Rad's first official digital study product inside EduPocket: structured reading and writing practice in a premium-member study portal.",
+    description: "Ali Rad's first official digital study product inside EduPocket: structured IELTS/TOEFL-style reading, writing, grammar, lexical resource, pronunciation, and review practice in a premium-member study portal.",
     url: "/eva-digital-booklet",
     images: [
       {
@@ -72,7 +72,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Eva Digital Booklet | EduPocket",
-    description: "Ali Rad's first official digital study product inside EduPocket: structured reading and writing practice in a premium-member study portal.",
+    description: "Ali Rad's first official digital study product inside EduPocket: structured IELTS/TOEFL-style reading, writing, grammar, lexical resource, pronunciation, and review practice in a premium-member study portal.",
     images: ["/images/eva/eva-digital-booklet-study.jpg"],
   },
 };

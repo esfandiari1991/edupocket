@@ -10,6 +10,8 @@ The Eva Digital Booklet is EduPocket's first private digital-product portal. The
 
 The studio content is generated from the full Eva workbook into `src/lib/eva-booklet.generated.json` and loaded through server-side code. It is not stored in `public/`.
 
+The protected studio includes a read-only ebook reader for all 298 imported workbook pages, plus source-page search, chapter navigation, page navigation, practice jumps, material packs, exam mode, writing vault, pronunciation/TTS work, review tracking, and teacher notes.
+
 The paid-product architecture uses:
 
 - Postgres-backed premium memberships

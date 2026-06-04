@@ -9,7 +9,7 @@ export function StructuredData() {
   const sameAs = [siteConfig.contact.telegram.href, siteConfig.contact.instagram.href, siteConfig.contact.bale.href];
   const logo = `${base}/icons/edupocket-mark.svg`;
   const serviceArea = siteConfig.teacherProfile.regions.map((name) => ({ "@type": "Place", name }));
-  const teachingServiceNames = [...siteConfig.teacherProfile.examPrep, ...siteConfig.teacherProfile.specializedEnglish];
+  const teachingServiceNames = [...siteConfig.teacherProfile.examPrep, ...siteConfig.teacherProfile.globalLanguageExams, ...siteConfig.teacherProfile.specializedEnglish];
   const teachingServices = teachingServiceNames.map((name, index) => ({
     "@type": "Offer",
     position: index + 1,
@@ -58,7 +58,7 @@ export function StructuredData() {
       })),
       audience: [
         { "@type": "Audience", audienceType: "English learners" },
-        { "@type": "Audience", audienceType: "IELTS, TOEFL, Cambridge English, GRE, and GMAT candidates" },
+        { "@type": "Audience", audienceType: "IELTS, TOEFL, Cambridge English, PTE, Duolingo, TOEIC, OET, GRE, and GMAT candidates" },
         { "@type": "Audience", audienceType: "Professionals looking for specialized English and English for Specific Purposes" },
         { "@type": "Audience", audienceType: "Parents looking for FCE and teen English support" },
         { "@type": "Audience", audienceType: "Teachers" },
@@ -102,7 +102,7 @@ export function StructuredData() {
       email: siteConfig.contactEmail,
       jobTitle: siteConfig.teacherProfile.role,
       description:
-        "Cambridge CELTA English teacher with 15+ years of experience in IELTS, TOEFL, Cambridge English, FCE/B2 First, GRE, GMAT, specialized English, academic English, business English, and AI-assisted learning systems.",
+        "Cambridge CELTA Holder with 15+ years of English teaching experience in IELTS, TOEFL, Cambridge English, FCE/B2 First, PTE, Duolingo, TOEIC, OET, GRE, GMAT, specialized English, academic English, business English, and AI-assisted learning systems.",
       worksFor: {
         "@id": `${base}/#organization`,
       },
@@ -150,7 +150,7 @@ export function StructuredData() {
       "@id": `${base}/#english-coaching-services`,
       name: "Ali Rad online English tutoring and exam preparation",
       description:
-        "Online English coaching for IELTS, TOEFL, Cambridge English, FCE/B2 First, GRE Verbal, GMAT Verbal, specialized English, academic writing, business English, kids English, and teen English.",
+        "Online English coaching for IELTS, TOEFL, Cambridge English, FCE/B2 First, PTE, Duolingo English Test, TOEIC, OET, LanguageCert, CELPIP, CAEL, GRE Verbal, GMAT Verbal, specialized English, academic writing, business English, kids English, and teen English.",
       itemListElement: teachingServices,
     },
     {
