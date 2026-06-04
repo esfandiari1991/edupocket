@@ -220,6 +220,7 @@ function pickRelatedLexical(page: EvaBookletPage) {
 export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: EvaStudioExperienceProps) {
   const locale = activeUser.locale === "fa" ? "fa" : "en";
   const copy = uiCopy[locale];
+  const isTeacherView = activeUser.canTeach;
   const [studioState, setStudioState] = useState<EvaStoredStudioState>(() => normalizeStoredState(null));
   const [teacherSnapshots, setTeacherSnapshots] = useState<Record<EvaUserId, EvaStoredStudioState>>({
     ali: normalizeStoredState(null),
@@ -514,29 +515,70 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
             <div className="max-w-3xl">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-200">Eva Digital Booklet Studio</p>
               <h2 className="mt-2 text-2xl font-semibold leading-tight text-white sm:text-4xl">
-                {locale === "fa" ? "یک صفحه بخوان، همان صفحه را تمرین کن." : "Read one page. Practice the same page."}
+                {isTeacherView
+                  ? locale === "fa"
+                    ? "یک صفحه بخوان، همان صفحه را تمرین کن."
+                    : "Read one page. Practice the same page."
+                  : locale === "fa"
+                    ? "تمرین امروزت همین‌جاست."
+                    : "Today's practice is here."}
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-300">
-                {locale === "fa"
-                  ? "این نسخه‌ی مینیمال، کل جزوه‌ی ۲۹۸ صفحه‌ای را به مسیرهای کوچک و قابل پیگیری تبدیل می‌کند: خواندن، جواب دادن، شنیدن، تکرار و مرور."
-                  : "A quiet study app for the full 298-page booklet: read, answer, listen, repeat, review, and move forward without noise."}
+                {isTeacherView
+                  ? locale === "fa"
+                    ? "این نسخه‌ی مینیمال، کل جزوه‌ی ۲۹۸ صفحه‌ای را به مسیرهای کوچک و قابل پیگیری تبدیل می‌کند: خواندن، جواب دادن، شنیدن، تکرار و مرور."
+                    : "A quiet study app for the full 298-page booklet: read, answer, listen, repeat, review, and move forward without noise."
+                  : locale === "fa"
+                    ? "اول تمرین را انجام بده. اگر لازم شد، متن همان صفحه را پایین‌تر بخوان. همین."
+                    : "Do the exercise first. If you need it, read the source page below. That is all."}
               </p>
             </div>
-            <div dir="ltr" className="grid min-w-0 grid-cols-3 gap-2 rounded-[8px] border border-white/10 bg-white/[0.035] p-2 text-center sm:min-w-[340px]">
-              <div className="rounded-[6px] bg-slate-950/62 px-3 py-3">
-                <p className="text-xl font-semibold text-white">{completedCount}</p>
-                <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">done</p>
-              </div>
-              <div className="rounded-[6px] bg-slate-950/62 px-3 py-3">
-                <p className="text-xl font-semibold text-amber-100">{compactPercent(progressPercent)}</p>
-                <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">coverage</p>
-              </div>
-              <div className="rounded-[6px] bg-slate-950/62 px-3 py-3">
-                <p className="text-xl font-semibold text-sky-100">{reviewIds.length}</p>
-                <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">review</p>
-              </div>
+            <div dir="ltr" className={cn("min-w-0 rounded-[8px] border border-white/10 bg-white/[0.035] p-2 text-center", isTeacherView ? "grid grid-cols-3 gap-2 sm:min-w-[340px]" : "w-full sm:w-[300px]")}>
+              {isTeacherView ? (
+                <>
+                  <div className="rounded-[6px] bg-slate-950/62 px-3 py-3">
+                    <p className="text-xl font-semibold text-white">{completedCount}</p>
+                    <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">done</p>
+                  </div>
+                  <div className="rounded-[6px] bg-slate-950/62 px-3 py-3">
+                    <p className="text-xl font-semibold text-amber-100">{compactPercent(progressPercent)}</p>
+                    <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">coverage</p>
+                  </div>
+                  <div className="rounded-[6px] bg-slate-950/62 px-3 py-3">
+                    <p className="text-xl font-semibold text-sky-100">{reviewIds.length}</p>
+                    <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">review</p>
+                  </div>
+                </>
+              ) : (
+                <div className="rounded-[6px] bg-slate-950/62 px-4 py-3 text-left">
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+                    Page {activePage.page} of {booklet.stats.pages}
+                  </p>
+                  <p className="mt-1 text-xl font-semibold text-white">{compactPercent(progressPercent)} complete</p>
+                </div>
+              )}
             </div>
           </div>
+
+          {!isTeacherView ? (
+            <StudentPathPicker
+              booklet={booklet}
+              chapters={booklet.chapters}
+              pagesInChapter={pagesInActiveChapter}
+              activeChapter={activeChapter}
+              activePage={activePage}
+              state={studioState}
+              locale={locale}
+              onChapter={(chapterId) => {
+                const chapter = booklet.chapters.find((item) => item.id === chapterId);
+                if (chapter) chooseChapter(chapter);
+              }}
+              onPage={(pageId) => {
+                const page = booklet.pages.find((item) => item.id === pageId);
+                if (page) choosePage(page);
+              }}
+            />
+          ) : null}
 
           <div className="mt-5 h-2 overflow-hidden rounded-full bg-white/10">
             <div className="h-full rounded-full bg-gradient-to-r from-amber-300 via-sky-300 to-teal-300 transition-all duration-500" style={{ width: `${Math.max(2, progressPercent)}%` }} />
@@ -573,7 +615,8 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
           </div>
         </div>
 
-        <div className="grid gap-0 xl:grid-cols-[290px_minmax(0,1fr)]">
+        <div className={cn("grid gap-0", isTeacherView && "xl:grid-cols-[290px_minmax(0,1fr)]")}>
+          {isTeacherView ? (
           <aside className="min-w-0 border-b border-white/10 p-4 sm:p-5 xl:border-b-0 xl:border-r xl:border-white/10">
             <label className="relative block">
               <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-500 rtl:left-auto rtl:right-3" />
@@ -617,6 +660,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
               })}
             </div>
           </aside>
+          ) : null}
 
           <main className="min-w-0 p-4 sm:p-5">
             {activeView === "review" ? (
@@ -641,8 +685,8 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                 }}
               />
             ) : (
-              <div className="grid gap-5 2xl:grid-cols-[minmax(0,1.04fr)_minmax(360px,0.72fr)]">
-                <article dir="ltr" className="min-w-0 rounded-[8px] border border-white/10 bg-white/[0.035] p-4 text-left sm:p-5">
+              <div className={cn("grid gap-5", isTeacherView ? "2xl:grid-cols-[minmax(0,1.04fr)_minmax(360px,0.72fr)]" : "mx-auto max-w-4xl")}>
+                <article dir="ltr" className={cn("min-w-0 rounded-[8px] border border-white/10 bg-white/[0.035] p-4 text-left sm:p-5", !isTeacherView && "order-2")}>
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div className="min-w-0">
                       <p className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-200">
@@ -671,11 +715,13 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                     </div>
                   </div>
 
+                  {isTeacherView ? (
                   <div className="mt-5 grid gap-3 sm:grid-cols-3">
                     <InfoStrip icon={Target} label="Chapter" value={`${activeChapterIndex + 1}. ${activeChapter.shortTitle}`} />
                     <InfoStrip icon={NotebookPen} label="Fields" value={`${activePage.fieldCount} prompts`} />
                     <InfoStrip icon={ListChecks} label="Checklist" value={`${activePage.checkboxCount} checks`} />
                   </div>
+                  ) : null}
 
                   <div className="mt-5 rounded-[8px] border border-white/10 bg-slate-950/44 p-4">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -709,6 +755,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                     </div>
                   </div>
 
+                  {isTeacherView ? (
                   <div className="mt-5">
                     <h4 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-400">Pages in this path</h4>
                     <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
@@ -731,9 +778,10 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                       ))}
                     </div>
                   </div>
+                  ) : null}
                 </article>
 
-                <aside className="min-w-0 space-y-5">
+                <aside className={cn("min-w-0 space-y-5", !isTeacherView && "order-1")}>
                   <section dir="ltr" className="rounded-[8px] border border-amber-200/20 bg-gradient-to-b from-amber-200/10 to-white/[0.035] p-4 text-left sm:p-5">
                     <div className="flex items-start justify-between gap-3">
                       <div>
@@ -813,6 +861,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                     </div>
                   </section>
 
+                  {isTeacherView ? (
                   <section dir="ltr" className="rounded-[8px] border border-white/10 bg-white/[0.035] p-4 text-left sm:p-5">
                     <div className="flex items-start gap-3">
                       <div className="flex size-10 shrink-0 items-center justify-center rounded-[8px] border border-amber-200/25 bg-amber-200/10 text-amber-100">
@@ -845,7 +894,9 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                       {relatedModule.evidence}
                     </button>
                   </section>
+                  ) : null}
 
+                  {isTeacherView ? (
                   <section className="grid gap-3 sm:grid-cols-2">
                     <MiniPracticeCard
                       icon={Headphones}
@@ -871,6 +922,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                       }}
                     />
                   </section>
+                  ) : null}
                 </aside>
               </div>
             )}
@@ -882,6 +934,72 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
         </div>
       </div>
     </section>
+  );
+}
+
+function StudentPathPicker({
+  chapters,
+  pagesInChapter,
+  activeChapter,
+  activePage,
+  state,
+  locale,
+  onChapter,
+  onPage,
+}: {
+  booklet: EvaBooklet;
+  chapters: EvaBookletChapter[];
+  pagesInChapter: EvaBookletPage[];
+  activeChapter: EvaBookletChapter;
+  activePage: EvaBookletPage;
+  state: EvaStoredStudioState;
+  locale: "en" | "fa";
+  onChapter: (chapterId: string) => void;
+  onPage: (pageId: string) => void;
+}) {
+  const chapterDone = activeChapter.pageIds.filter((pageId) => isPageComplete(state, pageId)).length;
+
+  return (
+    <div className="mt-5 rounded-[8px] border border-white/10 bg-white/[0.025] p-3">
+      <div className="grid gap-3 sm:grid-cols-2">
+        <label className="block">
+          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{locale === "fa" ? "فصل" : "Chapter"}</span>
+          <select
+            value={activeChapter.id}
+            onChange={(event) => onChapter(event.target.value)}
+            className="mt-2 min-h-11 w-full rounded-[8px] border border-white/10 bg-slate-950/70 px-3 text-sm font-semibold text-white outline-none focus:border-amber-200/45 focus:ring-2 focus:ring-amber-200/15"
+          >
+            {chapters.map((chapter) => (
+              <option key={chapter.id} value={chapter.id}>
+                {chapter.label} · {chapter.shortTitle}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="block">
+          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{locale === "fa" ? "صفحه" : "Page"}</span>
+          <select
+            value={activePage.id}
+            onChange={(event) => onPage(event.target.value)}
+            className="mt-2 min-h-11 w-full rounded-[8px] border border-white/10 bg-slate-950/70 px-3 text-sm font-semibold text-white outline-none focus:border-amber-200/45 focus:ring-2 focus:ring-amber-200/15"
+          >
+            {pagesInChapter.map((page) => (
+              <option key={page.id} value={page.id}>
+                {page.page}. {page.title}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      <div className="mt-3 flex items-center justify-between gap-3 text-xs font-semibold text-slate-400" dir="ltr">
+        <span>
+          {chapterDone}/{activeChapter.pageIds.length} pages done
+        </span>
+        <span>{activePage.title}</span>
+      </div>
+    </div>
   );
 }
 
