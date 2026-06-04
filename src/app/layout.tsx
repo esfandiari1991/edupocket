@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.canonicalUrl),
   applicationName: siteConfig.name,
   title: {
-    default: `${siteConfig.name} - English, AI, and practical learning systems`,
+    default: `${siteConfig.name} - CELTA English Teacher, IELTS, TOEFL, FCE, GRE & GMAT Coaching`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
@@ -86,7 +86,7 @@ export const metadata: Metadata = {
     type: "website",
     url: siteConfig.canonicalUrl,
     siteName: siteConfig.name,
-    title: `${siteConfig.name} - English, AI, and practical learning systems`,
+    title: `${siteConfig.name} - CELTA English Teacher, IELTS, TOEFL, FCE, GRE & GMAT Coaching`,
     description: siteConfig.description,
     locale: "en_US",
     alternateLocale: ["fa_IR"],
@@ -101,7 +101,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.name} - English, AI, and practical learning systems`,
+    title: `${siteConfig.name} - CELTA English Teacher, IELTS, TOEFL, FCE, GRE & GMAT Coaching`,
     description: siteConfig.description,
     images: ["/twitter-image"],
   },

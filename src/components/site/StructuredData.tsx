@@ -8,6 +8,24 @@ export function StructuredData() {
   const base = siteConfig.canonicalUrl;
   const sameAs = [siteConfig.contact.telegram.href, siteConfig.contact.instagram.href, siteConfig.contact.bale.href];
   const logo = `${base}/icons/edupocket-mark.svg`;
+  const serviceArea = siteConfig.teacherProfile.regions.map((name) => ({ "@type": "Place", name }));
+  const teachingServices = siteConfig.teacherProfile.examPrep.map((name, index) => ({
+    "@type": "Offer",
+    position: index + 1,
+    itemOffered: {
+      "@type": "Service",
+      name: `${name} coaching with Ali Rad`,
+      serviceType: "Online English tutoring and exam preparation",
+      provider: {
+        "@id": `${base}/#person`,
+      },
+      areaServed: serviceArea,
+      availableChannel: {
+        "@type": "ServiceChannel",
+        serviceUrl: `${base}/about`,
+      },
+    },
+  }));
   const primaryPages = [
     { name: "Eva Digital Booklet by Ali Rad", url: `${base}/eva-digital-booklet`, description: "Ali Rad's first official digital study product inside EduPocket: private IELTS and TOEFL-style reading and writing practice." },
     { name: "English Lab", url: `${base}/english-lab`, description: "Interactive English practice for grammar, vocabulary, reading, listening, writing, exams, and level checks." },
@@ -39,6 +57,8 @@ export function StructuredData() {
       })),
       audience: [
         { "@type": "Audience", audienceType: "English learners" },
+        { "@type": "Audience", audienceType: "IELTS, TOEFL, Cambridge English, GRE, and GMAT candidates" },
+        { "@type": "Audience", audienceType: "Parents looking for FCE and teen English support" },
         { "@type": "Audience", audienceType: "Teachers" },
         { "@type": "Audience", audienceType: "AI builders" },
         { "@type": "Audience", audienceType: "Self-learners" },
@@ -78,13 +98,30 @@ export function StructuredData() {
       url: `${base}/about`,
       image: `${base}/images/ali-rad-profile.jpg`,
       email: siteConfig.contactEmail,
-      jobTitle: "English teacher, AI learning-system builder, and education technologist",
+      jobTitle: siteConfig.teacherProfile.role,
+      description:
+        "Cambridge CELTA English teacher with 15+ years of experience in IELTS, TOEFL, Cambridge English, FCE/B2 First, GRE, GMAT, academic English, business English, and AI-assisted learning systems.",
       worksFor: {
         "@id": `${base}/#organization`,
       },
       sameAs,
-      knowsAbout: siteConfig.topics,
+      hasCredential: [
+        {
+          "@type": "EducationalOccupationalCredential",
+          name: "Cambridge CELTA",
+          credentialCategory: "English language teaching certificate",
+          recognizedBy: {
+            "@type": "Organization",
+            name: "Cambridge English",
+          },
+        },
+      ],
+      knowsAbout: [...siteConfig.topics, ...siteConfig.teacherProfile.examPrep],
       knowsLanguage: ["English", "Persian", "Arabic"],
+      areaServed: serviceArea,
+      makesOffer: {
+        "@id": `${base}/#english-coaching-services`,
+      },
     },
     {
       "@context": "https://schema.org",
@@ -99,7 +136,20 @@ export function StructuredData() {
       founder: {
         "@id": `${base}/#person`,
       },
+      areaServed: serviceArea,
+      makesOffer: {
+        "@id": `${base}/#english-coaching-services`,
+      },
       sameAs,
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "OfferCatalog",
+      "@id": `${base}/#english-coaching-services`,
+      name: "Ali Rad online English tutoring and exam preparation",
+      description:
+        "Online English coaching for IELTS, TOEFL, Cambridge English, FCE/B2 First, GRE Verbal, GMAT Verbal, academic writing, business English, kids English, and teen English.",
+      itemListElement: teachingServices,
     },
     {
       "@context": "https://schema.org",

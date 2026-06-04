@@ -1,35 +1,56 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { BrainCircuit, GraduationCap, Languages, Laptop, ListChecks, Repeat } from "lucide-react";
+import { Award, BrainCircuit, Globe2, GraduationCap, Languages, Laptop, ListChecks, Repeat } from "lucide-react";
 import { ContactPanel } from "@/components/site/ContactPanel";
 import { Container } from "@/components/site/Container";
 import { LocalizedText } from "@/components/site/LocalizedText";
 import { SectionHeading } from "@/components/site/SectionHeading";
+import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "About Ali Rad",
-  description: "Learn about Ali Rad, the teacher and builder behind EduPocket.",
-  keywords: ["Ali Esfandiari Rad", "Ali Rad", "English teacher", "AI learning-system builder", "online tutor"],
+  title: "About Ali Rad - CELTA English Teacher, IELTS, TOEFL, FCE, GRE & GMAT Tutor",
+  description:
+    "Ali Esfandiari Rad is a Cambridge CELTA English teacher with 15+ years of experience in IELTS, TOEFL, Cambridge FCE/B2 First, GRE, GMAT, academic writing, business English, and AI-assisted learning systems.",
+  keywords: [
+    "Ali Esfandiari Rad",
+    "Ali Rad",
+    "Cambridge CELTA English teacher",
+    "English teacher 15 years experience",
+    "IELTS tutor online",
+    "TOEFL iBT teacher",
+    "FCE teacher for teens",
+    "Cambridge B2 First tutor",
+    "GRE verbal tutor",
+    "GMAT verbal tutor",
+    "online English teacher China Taiwan Canada USA",
+    "AI learning-system builder",
+    "online tutor",
+  ],
   alternates: {
     canonical: "/about",
   },
   openGraph: {
-    title: "About Ali Rad",
-    description: "Learn about Ali Rad, the teacher and builder behind EduPocket.",
+    title: "About Ali Rad - CELTA English Teacher and EduPocket Founder",
+    description: "15+ years of English teaching, exam coaching, Cambridge CELTA training, and AI-assisted learning-system design.",
     url: "/about",
   },
   twitter: {
     card: "summary_large_image",
-    title: "About Ali Rad | EduPocket",
-    description: "Learn about Ali Rad, the teacher and builder behind EduPocket.",
+    title: "About Ali Rad | CELTA English Teacher | EduPocket",
+    description: "Cambridge CELTA English teacher with 15+ years of IELTS, TOEFL, FCE, GRE, GMAT, and academic English coaching experience.",
   },
 };
 
 const strengths = [
   {
     title: { en: "English teaching", fa: "آموزش انگلیسی" },
-    text: { en: "IELTS, TOEFL, KET, Business English, conversational English, and kids English.", fa: "آیلتس، تافل، KET، انگلیسی کسب‌وکار، مکالمه و انگلیسی کودکان." },
+    text: { en: "15+ years of IELTS, TOEFL, Cambridge English, business English, academic writing, conversation, kids, and teen English.", fa: "بیش از ۱۵ سال تجربه در آیلتس، تافل، آزمون‌های کمبریج، انگلیسی کسب‌وکار، رایتینگ آکادمیک، مکالمه و انگلیسی کودک و نوجوان." },
     icon: GraduationCap,
+  },
+  {
+    title: { en: "Cambridge CELTA", fa: "CELTA کمبریج" },
+    text: { en: "CELTA-holder teaching habits: clear lesson aims, learner-centered practice, useful feedback, and measurable progress.", fa: "رویکرد دارنده CELTA: هدف روشن، تمرین زبان‌آموزمحور، بازخورد کاربردی و پیشرفت قابل سنجش." },
+    icon: Award,
   },
   {
     title: { en: "Languages", fa: "زبان‌ها" },
@@ -58,6 +79,25 @@ const strengths = [
   },
 ];
 
+const examGroups = [
+  {
+    title: { en: "English proficiency exams", fa: "آزمون‌های مهارت انگلیسی" },
+    items: ["IELTS Academic", "IELTS General Training", "TOEFL iBT", "PTE Academic", "Duolingo English Test", "TOEIC"],
+  },
+  {
+    title: { en: "Cambridge English exams", fa: "آزمون‌های کمبریج" },
+    items: ["FCE / B2 First", "CAE / C1 Advanced", "CPE / C2 Proficiency", "KET / A2 Key", "PET / B1 Preliminary"],
+  },
+  {
+    title: { en: "Academic entrance exams", fa: "آزمون‌های ورودی آکادمیک" },
+    items: ["GRE Verbal", "GMAT Verbal", "SAT English", "ACT English"],
+  },
+  {
+    title: { en: "Learner pathways", fa: "مسیرهای زبان‌آموزی" },
+    items: ["Academic Writing", "Business English", "Conversation", "English for kids", "English for teens", "AI-assisted study routines"],
+  },
+];
+
 export default function AboutPage() {
   return (
     <Container className="py-16">
@@ -66,8 +106,8 @@ export default function AboutPage() {
         title={<LocalizedText en="About Ali Rad" fa="درباره علی راد" />}
         description={
           <LocalizedText
-            en="EduPocket is the public learning library of Ali Esfandiari Rad: English teacher, computer engineer, Arabic teacher, AI practitioner, CELTA student, online tutor, and language coach."
-            fa="EduPocket کتابخانه عمومی یادگیری علی اسفندیاری راد است: مدرس انگلیسی، مهندس کامپیوتر، مدرس عربی، فعال در هوش مصنوعی، زبان‌آموز CELTA، مدرس آنلاین و کوچ زبان."
+            en="EduPocket is the public learning library of Ali Esfandiari Rad: English teacher, computer engineer, Arabic teacher, AI practitioner, Cambridge CELTA holder, online tutor, and language coach."
+            fa="EduPocket کتابخانه عمومی یادگیری علی اسفندیاری راد است: مدرس انگلیسی، مهندس کامپیوتر، مدرس عربی، فعال در هوش مصنوعی، دارنده CELTA کمبریج، مدرس آنلاین و کوچ زبان."
           />
         }
       />
@@ -87,8 +127,8 @@ export default function AboutPage() {
             </h2>
             <p className="mt-4 text-sm leading-7 text-slate-400">
               <LocalizedText
-                en="Ali teaches English, exam preparation, math, SQL, Python, and AI learning systems online. EduPocket brings those lessons into a structured content hub: notes, micro-lessons, podcasts, and frameworks that help learners practice with clarity."
-                fa="علی انگلیسی، آمادگی آزمون، ریاضی، SQL، پایتون و سیستم‌های یادگیری با هوش مصنوعی را آنلاین تدریس می‌کند. EduPocket این تجربه‌ها را به یک هاب محتوایی ساختارمند تبدیل می‌کند: یادداشت، درس کوتاه، پادکست و چارچوب‌هایی که تمرین را شفاف‌تر می‌کنند."
+                en="Ali teaches English, exam preparation, academic writing, business English, conversation, SQL, Python, and AI learning systems online. EduPocket brings those lessons into a structured content hub: notes, micro-lessons, podcasts, and frameworks that help learners practice with clarity."
+                fa="علی انگلیسی، آمادگی آزمون، رایتینگ آکادمیک، انگلیسی کسب‌وکار، مکالمه، SQL، پایتون و سیستم‌های یادگیری با هوش مصنوعی را آنلاین تدریس می‌کند. EduPocket این تجربه‌ها را به یک هاب محتوایی ساختارمند تبدیل می‌کند: یادداشت، درس کوتاه، پادکست و چارچوب‌هایی که تمرین را شفاف‌تر می‌کنند."
               />
             </p>
             <p className="mt-4 text-sm leading-7 text-slate-400">
@@ -116,6 +156,47 @@ export default function AboutPage() {
           })}
         </div>
       </div>
+      <section className="mt-8 rounded-[8px] border border-amber-200/20 bg-[radial-gradient(circle_at_15%_0%,rgba(251,191,36,0.12),transparent_28rem),rgba(255,255,255,0.04)] p-5 sm:p-6">
+        <div className="grid gap-5 lg:grid-cols-[0.75fr_1.25fr] lg:items-start">
+          <div>
+            <div className="flex items-center gap-2 text-sm font-semibold text-amber-200">
+              <Globe2 aria-hidden="true" className="size-4" />
+              <LocalizedText en="Online English coaching" fa="کوچینگ آنلاین انگلیسی" />
+            </div>
+            <h2 className="mt-3 text-2xl font-semibold leading-tight text-white sm:text-3xl">
+              <LocalizedText en="Exam preparation for learners and parents worldwide." fa="آمادگی آزمون برای زبان‌آموزها و خانواده‌ها در سراسر جهان." />
+            </h2>
+            <p className="mt-4 text-sm leading-7 text-slate-300">
+              <LocalizedText
+                en="The goal is not only to pass a test. The goal is to build a repeatable English system: diagnosis, strategy, practice, feedback, review, and performance."
+                fa="هدف فقط قبول شدن در آزمون نیست. هدف ساختن یک سیستم تکرارپذیر انگلیسی است: تشخیص، استراتژی، تمرین، بازخورد، مرور و عملکرد."
+              />
+            </p>
+            <p className="mt-3 text-sm leading-7 text-slate-400">
+              <LocalizedText
+                en={`Remote lessons are suitable for learners in ${siteConfig.teacherProfile.regions.join(", ")}.`}
+                fa={`کلاس‌های آنلاین برای زبان‌آموزهای ${siteConfig.teacherProfile.faRegions.join("، ")} مناسب است.`}
+              />
+            </p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {examGroups.map((group) => (
+              <article key={group.title.en} className="rounded-[8px] border border-white/10 bg-slate-950/35 p-4">
+                <h3 className="text-sm font-semibold text-white">
+                  <LocalizedText en={group.title.en} fa={group.title.fa} />
+                </h3>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {group.items.map((item) => (
+                    <span key={item} className="rounded-[7px] border border-white/10 bg-white/[0.045] px-2.5 py-1.5 text-xs font-semibold text-slate-300">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
       <ContactPanel context="about" className="mt-8" />
     </Container>
   );

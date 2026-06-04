@@ -1,10 +1,31 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, BrainCircuit, FlaskConical, Handshake, Sparkles } from "lucide-react";
+import { ArrowRight, Award, BrainCircuit, FlaskConical, Globe2, GraduationCap, Handshake, Sparkles } from "lucide-react";
 import { EvaBookletGateway } from "@/components/eva/EvaBookletGateway";
 import { Container } from "@/components/site/Container";
 import { DirectContactButtons } from "@/components/site/DirectContactButtons";
 import { Hero } from "@/components/site/Hero";
 import { LocalizedText } from "@/components/site/LocalizedText";
+import { siteConfig } from "@/lib/site";
+
+export const metadata: Metadata = {
+  title: "Online English Teacher, IELTS, TOEFL, FCE, GRE & GMAT Coaching",
+  description:
+    "EduPocket by Ali Rad: Cambridge CELTA English teacher with 15+ years of experience in IELTS, TOEFL, Cambridge FCE/B2 First, GRE, GMAT, academic English, and AI-assisted study systems.",
+  keywords: [
+    ...siteConfig.seoKeywords,
+    "online IELTS teacher",
+    "online TOEFL tutor",
+    "FCE teacher for teens",
+    "Cambridge English teacher online",
+    "GRE verbal English tutor",
+    "GMAT verbal tutor online",
+    "English teacher for China Taiwan US Canada",
+  ],
+  alternates: {
+    canonical: "/",
+  },
+};
 
 const labHighlights = [
   {
@@ -26,6 +47,14 @@ const labHighlights = [
 
 const workModes = [
   {
+    title: { en: "Exam coaching", fa: "کوچینگ آزمون" },
+    text: {
+      en: "IELTS Academic/General, TOEFL iBT, Cambridge FCE/B2 First, CAE, CPE, KET, PET, PTE, Duolingo, GRE Verbal, GMAT Verbal, SAT, ACT, and TOEIC.",
+      fa: "IELTS Academic/General، TOEFL iBT، Cambridge FCE/B2 First، CAE، CPE، KET، PET، PTE، Duolingo، GRE Verbal، GMAT Verbal، SAT، ACT و TOEIC.",
+    },
+    icon: GraduationCap,
+  },
+  {
     title: { en: "AI learning systems", fa: "سیستم یادگیری با AI" },
     text: {
       en: "Turn scattered tools into a simple learning workflow for study, teaching, or content.",
@@ -43,11 +72,81 @@ const workModes = [
   },
 ];
 
+const teacherSignals = [
+  {
+    value: "15+",
+    label: { en: "years of English teaching", fa: "سال تجربه تدریس انگلیسی" },
+    text: { en: "Direct classroom, online tutoring, exam coaching, and learner feedback.", fa: "تدریس مستقیم، کلاس آنلاین، کوچینگ آزمون و بازخورد زبان‌آموز." },
+    icon: Award,
+  },
+  {
+    value: "CELTA",
+    label: { en: "Cambridge teaching credential", fa: "مدرک تدریس کمبریج" },
+    text: { en: "Cambridge CELTA-holder approach: clear aims, controlled practice, feedback, and measurable output.", fa: "رویکرد CELTA کمبریج: هدف روشن، تمرین کنترل‌شده، بازخورد و خروجی قابل سنجش." },
+    icon: GraduationCap,
+  },
+  {
+    value: "IELTS+",
+    label: { en: "major exam pathways", fa: "مسیرهای اصلی آزمون" },
+    text: { en: "IELTS, TOEFL, FCE/B2 First, CAE, GRE, GMAT, PTE, Duolingo, SAT, ACT, TOEIC, KET, and PET.", fa: "IELTS، TOEFL، FCE/B2 First، CAE، GRE، GMAT، PTE، Duolingo، SAT، ACT، TOEIC، KET و PET." },
+    icon: FlaskConical,
+  },
+  {
+    value: "Global",
+    label: { en: "online learners worldwide", fa: "زبان‌آموز آنلاین جهانی" },
+    text: { en: "Remote coaching for learners and parents from China and Taiwan to the United States, Canada, Europe, and beyond.", fa: "کوچینگ آنلاین برای زبان‌آموزها و خانواده‌ها از چین و تایوان تا آمریکا، کانادا، اروپا و فراتر." },
+    icon: Globe2,
+  },
+];
+
 export default function HomePage() {
   return (
     <>
       <Hero />
       <EvaBookletGateway compact />
+
+      <section className="motion-section-band border-b border-white/10 bg-[#06111f] py-12 sm:py-14">
+        <Container>
+          <div className="grid gap-4 lg:grid-cols-[0.8fr_1.2fr] lg:items-stretch">
+            <div className="motion-card motion-view rounded-[8px] border border-amber-200/20 bg-[linear-gradient(135deg,rgba(251,191,36,0.14),rgba(14,165,233,0.08)_55%,rgba(255,255,255,0.035))] p-5 sm:p-6">
+              <p className="text-sm font-semibold text-amber-200">
+                <LocalizedText en="The teacher behind EduPocket" fa="مدرس پشت EduPocket" />
+              </p>
+              <h2 className="mt-3 text-3xl font-semibold leading-tight text-white sm:text-4xl">
+                <LocalizedText en="Cambridge CELTA, 15+ years, and real exam coaching." fa="CELTA کمبریج، بیش از ۱۵ سال تجربه، و کوچینگ واقعی آزمون." />
+              </h2>
+              <p className="mt-4 text-sm leading-7 text-slate-300 sm:text-base">
+                <LocalizedText
+                  en="Ali Esfandiari Rad teaches English, academic writing, conversation, business English, kids and teen English, and high-stakes exam preparation through a practical feedback-first system."
+                  fa="علی اسفندیاری راد انگلیسی، رایتینگ آکادمیک، مکالمه، انگلیسی کسب‌وکار، انگلیسی کودک و نوجوان و آمادگی آزمون‌های مهم را با سیستم عملیِ مبتنی بر بازخورد تدریس می‌کند."
+                />
+              </p>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {teacherSignals.map((item) => {
+                const Icon = item.icon;
+
+                return (
+                  <article key={item.value} className="motion-card motion-view rounded-[8px] border border-white/10 bg-white/[0.045] p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <span className="text-2xl font-semibold text-white">{item.value}</span>
+                      <span className="flex size-10 shrink-0 items-center justify-center rounded-[8px] border border-amber-200/18 bg-amber-200/10 text-amber-200">
+                        <Icon aria-hidden="true" className="size-5" />
+                      </span>
+                    </div>
+                    <h3 className="mt-3 text-sm font-semibold text-amber-100">
+                      <LocalizedText en={item.label.en} fa={item.label.fa} />
+                    </h3>
+                    <p className="mt-2 text-sm leading-6 text-slate-400">
+                      <LocalizedText en={item.text.en} fa={item.text.fa} />
+                    </p>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        </Container>
+      </section>
 
       <section className="motion-section-band border-b border-white/10 bg-[#050b16] py-14 sm:py-16">
         <Container>

@@ -4,11 +4,12 @@ import { ArrowRight, BrainCircuit, GraduationCap, Sparkles } from "lucide-react"
 import { Container } from "@/components/site/Container";
 import { DirectContactButtons } from "@/components/site/DirectContactButtons";
 import { LocalizedText } from "@/components/site/LocalizedText";
+import { siteConfig } from "@/lib/site";
 
 const routes = [
-  { en: "English coaching", fa: "کوچینگ انگلیسی", icon: GraduationCap },
-  { en: "AI study systems", fa: "سیستم مطالعه با AI", icon: BrainCircuit },
-  { en: "Interactive practice", fa: "تمرین تعاملی", icon: Sparkles },
+  { en: `${siteConfig.teacherProfile.yearsOfExperience} years teaching`, fa: "بیش از ۱۵ سال تدریس", icon: GraduationCap },
+  { en: "Cambridge CELTA holder", fa: "دارنده CELTA کمبریج", icon: Sparkles },
+  { en: "IELTS TOEFL FCE GRE GMAT", fa: "IELTS TOEFL FCE GRE GMAT", icon: BrainCircuit },
 ];
 
 export function Hero() {
@@ -32,21 +33,21 @@ export function Hero() {
               <LocalizedText
                 en={
                   <>
-                    Practical learning, direct coaching, and <span className="motion-accent text-amber-200">AI-powered</span> English systems.
+                    Practical English coaching, exam prep, and <span className="motion-accent text-amber-200">AI-powered</span> learning systems.
                   </>
                 }
-                fa="یادگیری عملی، کوچینگ مستقیم، و سیستم‌های انگلیسی با کمک هوش مصنوعی."
+                fa="کوچینگ عملی انگلیسی، آمادگی آزمون، و سیستم‌های یادگیری با کمک هوش مصنوعی."
               />
             </h1>
             <p className="motion-reveal motion-delay-1 type-lead mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
               <LocalizedText
                 en={
                   <>
-                    EduPocket is Ali Rad&apos;s focused learning hub for students, teachers, and self-learners who want sharper
-                    English, smarter study routines, and useful AI habits.
+                    EduPocket is built by Ali Rad, a Cambridge CELTA English teacher with {siteConfig.teacherProfile.yearsOfExperience} years
+                    of experience helping learners prepare for IELTS, TOEFL, Cambridge English, GRE, GMAT, and real academic communication.
                   </>
                 }
-                fa="EduPocket هاب متمرکز علی راد برای دانشجوها، معلم‌ها و خودآموزهایی است که انگلیسی قوی‌تر، روتین مطالعه بهتر و عادت‌های کاربردی AI می‌خواهند."
+                fa="EduPocket توسط علی راد ساخته شده؛ مدرس انگلیسی دارنده CELTA کمبریج با بیش از ۱۵ سال تجربه در آمادگی آیلتس، تافل، آزمون‌های کمبریج، GRE، GMAT و ارتباط آکادمیک واقعی."
               />
             </p>
 
@@ -99,24 +100,33 @@ export function Hero() {
               <div className="relative overflow-hidden rounded-[6px]">
                 <Image
                   src="/images/ali-rad-learning.jpg"
+                  alt=""
+                  width={752}
+                  height={1360}
+                  unoptimized
+                  aria-hidden="true"
+                  className="absolute inset-0 z-0 h-full w-full scale-110 object-cover object-[58%_45%] opacity-35 blur-2xl brightness-125 saturate-125"
+                />
+                <Image
+                  src="/images/ali-rad-learning.jpg"
                   alt="Ali Rad studying and building learning systems"
                   width={752}
                   height={1360}
                   priority
                   unoptimized
-                  className="relative z-0 block h-[25rem] w-full object-cover object-[58%_34%] brightness-[1.08] contrast-[1.04] saturate-[1.12] sm:h-[34rem] lg:h-[38rem]"
+                  className="relative z-10 block h-[25rem] w-full object-contain object-center brightness-[1.08] contrast-[1.04] saturate-[1.12] sm:h-[34rem] lg:h-[38rem]"
                 />
                 <div
-                  className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(2,6,23,0.08),transparent_34%,rgba(2,6,23,0.2)_100%)]"
+                  className="pointer-events-none absolute inset-0 z-20 bg-[linear-gradient(180deg,rgba(2,6,23,0.03),transparent_34%,rgba(2,6,23,0.18)_100%)]"
                   aria-hidden="true"
                 />
-                <div className="motion-photo-grid" aria-hidden="true">
+                <div className="motion-photo-grid z-30" aria-hidden="true">
                   <span />
                   <span />
                   <span />
                   <span />
                 </div>
-                <div className="motion-signal-note pointer-events-none absolute left-4 top-4 hidden max-w-48 rounded-[8px] border border-white/12 bg-slate-950/62 p-3 shadow-[0_18px_54px_rgba(0,0,0,0.3)] sm:block">
+                <div className="motion-signal-note pointer-events-none absolute left-4 top-4 z-30 hidden max-w-48 rounded-[8px] border border-white/12 bg-slate-950/62 p-3 shadow-[0_18px_54px_rgba(0,0,0,0.3)] sm:block">
                   <div className="flex items-center gap-2 text-xs font-semibold text-amber-100">
                     <span className="motion-signal-dot size-2 rounded-full bg-amber-300" aria-hidden="true" />
                     <LocalizedText en="Focus -> feedback -> fluency" fa="تمرکز -> بازخورد -> تسلط" />
@@ -134,15 +144,15 @@ export function Hero() {
                     <LocalizedText en="Human first" fa="اول انسان" />
                   </p>
                   <p className="mt-2 text-sm leading-6 text-slate-300">
-                    <LocalizedText en="Real teaching practice, not anonymous content." fa="تجربه واقعی تدریس، نه محتوای بی‌هویت." />
+                    <LocalizedText en="15+ years of direct teaching, feedback, and exam preparation." fa="بیش از ۱۵ سال تدریس مستقیم، بازخورد و آمادگی آزمون." />
                   </p>
                 </div>
                 <div className="rounded-[8px] border border-white/10 bg-slate-950/70 p-4">
                   <p className="text-xs font-semibold uppercase text-sky-200">
-                    <LocalizedText en="Focused path" fa="مسیر متمرکز" />
+                    <LocalizedText en="Exam path" fa="مسیر آزمون" />
                   </p>
                   <p className="mt-2 text-sm leading-6 text-slate-300">
-                    <LocalizedText en="English, AI, and study systems in one place." fa="انگلیسی، AI و سیستم مطالعه در یک مسیر." />
+                    <LocalizedText en="IELTS, TOEFL, FCE, CAE, GRE, GMAT, PTE, Duolingo, and more." fa="IELTS، TOEFL، FCE، CAE، GRE، GMAT، PTE، Duolingo و بیشتر." />
                   </p>
                 </div>
               </div>

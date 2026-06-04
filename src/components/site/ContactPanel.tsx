@@ -12,8 +12,8 @@ const copy = {
   general: {
     title: { en: "Build your next learning step with me.", fa: "قدم بعدی یادگیری‌ات را با من بساز." },
     text: {
-      en: "Send one clear message for tutoring, English coaching, AI learning systems, content ideas, or education projects.",
-      fa: "برای تدریس، کوچینگ انگلیسی، سیستم یادگیری با هوش مصنوعی، ایده محتوا یا پروژه آموزشی یک پیام واضح بفرست.",
+      en: "Send one clear message for IELTS, TOEFL, FCE, GRE, GMAT, academic English, tutoring, AI learning systems, content ideas, or education projects.",
+      fa: "برای IELTS، TOEFL، FCE، GRE، GMAT، انگلیسی آکادمیک، تدریس، سیستم یادگیری با هوش مصنوعی، ایده محتوا یا پروژه آموزشی یک پیام واضح بفرست.",
     },
   },
   article: {
@@ -40,8 +40,8 @@ const copy = {
   about: {
     title: { en: "Work with me directly", fa: "مستقیم با من در ارتباط باش" },
     text: {
-      en: "For tutoring, language coaching, AI learning systems, or education projects, start with a direct message.",
-      fa: "برای تدریس، کوچینگ زبان، سیستم‌های یادگیری با هوش مصنوعی یا پروژه آموزشی، با یک پیام مستقیم شروع کن.",
+      en: "For CELTA-informed English tutoring, IELTS, TOEFL, FCE, GRE, GMAT, AI learning systems, or education projects, start with a direct message.",
+      fa: "برای تدریس انگلیسی مبتنی بر تجربه CELTA، IELTS، TOEFL، FCE، GRE، GMAT، سیستم‌های یادگیری با هوش مصنوعی یا پروژه آموزشی، با یک پیام مستقیم شروع کن.",
     },
   },
 };

@@ -7,7 +7,7 @@ import { LocalizedText } from "@/components/site/LocalizedText";
 
 export function MobileContactDock() {
   const pathname = usePathname();
-  const hideDock = pathname === "/" || pathname.startsWith("/eva-digital-booklet");
+  const hideDock = pathname === "/" || pathname === "/about" || pathname.startsWith("/eva-digital-booklet");
 
   if (hideDock) return null;
 
