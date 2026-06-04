@@ -209,6 +209,39 @@ const premiumTabs: Array<{ id: PremiumTabId; title: string; description: string 
   { id: "vault", title: "Writing Vault", description: "Saved drafts and teacher notes." },
 ];
 
+const materialTrackContracts: Record<EvaMaterialTrack, { output: string; savedAs: string; assessment: string; nextStep: string }> = {
+  reading: {
+    output: "answered passage + rationale review",
+    savedAs: "material answers and review items",
+    assessment: "answer key, inference, vocabulary, detail",
+    nextStep: "write one evidence sentence in the source page note",
+  },
+  writing: {
+    output: "timed paragraph or essay draft",
+    savedAs: "Writing Vault draft",
+    assessment: "rubric, task response, cohesion, lexical resource",
+    nextStep: "submit the draft to Teacher Lens for one concrete correction",
+  },
+  listening: {
+    output: "sequence check + shadowed script",
+    savedAs: "TTS listened/repeated signals",
+    assessment: "listening detail, command recognition, response quality",
+    nextStep: "repeat the script and add one weak phrase to review",
+  },
+  pronunciation: {
+    output: "stress-controlled word or sentence",
+    savedAs: "Pronunciation Lab practice signal",
+    assessment: "stress, syllable clarity, sentence transfer",
+    nextStep: "use the word in a source-page note before marking done",
+  },
+  teacher: {
+    output: "adapted feedback note",
+    savedAs: "Writing Vault draft or Teacher Lens note",
+    assessment: "specificity, learner action, review transfer",
+    nextStep: "paste into Teacher Lens for Eva or Elham",
+  },
+};
+
 function unique(values: string[]) {
   return Array.from(new Set(values.filter(Boolean)));
 }
@@ -773,6 +806,21 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
   const activeMaterialTtsText = activeMaterial.ttsScript ?? activeMaterial.passage ?? activeMaterial.prompt ?? activeMaterial.summary;
   const activeMaterialTtsKey = `tts-material-${activeMaterial.id}`;
   const activeMaterialSourcePages = booklet.pages.filter((page) => activeMaterial.sourceTypeTargets.includes(page.type)).slice(0, 5);
+  const firstWritingMaterial = evaMaterialItems.find((item) => item.track === "writing") ?? activeMaterial;
+  const activeMaterialContract = materialTrackContracts[activeMaterial.track];
+  const activeMaterialProgressPercent = activeMaterial.questions.length
+    ? Math.round((activeMaterialAnswered.length / activeMaterial.questions.length) * 100)
+    : activeMaterialDraft.trim()
+      ? 100
+      : done[activeMaterial.id]
+        ? 100
+        : 0;
+  const activeExamProgressPercent = activeExamTask.questions.length
+    ? Math.round((activeExamAnswered.length / activeExamTask.questions.length) * 100)
+    : writingDrafts[`exam-${activeExamTask.id}`]?.trim()
+      ? 100
+      : 0;
+  const activeExamScorePercent = activeExamTask.questions.length ? Math.round((activeExamCorrect.length / activeExamTask.questions.length) * 100) : null;
   const currentStoredState = normalizeStoredState({
     activeStackId,
     activeChapterId,
@@ -799,6 +847,11 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     teacherNotes,
   });
   const visibleTeacherSnapshots = { ...teacherSnapshots, [activeUser.id]: currentStoredState };
+  const activeTeacherSnapshot = normalizeStoredState(visibleTeacherSnapshots[activeTeacherTargetId]);
+  const activeTeacherDraftCount = Object.values(activeTeacherSnapshot.writingDrafts).filter((value) => value.trim()).length;
+  const activeTeacherReviewCount = Object.values(activeTeacherSnapshot.reviewQueue).filter(Boolean).length;
+  const activeTeacherQuizCorrect = evaQuizQuestions.filter((question) => activeTeacherSnapshot.quizAnswers[question.id] === question.answerIndex).length;
+  const activeTeacherTtsTotal = Object.values(activeTeacherSnapshot.ttsListened).reduce((sum, value) => sum + value, 0);
   const nextIncompletePage = visiblePages.find((page) => !done[page.id] && page.id !== activePage.id) ?? booklet.pages.find((page) => !done[page.id]);
   const smartNextStep = reviewPages[0]
     ? { label: "Review weak page", text: reviewPages[0].title, action: () => choosePage(reviewPages[0]) }
@@ -1333,8 +1386,23 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
               <p className="mt-2 text-sm leading-6 text-slate-300">
                 Target: {evaSeedUsers.find((user) => user.id === activeTeacherTargetId)?.displayName}. Page {String(activePage.page).padStart(3, "0")}.
               </p>
+              <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
+                {[
+                  ["Done", recordCount(activeTeacherSnapshot.done)],
+                  ["Drafts", activeTeacherDraftCount],
+                  ["Quiz", `${activeTeacherQuizCorrect}/${evaQuizQuestions.length}`],
+                  ["Review", activeTeacherReviewCount],
+                  ["TTS", activeTeacherTtsTotal],
+                  ["Notes", Object.values(activeTeacherSnapshot.teacherNotes).filter((value) => value.trim()).length],
+                ].map(([label, value]) => (
+                  <div key={label} className="rounded-[8px] border border-white/10 bg-slate-950/30 p-2">
+                    <p className="font-semibold text-white">{value}</p>
+                    <p className="text-xs text-slate-500">{label}</p>
+                  </div>
+                ))}
+              </div>
               <textarea
-                value={normalizeStoredState(visibleTeacherSnapshots[activeTeacherTargetId]).teacherNotes[activePage.id] ?? ""}
+                value={activeTeacherSnapshot.teacherNotes[activePage.id] ?? ""}
                 onChange={(event) => updateTeacherNote(activeTeacherTargetId, event.target.value)}
                 className="mt-3 min-h-28 w-full resize-y rounded-[8px] border border-white/10 bg-slate-950/72 p-3 text-sm leading-7 text-slate-100 outline-none transition placeholder:text-slate-600 focus:border-amber-300/50 focus:ring-2 focus:ring-amber-300/20"
                 placeholder="Write Ali's feedback, weak skill, or next assignment..."
@@ -1438,6 +1506,32 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                   </button>
                 );
               })}
+            </div>
+            <div className="rounded-[8px] border border-sky-200/15 bg-sky-300/[0.045] p-4 lg:col-span-2">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <h3 className="text-sm font-semibold text-sky-100">Complete section map</h3>
+                  <p className="mt-1 text-sm leading-6 text-slate-400">Every premium area has content, an action, a saved record, and a review path.</p>
+                </div>
+                <span className="text-xs font-semibold uppercase text-slate-500">Product contract</span>
+              </div>
+              <div className="mt-4 grid gap-2 md:grid-cols-2 xl:grid-cols-4">
+                {[
+                  { title: "Source workbook", action: "read + annotate", saved: `${booklet.stats.pages} pages`, proof: "page done, note, TTS" },
+                  { title: "Skill modules", action: "practice + evidence", saved: `${evaSkillModules.length} modules`, proof: "module done, source jump" },
+                  { title: "Material packs", action: "answer + draft", saved: `${evaMaterialStats.items} packs`, proof: "answers, drafts, review" },
+                  { title: "Teacher system", action: "inspect + assign", saved: "3 member records", proof: "notes, weak map, next step" },
+                ].map((item) => (
+                  <div key={item.title} className="rounded-[8px] border border-white/10 bg-slate-950/30 p-3">
+                    <p className="text-sm font-semibold text-white">{item.title}</p>
+                    <p className="mt-2 text-xs leading-5 text-slate-400">{item.action}</p>
+                    <div className="mt-3 grid gap-1 text-xs">
+                      <span className="text-amber-100">{item.saved}</span>
+                      <span className="text-slate-500">{item.proof}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         ) : null}
@@ -1691,6 +1785,9 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                         </span>
                       </span>
                       <span className="mt-1 block text-xs leading-5 text-slate-500">{collection.description}</span>
+                      <span className="mt-2 block rounded-[6px] border border-white/10 bg-slate-950/30 px-2 py-1 text-xs leading-5 text-slate-400">
+                        Output: {materialTrackContracts[collection.id].output}
+                      </span>
                     </button>
                   );
                 })}
@@ -1709,6 +1806,20 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                       <p className="text-xs text-slate-500">{label}</p>
                     </div>
                   ))}
+                </div>
+              </div>
+              <div className="mt-4 rounded-[8px] border border-amber-200/16 bg-amber-200/[0.06] p-3">
+                <p className="text-xs font-semibold uppercase text-amber-100">Active track contract</p>
+                <div className="mt-3 grid gap-2 text-sm leading-6 text-slate-300">
+                  <p>
+                    <span className="font-semibold text-white">Output:</span> {activeMaterialContract.output}
+                  </p>
+                  <p>
+                    <span className="font-semibold text-white">Saved as:</span> {activeMaterialContract.savedAs}
+                  </p>
+                  <p>
+                    <span className="font-semibold text-white">Next:</span> {activeMaterialContract.nextStep}
+                  </p>
                 </div>
               </div>
             </aside>
@@ -1780,6 +1891,20 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                     {done[activeMaterial.id] ? <Check aria-hidden="true" className="size-4" /> : null}
                   </span>
                 </label>
+              </div>
+
+              <div className="mt-4 grid gap-2 md:grid-cols-4">
+                {[
+                  ["Output", activeMaterialContract.output],
+                  ["Saved as", activeMaterialContract.savedAs],
+                  ["Assessment", activeMaterialContract.assessment],
+                  ["Progress", `${activeMaterialProgressPercent}%`],
+                ].map(([label, value]) => (
+                  <div key={label} className="rounded-[8px] border border-white/10 bg-white/[0.035] p-3">
+                    <p className="text-xs font-semibold uppercase text-slate-500">{label}</p>
+                    <p className="mt-2 text-sm leading-6 text-slate-300">{value}</p>
+                  </div>
+                ))}
               </div>
 
               <div className="mt-5 grid gap-4 xl:grid-cols-[minmax(0,1fr)_20rem]">
@@ -2128,7 +2253,27 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                       Reset
                     </button>
                   </div>
+                  <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-800">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-amber-200 to-sky-200"
+                      style={{ width: `${Math.max(0, Math.min(100, (visibleExamSecondsLeft / Math.max(activeExamTask.timeLimitMinutes * 60, 1)) * 100))}%` }}
+                    />
+                  </div>
                 </div>
+              </div>
+
+              <div className="mt-5 grid gap-2 md:grid-cols-4">
+                {[
+                  ["Task progress", `${activeExamProgressPercent}%`],
+                  ["Score", activeExamScorePercent === null ? "rubric task" : `${activeExamScorePercent}%`],
+                  ["Saved output", activeExamTask.questions.length ? "answer record" : "Writing Vault draft"],
+                  ["Review rule", activeExamTask.questions.length ? "wrong answers auto-enter review" : "teacher review required"],
+                ].map(([label, value]) => (
+                  <div key={label} className="rounded-[8px] border border-white/10 bg-white/[0.035] p-3">
+                    <p className="text-xs font-semibold uppercase text-slate-500">{label}</p>
+                    <p className="mt-2 text-sm font-semibold leading-6 text-slate-200">{value}</p>
+                  </div>
+                ))}
               </div>
 
               {activeExamTask.passage ? (
@@ -2250,9 +2395,28 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                     );
                   })
                 ) : (
-                  <p className="rounded-[8px] border border-dashed border-slate-500/35 bg-slate-900/30 p-5 text-sm leading-7 text-slate-400">
-                    No writing saved yet. Open a source page or timed writing task and save the first serious answer.
-                  </p>
+                  <div className="rounded-[8px] border border-dashed border-slate-500/35 bg-slate-900/30 p-5">
+                    <p className="text-sm leading-7 text-slate-300">
+                      The vault is empty for {activeUser.displayName}. Start with one small saved answer; the studio will keep it attached to the page, material, or exam task.
+                    </p>
+                    <div className="mt-4 grid gap-2 sm:grid-cols-3">
+                      {[
+                        { label: "Source-page note", text: activePage.title, action: () => choosePage(activePage) },
+                        { label: "Writing material", text: firstWritingMaterial.title, action: () => chooseMaterial(firstWritingMaterial) },
+                        { label: "Timed exam draft", text: activeExamTask.title, action: () => setActivePremiumTab("exam" as const) },
+                      ].map((item) => (
+                        <button
+                          key={item.label}
+                          type="button"
+                          onClick={item.action}
+                          className="rounded-[8px] border border-white/10 bg-slate-950/40 p-3 text-start transition hover:border-amber-300/35 focus:outline-none focus:ring-2 focus:ring-amber-300/50"
+                        >
+                          <span className="block text-xs font-semibold uppercase text-amber-200">{item.label}</span>
+                          <span className="mt-2 line-clamp-2 block text-sm leading-6 text-slate-300">{item.text}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 )}
               </div>
             </article>
@@ -2882,7 +3046,28 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                         ))}
                       </div>
                     </div>
-                  ) : null}
+                  ) : (
+                    <div className="mb-5 rounded-[8px] border border-sky-200/15 bg-sky-300/[0.045] p-3">
+                      <h2 className="text-sm font-semibold text-sky-100">Review starter</h2>
+                      <p className="mt-2 text-sm leading-6 text-slate-400">Add the first weak item so this does not become passive reading.</p>
+                      <div className="mt-3 grid gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setReviewQueue((current) => ({ ...current, [activePage.id]: true }))}
+                          className="rounded-[8px] border border-white/10 bg-slate-950/30 p-3 text-start text-sm font-semibold text-slate-200 transition hover:border-sky-200/35 focus:outline-none focus:ring-2 focus:ring-sky-300/40"
+                        >
+                          Add active page
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setReviewQueue((current) => ({ ...current, [activeMaterial.id]: true }))}
+                          className="rounded-[8px] border border-white/10 bg-slate-950/30 p-3 text-start text-sm font-semibold text-slate-200 transition hover:border-sky-200/35 focus:outline-none focus:ring-2 focus:ring-sky-300/40"
+                        >
+                          Add active material
+                        </button>
+                      </div>
+                    </div>
+                  )}
 
                   <h2 className="text-lg font-semibold text-white">Related pages</h2>
                   <div className="mt-4 grid gap-2">
