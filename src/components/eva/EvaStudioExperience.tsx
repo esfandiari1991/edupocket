@@ -28,7 +28,7 @@ import {
   type EvaStoredStudioState,
   type EvaUserId,
 } from "@/lib/eva-learning-db";
-import { evaGrammarModules, evaLexicalResource, evaReligiousModules } from "@/lib/eva-studio-curriculum";
+import { evaGrammarModules, evaLexicalResource, evaReligiousModules, type EvaLexicalItem, type EvaSkillModule } from "@/lib/eva-studio-curriculum";
 import { cn } from "@/lib/utils";
 
 type EvaStudioExperienceProps = {
@@ -37,7 +37,7 @@ type EvaStudioExperienceProps = {
   persistenceMode: "database" | "local-database" | "development";
 };
 
-type StudioView = "study" | "ebook" | "review";
+type StudioView = "study" | "explanation" | "ebook" | "review";
 type SaveState = "loading" | "saved" | "saving" | "local" | "error";
 
 type PracticeQuestion = {
@@ -52,9 +52,10 @@ const legacyStorageKey = "edupocket-eva-studio-v1";
 
 const uiCopy = {
   en: {
-    today: "Study path",
-    ebook: "Full ebook",
-    review: "Review queue",
+    today: "Exercises",
+    explanation: "Explanation",
+    ebook: "Source page",
+    review: "Review",
     search: "Search pages, skills, or chapter notes",
     read: "Read",
     practice: "Practice",
@@ -77,8 +78,9 @@ const uiCopy = {
     loading: "Loading",
   },
   fa: {
-    today: "مسیر مطالعه",
-    ebook: "کل جزوه",
+    today: "تمرین‌ها",
+    explanation: "توضیح",
+    ebook: "صفحه منبع",
     review: "مرور",
     search: "جست‌وجوی صفحه، مهارت یا نکته‌ی فصل",
     read: "خواندن",
@@ -147,6 +149,24 @@ function skillLabel(page: EvaBookletPage) {
   return page.skillTags[0] ?? "Source";
 }
 
+function localizedSkillLabel(page: EvaBookletPage, locale: "en" | "fa") {
+  const label = skillLabel(page);
+  if (locale === "en") return label;
+
+  const labels: Record<string, string> = {
+    Grammar: "گرامر",
+    "Lexical resource": "منبع واژگانی",
+    Translation: "ترجمه",
+    Reading: "ریدینگ",
+    Listening: "لیسنینگ",
+    Quiz: "کوئیز",
+    Review: "مرور",
+    Source: "منبع",
+  };
+
+  return labels[label] ?? label;
+}
+
 function buildPageQuestion(page: EvaBookletPage, chapterPages: EvaBookletPage[]): PracticeQuestion {
   const otherSummaries = chapterPages
     .filter((candidate) => candidate.id !== page.id && candidate.summary && candidate.summary !== page.summary)
@@ -195,6 +215,14 @@ function statusText(status: SaveState, locale: "en" | "fa") {
 
 function compactPercent(value: number) {
   return `${Math.round(value)}%`;
+}
+
+function levelLabel(page: EvaBookletPage) {
+  return page.levelTags.slice(0, 2).join(" / ") || "B2-C1";
+}
+
+function lessonMinutes(page: EvaBookletPage) {
+  return Math.min(18, Math.max(7, Math.round(page.wordCount / 120) + 5));
 }
 
 function pickRelatedModule(page: EvaBookletPage) {
@@ -507,6 +535,13 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     choosePage(booklet.pages[Math.max(0, activePageIndex - 1)]);
   }
 
+  const viewTabs = [
+    { id: "study" as const, label: copy.today, icon: ListChecks },
+    { id: "explanation" as const, label: copy.explanation, icon: Sparkles },
+    { id: "ebook" as const, label: copy.ebook, icon: LibraryBig },
+    { id: "review" as const, label: copy.review, icon: RotateCcw },
+  ];
+
   return (
     <section className="eva-minimal-studio" dir={locale === "fa" ? "rtl" : "ltr"}>
       <div className="rounded-[8px] border border-amber-200/20 bg-slate-950/62 shadow-[0_28px_90px_rgba(0,0,0,0.28)]">
@@ -520,8 +555,8 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                     ? "یک صفحه بخوان، همان صفحه را تمرین کن."
                     : "Read one page. Practice the same page."
                   : locale === "fa"
-                    ? "تمرین امروزت همین‌جاست."
-                    : "Today's practice is here."}
+                    ? "درس را انتخاب کن، تمرین را بزن، توضیح را چک کن."
+                    : "Choose a lesson, do the exercises, check the explanation."}
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-300">
                 {isTeacherView
@@ -529,8 +564,8 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                     ? "این نسخه‌ی مینیمال، کل جزوه‌ی ۲۹۸ صفحه‌ای را به مسیرهای کوچک و قابل پیگیری تبدیل می‌کند: خواندن، جواب دادن، شنیدن، تکرار و مرور."
                     : "A quiet study app for the full 298-page booklet: read, answer, listen, repeat, review, and move forward without noise."
                   : locale === "fa"
-                    ? "اول تمرین را انجام بده. اگر لازم شد، متن همان صفحه را پایین‌تر بخوان. همین."
-                    : "Do the exercise first. If you need it, read the source page below. That is all."}
+                    ? "هر صفحه‌ی جزوه مثل یک درس ساده کار می‌کند: تمرین‌ها، توضیح، صفحه‌ی منبع و مرور."
+                    : "Each booklet page now behaves like a simple lesson: exercises, explanation, source page, and review."}
               </p>
             </div>
             <div dir="ltr" className={cn("min-w-0 rounded-[8px] border border-white/10 bg-white/[0.035] p-2 text-center", isTeacherView ? "grid grid-cols-3 gap-2 sm:min-w-[340px]" : "w-full sm:w-[300px]")}>
@@ -586,11 +621,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
 
           <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-wrap gap-2">
-              {[
-                { id: "study" as const, label: copy.today, icon: BookOpen },
-                { id: "ebook" as const, label: copy.ebook, icon: LibraryBig },
-                { id: "review" as const, label: copy.review, icon: RotateCcw },
-              ].map((item) => {
+              {viewTabs.map((item) => {
                 const Icon = item.icon;
                 return (
                   <button
@@ -665,6 +696,17 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
           <main className="min-w-0 p-4 sm:p-5">
             {activeView === "review" ? (
               <ReviewView pages={booklet.pages} reviewIds={reviewIds} state={studioState} onOpen={(page) => choosePage(page)} onToggleReview={(page) => choosePage(page, "study")} emptyText={copy.noReview} />
+            ) : activeView === "explanation" ? (
+              <ExplanationView
+                page={activePage}
+                chapter={activeChapter}
+                question={activeQuestion}
+                relatedModule={relatedModule}
+                relatedLexical={relatedLexical}
+                locale={locale}
+                onOpenExercises={() => setActiveView("study")}
+                onOpenSource={() => setActiveView("ebook")}
+              />
             ) : activeView === "ebook" ? (
               <EbookView
                 pages={filteredPages}
@@ -793,8 +835,22 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                       {isDone ? <CheckCircle2 aria-hidden="true" className="size-6 text-emerald-200" /> : <Sparkles aria-hidden="true" className="size-6 text-amber-200" />}
                     </div>
 
+                    <div className="mt-4 flex flex-wrap gap-2" dir="ltr">
+                      {[
+                        locale === "fa" ? "مجموعه تمرین" : "Exercise set",
+                        localizedSkillLabel(activePage, locale),
+                        levelLabel(activePage),
+                        `${lessonMinutes(activePage)} min`,
+                      ].map((item) => (
+                        <span key={item} className="rounded-full border border-white/10 bg-slate-950/42 px-3 py-1.5 text-xs font-semibold text-slate-300">
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+
                     <div className="mt-5 rounded-[8px] border border-white/10 bg-slate-950/42 p-4">
-                      <p className="text-sm font-semibold leading-6 text-white">{activeQuestion.prompt}</p>
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-amber-200">{locale === "fa" ? "تمرین ۱ · فهم معنی" : "Exercise 1 · Meaning check"}</p>
+                      <p className="mt-2 text-sm font-semibold leading-6 text-white">{activeQuestion.prompt}</p>
                       <div className="mt-3 space-y-2">
                         {activeQuestion.options.map((option, index) => {
                           const isSelected = activeAnswer === index;
@@ -823,7 +879,8 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                     </div>
 
                     <div className="mt-4 rounded-[8px] border border-white/10 bg-slate-950/42 p-4">
-                      <p className="text-sm font-semibold leading-6 text-white">{buildActionPrompt(activePage)}</p>
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-amber-200">{locale === "fa" ? "تمرین ۲ · تولید نوشتاری" : "Exercise 2 · Written output"}</p>
+                      <p className="mt-2 text-sm font-semibold leading-6 text-white">{buildActionPrompt(activePage)}</p>
                       <textarea
                         value={draft}
                         onChange={(event) => updateDraft(event.target.value)}
@@ -833,6 +890,35 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                         className="mt-3 w-full resize-y rounded-[8px] border border-white/10 bg-slate-950/70 p-3 text-sm leading-7 text-white outline-none transition placeholder:text-slate-500 focus:border-amber-200/45 focus:ring-2 focus:ring-amber-200/15"
                       />
                       <p className="mt-2 text-xs font-semibold text-slate-500">{copy.saveAnswer}</p>
+                    </div>
+
+                    <div className="mt-4 rounded-[8px] border border-white/10 bg-slate-950/42 p-4">
+                      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-amber-200">{locale === "fa" ? "تمرین ۳ · گوش بده و تقلید کن" : "Exercise 3 · Listen and shadow"}</p>
+                          <p className="mt-2 text-sm leading-6 text-slate-300">
+                            {locale === "fa" ? "یک بار گوش بده، یک بار آرام تکرار کن، بعد صفحه را کامل کن." : "Listen once, repeat slowly once, then complete the page."}
+                          </p>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          <button
+                            type="button"
+                            onClick={() => speak(sourceText, readKey(activePage.id))}
+                            className="inline-flex min-h-10 items-center justify-center gap-2 rounded-[8px] border border-white/10 px-3 text-sm font-semibold text-slate-200 transition hover:border-sky-200/40 hover:text-sky-100"
+                          >
+                            <Headphones aria-hidden="true" className="size-4" />
+                            {copy.listen}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => speak(sourceText, readKey(activePage.id), true)}
+                            className="inline-flex min-h-10 items-center justify-center gap-2 rounded-[8px] border border-white/10 px-3 text-sm font-semibold text-slate-200 transition hover:border-sky-200/40 hover:text-sky-100"
+                          >
+                            <Mic2 aria-hidden="true" className="size-4" />
+                            {copy.repeat}
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="mt-4 grid gap-2 sm:grid-cols-2">
@@ -961,9 +1047,15 @@ function StudentPathPicker({
 
   return (
     <div className="mt-5 rounded-[8px] border border-white/10 bg-white/[0.025] p-3">
+      <div className="mb-3 flex flex-col gap-2 rounded-[7px] border border-white/10 bg-slate-950/42 px-3 py-2.5 text-xs font-semibold text-slate-300 sm:flex-row sm:items-center sm:justify-between" dir="ltr">
+        <span>Eva Digital Booklet / {localizedSkillLabel(activePage, locale)} / {levelLabel(activePage)}</span>
+        <span className="text-amber-100">
+          {locale === "fa" ? "درس" : "Lesson"} {activePage.page} · {lessonMinutes(activePage)} min
+        </span>
+      </div>
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="block">
-          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{locale === "fa" ? "فصل" : "Chapter"}</span>
+          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{locale === "fa" ? "مسیر / فصل" : "Skill path / chapter"}</span>
           <select
             value={activeChapter.id}
             onChange={(event) => onChapter(event.target.value)}
@@ -978,7 +1070,7 @@ function StudentPathPicker({
         </label>
 
         <label className="block">
-          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{locale === "fa" ? "صفحه" : "Page"}</span>
+          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{locale === "fa" ? "درس / صفحه" : "Lesson / page"}</span>
           <select
             value={activePage.id}
             onChange={(event) => onPage(event.target.value)}
@@ -1048,6 +1140,138 @@ function MiniPracticeCard({
       </div>
       <p className="mt-4 text-xs font-semibold uppercase tracking-[0.14em] text-amber-200">{action}</p>
     </button>
+  );
+}
+
+function ExplanationView({
+  page,
+  chapter,
+  question,
+  relatedModule,
+  relatedLexical,
+  locale,
+  onOpenExercises,
+  onOpenSource,
+}: {
+  page: EvaBookletPage;
+  chapter: EvaBookletChapter;
+  question: PracticeQuestion;
+  relatedModule: EvaSkillModule;
+  relatedLexical: EvaLexicalItem;
+  locale: "en" | "fa";
+  onOpenExercises: () => void;
+  onOpenSource: () => void;
+}) {
+  const isFa = locale === "fa";
+  const skill = localizedSkillLabel(page, locale);
+  const minutes = lessonMinutes(page);
+  const correctOption = question.options[question.answerIndex];
+
+  return (
+    <div className="mx-auto max-w-5xl">
+      <article dir="ltr" className="rounded-[8px] border border-white/10 bg-white/[0.035] p-4 text-left sm:p-6">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div className="min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-200">
+              Eva Digital Booklet / {chapter.shortTitle} / {skill} / {levelLabel(page)}
+            </p>
+            <h3 className="mt-2 text-2xl font-semibold leading-tight text-white sm:text-3xl">{page.title}</h3>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">{page.summary}</p>
+          </div>
+          <div className="grid shrink-0 grid-cols-3 gap-2 rounded-[8px] border border-white/10 bg-slate-950/48 p-2 text-center">
+            <div className="rounded-[6px] bg-white/[0.04] px-3 py-2">
+              <p className="text-sm font-semibold text-white">{skill}</p>
+              <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">skill</p>
+            </div>
+            <div className="rounded-[6px] bg-white/[0.04] px-3 py-2">
+              <p className="text-sm font-semibold text-amber-100">{levelLabel(page)}</p>
+              <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">level</p>
+            </div>
+            <div className="rounded-[6px] bg-white/[0.04] px-3 py-2">
+              <p className="text-sm font-semibold text-sky-100">{minutes}m</p>
+              <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">time</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+          <section className="rounded-[8px] border border-amber-200/18 bg-amber-200/10 p-4">
+            <div className="flex items-start gap-3">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-[8px] border border-amber-200/25 bg-slate-950/42 text-amber-100">
+                <Sparkles aria-hidden="true" className="size-5" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-white">{isFa ? "این درس دقیقاً چه چیزی را می‌سازد؟" : "What this lesson builds"}</p>
+                <p className="mt-2 text-sm leading-7 text-slate-300">{relatedModule.outcome}</p>
+              </div>
+            </div>
+            <ul className="mt-4 space-y-2 text-sm leading-6 text-slate-300">
+              {relatedModule.practice.slice(0, 3).map((item) => (
+                <li key={item} className="flex gap-2">
+                  <span className="mt-2 size-1.5 shrink-0 rounded-full bg-amber-200" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="rounded-[8px] border border-white/10 bg-slate-950/44 p-4">
+            <div className="flex items-start gap-3">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-[8px] border border-white/10 bg-white/[0.04] text-sky-100">
+                <ListChecks aria-hidden="true" className="size-5" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-white">{isFa ? "چرا جواب درست است؟" : "Why the answer works"}</p>
+                <p className="mt-2 text-sm leading-7 text-slate-300">{question.rationale}</p>
+              </div>
+            </div>
+            <div className="mt-4 rounded-[8px] border border-emerald-200/22 bg-emerald-300/10 p-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-100">{isFa ? "جواب کلیدی" : "Key answer"}</p>
+              <p className="mt-2 line-clamp-3 text-sm leading-6 text-emerald-50">{correctOption}</p>
+            </div>
+          </section>
+        </div>
+
+        <section className="mt-4 rounded-[8px] border border-white/10 bg-slate-950/44 p-4">
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:items-start">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-200">{isFa ? "لغت و تلفظ" : "Lexical focus"}</p>
+              <h4 className="mt-2 text-xl font-semibold text-white">{relatedLexical.term}</h4>
+              <p className="mt-1 text-sm font-semibold text-sky-100">{relatedLexical.ipa}</p>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-[8px] border border-white/10 bg-white/[0.035] p-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{isFa ? "معنی کاربردی" : "Meaning"}</p>
+                <p className="mt-2 text-sm leading-6 text-slate-300">{relatedLexical.meaning}</p>
+              </div>
+              <div className="rounded-[8px] border border-white/10 bg-white/[0.035] p-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{isFa ? "کالوکیشن" : "Collocations"}</p>
+                <p className="mt-2 text-sm leading-6 text-slate-300">{relatedLexical.collocations.slice(0, 3).join(" · ")}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className="mt-5 flex flex-col gap-2 sm:flex-row">
+          <button
+            type="button"
+            onClick={onOpenExercises}
+            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-[8px] border border-amber-200/35 bg-amber-200/12 px-4 text-sm font-semibold text-amber-50 transition hover:border-amber-100/70"
+          >
+            <ListChecks aria-hidden="true" className="size-4" />
+            {isFa ? "برگشت به تمرین‌ها" : "Back to exercises"}
+          </button>
+          <button
+            type="button"
+            onClick={onOpenSource}
+            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-[8px] border border-white/10 bg-white/[0.035] px-4 text-sm font-semibold text-slate-200 transition hover:border-white/25 hover:text-white"
+          >
+            <BookOpen aria-hidden="true" className="size-4" />
+            {isFa ? "دیدن صفحه منبع" : "Open source page"}
+          </button>
+        </div>
+      </article>
+    </div>
   );
 }
 
