@@ -127,6 +127,8 @@ export type EvaStoredStudioState = {
   ttsRepeated: Record<string, number>;
   quizAnswers: Record<string, number>;
   examAnswers: Record<string, number>;
+  activityChecks: Record<string, boolean>;
+  rubricRatings: Record<string, number>;
   reviewQueue: Record<string, boolean>;
   teacherNotes: Record<string, string>;
 };
@@ -164,6 +166,8 @@ export const emptyEvaStoredStudioState: EvaStoredStudioState = {
   ttsRepeated: {},
   quizAnswers: {},
   examAnswers: {},
+  activityChecks: {},
+  rubricRatings: {},
   reviewQueue: {},
   teacherNotes: {},
 };
@@ -293,6 +297,8 @@ export function normalizeStoredState(value: Partial<EvaStoredStudioState> | null
     ttsRepeated: value?.ttsRepeated ?? {},
     quizAnswers: value?.quizAnswers ?? {},
     examAnswers: value?.examAnswers ?? {},
+    activityChecks: value?.activityChecks ?? {},
+    rubricRatings: value?.rubricRatings ?? {},
     reviewQueue: value?.reviewQueue ?? {},
     teacherNotes: value?.teacherNotes ?? {},
   };

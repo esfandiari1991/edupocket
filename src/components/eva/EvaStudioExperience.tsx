@@ -73,6 +73,8 @@ type EvaStudioExperienceProps = {
 
 const legacyStorageKey = "edupocket-eva-studio-v1";
 const levelOrder = ["Supported", "Independent", "Challenging", "Critical Thinking", "Portfolio"];
+type EvaMaterialExamFilter = "All" | EvaMaterialItem["exam"];
+const materialExamFilters: EvaMaterialExamFilter[] = ["All", "IELTS", "TOEFL", "EduPocket"];
 
 type StudyLane = {
   id: string;
@@ -336,6 +338,18 @@ function formatTimer(seconds: number) {
   return `${String(minutes).padStart(2, "0")}:${String(rest).padStart(2, "0")}`;
 }
 
+function stateKeySegment(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+function materialRoutineKey(materialId: string, index: number) {
+  return `material-routine:${materialId}:${index}`;
+}
+
+function materialRubricKey(materialId: string, criterion: string) {
+  return `material-rubric:${materialId}:${stateKeySegment(criterion)}`;
+}
+
 export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: EvaStudioExperienceProps) {
   const [activeStackId, setActiveStackId] = useState(booklet.stacks[0]?.id ?? "");
   const [activeChapterId, setActiveChapterId] = useState(booklet.chapters[0]?.id ?? "");
@@ -351,6 +365,9 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
   const [activeTeacherTargetId, setActiveTeacherTargetId] = useState<EvaUserId>("eva");
   const [skillFilter, setSkillFilter] = useState("All");
   const [query, setQuery] = useState("");
+  const [materialQuery, setMaterialQuery] = useState("");
+  const [materialExamFilter, setMaterialExamFilter] = useState<EvaMaterialExamFilter>("All");
+  const [materialSourceOnly, setMaterialSourceOnly] = useState(false);
   const [done, setDone] = useState<Record<string, boolean>>({});
   const [moduleDone, setModuleDone] = useState<Record<string, boolean>>({});
   const [notes, setNotes] = useState<Record<string, string>>({});
@@ -361,6 +378,8 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
   const [ttsRepeated, setTtsRepeated] = useState<Record<string, number>>({});
   const [quizAnswers, setQuizAnswers] = useState<Record<string, number>>({});
   const [examAnswers, setExamAnswers] = useState<Record<string, number>>({});
+  const [activityChecks, setActivityChecks] = useState<Record<string, boolean>>({});
+  const [rubricRatings, setRubricRatings] = useState<Record<string, number>>({});
   const [reviewQueue, setReviewQueue] = useState<Record<string, boolean>>({});
   const [teacherNotes, setTeacherNotes] = useState<Record<string, string>>({});
   const [teacherSnapshots, setTeacherSnapshots] = useState<Record<EvaUserId, EvaStoredStudioState>>({ ali: normalizeStoredState(null), eva: normalizeStoredState(null), elham: normalizeStoredState(null) });
@@ -402,6 +421,8 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     setTtsRepeated(parsed.ttsRepeated);
     setQuizAnswers(parsed.quizAnswers);
     setExamAnswers(parsed.examAnswers);
+    setActivityChecks(parsed.activityChecks);
+    setRubricRatings(parsed.rubricRatings);
     setReviewQueue(parsed.reviewQueue);
     setTeacherNotes(parsed.teacherNotes);
   }, [booklet.chapters, booklet.pages, booklet.stacks, learningDatabase.examTasks, materialCollections]);
@@ -494,6 +515,8 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
       ttsRepeated,
       quizAnswers,
       examAnswers,
+      activityChecks,
+      rubricRatings,
       reviewQueue,
       teacherNotes,
     });
@@ -526,6 +549,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
 
     window.localStorage.setItem(storageKey, JSON.stringify(state));
   }, [
+    activityChecks,
     activeChapterId,
     activeExamId,
     activeMaterialId,
@@ -545,6 +569,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     persistenceMode,
     pronunciationDone,
     quizAnswers,
+    rubricRatings,
     reviewQueue,
     shadowingDone,
     storageKey,
@@ -688,6 +713,22 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     () => materialCollections.find((collection) => collection.id === activeMaterialTrack) ?? materialCollections[0]!,
     [activeMaterialTrack, materialCollections],
   );
+  const visibleMaterialItems = useMemo(() => {
+    const needle = materialQuery.trim().toLowerCase();
+
+    return activeMaterialCollection.items.filter((item) => {
+      const matchesQuery =
+        !needle ||
+        [item.title, item.summary, item.skill, item.exam, item.level, ...item.tags, ...item.rubric]
+          .join(" ")
+          .toLowerCase()
+          .includes(needle);
+      const matchesExam = materialExamFilter === "All" || item.exam === materialExamFilter;
+      const matchesSource = !materialSourceOnly || sourcePageIdsForMaterial(item).length > 0;
+
+      return matchesQuery && matchesExam && matchesSource;
+    });
+  }, [activeMaterialCollection.items, materialExamFilter, materialQuery, materialSourceOnly]);
   const activeMaterial = useMemo(() => {
     const activeCollectionIds = new Set(activeMaterialCollection.items.map((item) => item.id));
     if (!activeCollectionIds.has(activeMaterialId)) return activeMaterialCollection.items[0] ?? materialItems[0]!;
@@ -713,12 +754,24 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     (total, item) => total + item.questions.filter((question) => examAnswers[`${item.id}:${question.id}`] === question.answerIndex).length,
     0,
   );
+  const materialRoutineTotal = materialItems.reduce((total, item) => total + item.routine.length, 0);
+  const materialRoutineCompleted = materialItems.reduce(
+    (total, item) => total + item.routine.filter((_, index) => activityChecks[materialRoutineKey(item.id, index)]).length,
+    0,
+  );
+  const materialRubricTotal = materialItems.reduce((total, item) => total + item.rubric.length, 0);
+  const materialRubricRated = materialItems.reduce(
+    (total, item) => total + item.rubric.filter((criterion) => (rubricRatings[materialRubricKey(item.id, criterion)] ?? 0) > 0).length,
+    0,
+  );
   const completedPronunciations = evaLexicalResource.filter((item) => pronunciationDone[item.id]).length;
   const studioMastery = Math.round(
-    ((booklet.pages.filter((page) => done[page.id]).length / Math.max(booklet.pages.length, 1)) * 0.45 +
+    ((booklet.pages.filter((page) => done[page.id]).length / Math.max(booklet.pages.length, 1)) * 0.4 +
       (completedPremiumModules / Math.max(evaSkillModules.length, 1)) * 0.2 +
       (completedMaterials / Math.max(materialItems.length, 1)) * 0.1 +
-      (correctQuizQuestions.length / Math.max(evaQuizQuestions.length, 1)) * 0.15 +
+      (materialRoutineCompleted / Math.max(materialRoutineTotal, 1)) * 0.05 +
+      (materialRubricRated / Math.max(materialRubricTotal, 1)) * 0.05 +
+      (correctQuizQuestions.length / Math.max(evaQuizQuestions.length, 1)) * 0.1 +
       (completedPronunciations / Math.max(evaLexicalResource.length, 1)) * 0.1) *
       100,
   );
@@ -791,12 +844,18 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
         const selected = examAnswers[`${item.id}:${question.id}`];
         if (selected !== undefined && selected !== question.answerIndex) add(`${item.exam} ${item.skill}`, 2);
       }
+
+      for (const criterion of item.rubric) {
+        const rating = rubricRatings[materialRubricKey(item.id, criterion)] ?? 0;
+        if (rating > 0 && rating <= 1) add(`${item.skill}: ${criterion}`, 2);
+        if (rating === 2) add(`${item.skill}: ${criterion}`);
+      }
     }
 
     return Array.from(weights.entries())
       .sort((a, b) => b[1] - a[1])
       .slice(0, 6);
-  }, [booklet.pages, examAnswers, learningDatabase.examTasks, materialItems, quizAnswers, reviewQueue]);
+  }, [booklet.pages, examAnswers, learningDatabase.examTasks, materialItems, quizAnswers, reviewQueue, rubricRatings]);
 
   if (!activeStack || !activeChapter || !activePage) return null;
 
@@ -825,13 +884,26 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     : booklet.pages.filter((page) => activeMaterial.sourceTypeTargets.includes(page.type)).slice(0, 5);
   const firstWritingMaterial = materialItems.find((item) => item.track === "writing") ?? activeMaterial;
   const activeMaterialContract = materialTrackContracts[activeMaterial.track];
-  const activeMaterialProgressPercent = activeMaterial.questions.length
-    ? Math.round((activeMaterialAnswered.length / activeMaterial.questions.length) * 100)
-    : activeMaterialDraft.trim()
-      ? 100
-      : done[activeMaterial.id]
-        ? 100
-        : 0;
+  const activeMaterialRoutineDone = activeMaterial.routine.filter((_, index) => activityChecks[materialRoutineKey(activeMaterial.id, index)]).length;
+  const activeMaterialRubricRated = activeMaterial.rubric.filter((criterion) => (rubricRatings[materialRubricKey(activeMaterial.id, criterion)] ?? 0) > 0).length;
+  const activeMaterialRubricAverage = activeMaterialRubricRated
+    ? Math.round(
+        (activeMaterial.rubric.reduce((total, criterion) => total + (rubricRatings[materialRubricKey(activeMaterial.id, criterion)] ?? 0), 0) /
+          activeMaterialRubricRated) *
+          10,
+      ) / 10
+    : 0;
+  const activeMaterialRequiresDraft = activeMaterial.track === "writing" || activeMaterial.track === "teacher";
+  const activeMaterialDraftReady = activeMaterialRequiresDraft && activeMaterialDraft.trim().length > 0;
+  const activeMaterialProgressUnits =
+    activeMaterial.routine.length + activeMaterial.rubric.length + activeMaterial.questions.length + (activeMaterialRequiresDraft ? 1 : 0) + 1;
+  const activeMaterialCompletedUnits =
+    activeMaterialRoutineDone +
+    activeMaterialRubricRated +
+    activeMaterialAnswered.length +
+    (activeMaterialDraftReady ? 1 : 0) +
+    (done[activeMaterial.id] ? 1 : 0);
+  const activeMaterialProgressPercent = Math.min(100, Math.round((activeMaterialCompletedUnits / Math.max(activeMaterialProgressUnits, 1)) * 100));
   const activeExamProgressPercent = activeExamTask.questions.length
     ? Math.round((activeExamAnswered.length / activeExamTask.questions.length) * 100)
     : writingDrafts[`exam-${activeExamTask.id}`]?.trim()
@@ -860,6 +932,8 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     ttsRepeated,
     quizAnswers,
     examAnswers,
+    activityChecks,
+    rubricRatings,
     reviewQueue,
     teacherNotes,
   });
@@ -1060,6 +1134,48 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
 
   function updateMaterialDraft(value: string) {
     setWritingDrafts((current) => ({ ...current, [activeMaterial.id]: value }));
+  }
+
+  function toggleMaterialRoutine(index: number) {
+    const key = materialRoutineKey(activeMaterial.id, index);
+    setActivityChecks((current) => ({ ...current, [key]: !current[key] }));
+  }
+
+  function rateMaterialRubric(criterion: string, rating: number) {
+    const key = materialRubricKey(activeMaterial.id, criterion);
+    setRubricRatings((current) => ({ ...current, [key]: rating }));
+    if (rating > 0 && rating <= 1) {
+      setReviewQueue((current) => ({ ...current, [activeMaterial.id]: true }));
+    }
+  }
+
+  function markActiveMaterialSessionDone() {
+    setActivityChecks((current) => {
+      const next = { ...current };
+      activeMaterial.routine.forEach((_, index) => {
+        next[materialRoutineKey(activeMaterial.id, index)] = true;
+      });
+      return next;
+    });
+    setDone((current) => ({ ...current, [activeMaterial.id]: true }));
+  }
+
+  function resetActiveMaterialSession() {
+    setActivityChecks((current) => {
+      const next = { ...current };
+      activeMaterial.routine.forEach((_, index) => {
+        delete next[materialRoutineKey(activeMaterial.id, index)];
+      });
+      return next;
+    });
+    setRubricRatings((current) => {
+      const next = { ...current };
+      activeMaterial.rubric.forEach((criterion) => {
+        delete next[materialRubricKey(activeMaterial.id, criterion)];
+      });
+      return next;
+    });
+    setDone((current) => ({ ...current, [activeMaterial.id]: false }));
   }
 
   function updateTeacherNote(targetId: EvaUserId, note: string) {
@@ -1359,6 +1475,8 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
               {evaSeedUsers.map((user) => {
                 const snapshot = normalizeStoredState(visibleTeacherSnapshots[user.id]);
                 const quizCorrect = evaQuizQuestions.filter((question) => snapshot.quizAnswers[question.id] === question.answerIndex).length;
+                const activityCount = recordCount(snapshot.activityChecks);
+                const rubricCount = Object.values(snapshot.rubricRatings).filter((value) => value > 0).length;
                 const active = activeTeacherTargetId === user.id;
 
                 return (
@@ -1378,7 +1496,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                       </div>
                       <UserCheck aria-hidden="true" className="size-5 text-amber-200" />
                     </div>
-                    <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
+                    <div className="mt-4 grid grid-cols-2 gap-2 text-sm sm:grid-cols-3">
                       <span className="rounded-[8px] border border-white/10 bg-slate-950/30 p-2">
                         <span className="block font-semibold text-white">{recordCount(snapshot.done)}</span>
                         <span className="text-xs text-slate-500">pages</span>
@@ -1394,6 +1512,14 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                       <span className="rounded-[8px] border border-white/10 bg-slate-950/30 p-2">
                         <span className="block font-semibold text-white">{recordCount(snapshot.reviewQueue)}</span>
                         <span className="text-xs text-slate-500">review</span>
+                      </span>
+                      <span className="rounded-[8px] border border-white/10 bg-slate-950/30 p-2">
+                        <span className="block font-semibold text-white">{activityCount}</span>
+                        <span className="text-xs text-slate-500">checks</span>
+                      </span>
+                      <span className="rounded-[8px] border border-white/10 bg-slate-950/30 p-2">
+                        <span className="block font-semibold text-white">{rubricCount}</span>
+                        <span className="text-xs text-slate-500">rubric</span>
                       </span>
                     </div>
                   </button>
@@ -1413,6 +1539,8 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                   ["Quiz", `${activeTeacherQuizCorrect}/${evaQuizQuestions.length}`],
                   ["Review", activeTeacherReviewCount],
                   ["TTS", activeTeacherTtsTotal],
+                  ["Checks", recordCount(activeTeacherSnapshot.activityChecks)],
+                  ["Rubric", Object.values(activeTeacherSnapshot.rubricRatings).filter((value) => value > 0).length],
                   ["Notes", Object.values(activeTeacherSnapshot.teacherNotes).filter((value) => value.trim()).length],
                 ].map(([label, value]) => (
                   <div key={label} className="rounded-[8px] border border-white/10 bg-slate-950/30 p-2">
@@ -1780,6 +1908,43 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                 </div>
                 <LibraryBig aria-hidden="true" className="size-5 shrink-0 text-amber-200" />
               </div>
+              <div className="mt-4 rounded-[8px] border border-white/10 bg-white/[0.035] p-3">
+                <div className="relative">
+                  <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
+                  <input
+                    type="search"
+                    value={materialQuery}
+                    onChange={(event) => setMaterialQuery(event.target.value)}
+                    placeholder="Search skill, tag, exam..."
+                    className="h-11 w-full rounded-[8px] border border-white/10 bg-slate-950/55 pl-9 pr-3 text-sm font-medium text-slate-100 outline-none transition placeholder:text-slate-600 focus:border-amber-300/50 focus:ring-2 focus:ring-amber-300/20"
+                  />
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {materialExamFilters.map((filter) => (
+                    <button
+                      key={filter}
+                      type="button"
+                      onClick={() => setMaterialExamFilter(filter)}
+                      className={cn(
+                        "min-h-9 rounded-[8px] border px-3 text-xs font-bold transition focus:outline-none focus:ring-2 focus:ring-amber-300/40",
+                        materialExamFilter === filter ? "border-amber-300/55 bg-amber-300/14 text-amber-50" : "border-white/10 bg-slate-950/30 text-slate-400 hover:border-amber-300/35 hover:text-slate-100",
+                      )}
+                    >
+                      {filter}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setMaterialSourceOnly((current) => !current)}
+                    className={cn(
+                      "min-h-9 rounded-[8px] border px-3 text-xs font-bold transition focus:outline-none focus:ring-2 focus:ring-sky-300/40",
+                      materialSourceOnly ? "border-sky-200/55 bg-sky-300/14 text-sky-50" : "border-white/10 bg-slate-950/30 text-slate-400 hover:border-sky-200/35 hover:text-slate-100",
+                    )}
+                  >
+                    Source-linked
+                  </button>
+                </div>
+              </div>
               <div className="mt-4 grid gap-2">
                 {materialCollections.map((collection) => {
                   const active = collection.id === activeMaterialTrack;
@@ -1816,13 +1981,15 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                 <div className="flex items-center justify-between gap-3">
                   <h4 className="text-xs font-semibold uppercase text-slate-400">Track items</h4>
                   <span className="rounded-[6px] border border-white/10 bg-slate-950/35 px-2 py-1 text-xs font-semibold text-amber-100">
-                    {activeMaterialCollection.items.length}
+                    {visibleMaterialItems.length}/{activeMaterialCollection.items.length}
                   </span>
                 </div>
                 <div className="mt-3 grid max-h-96 gap-2 overflow-y-auto pr-1">
-                  {activeMaterialCollection.items.map((item) => {
+                  {visibleMaterialItems.length ? visibleMaterialItems.map((item) => {
                     const active = item.id === activeMaterial.id;
                     const sourceLinked = sourcePageIdsForMaterial(item).length > 0;
+                    const itemRoutineDone = item.routine.filter((_, index) => activityChecks[materialRoutineKey(item.id, index)]).length;
+                    const itemRubricDone = item.rubric.filter((criterion) => (rubricRatings[materialRubricKey(item.id, criterion)] ?? 0) > 0).length;
 
                     return (
                       <button
@@ -1843,9 +2010,22 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                         <span className="mt-2 block text-xs leading-5 text-slate-500">
                           {item.exam} · {item.level} · {item.timeLimitMinutes} min · {item.questions.length ? `${item.questions.length} questions` : item.skill}
                         </span>
+                        <span className="mt-2 block h-1.5 overflow-hidden rounded-full bg-slate-800">
+                          <span
+                            className="block h-full rounded-full bg-gradient-to-r from-amber-200 to-sky-200 transition-all"
+                            style={{ width: `${Math.min(100, Math.round(((itemRoutineDone + itemRubricDone + (done[item.id] ? 1 : 0)) / Math.max(item.routine.length + item.rubric.length + 1, 1)) * 100))}%` }}
+                          />
+                        </span>
+                        <span className="mt-2 block text-[11px] font-semibold text-slate-500">
+                          Routine {itemRoutineDone}/{item.routine.length} · Rubric {itemRubricDone}/{item.rubric.length}
+                        </span>
                       </button>
                     );
-                  })}
+                  }) : (
+                    <div className="rounded-[8px] border border-dashed border-slate-500/35 bg-slate-950/30 p-4 text-sm leading-6 text-slate-400">
+                      No material matches this filter. Try All, clear search, or turn off Source-linked.
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="mt-4 rounded-[8px] border border-sky-200/15 bg-sky-300/[0.055] p-3">
@@ -1898,8 +2078,8 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                   {[
                     { label: "Minutes", value: activeMaterial.timeLimitMinutes },
                     { label: "Questions", value: activeMaterial.questions.length },
-                    { label: "Correct", value: activeMaterialCorrect.length },
-                    { label: "Answered", value: activeMaterialAnswered.length },
+                    { label: "Routine", value: `${activeMaterialRoutineDone}/${activeMaterial.routine.length}` },
+                    { label: "Rubric", value: activeMaterialRubricAverage ? `${activeMaterialRubricAverage}/3` : `${activeMaterialRubricRated}/${activeMaterial.rubric.length}` },
                   ].map((item) => (
                     <div key={item.label} className="rounded-[8px] border border-white/10 bg-white/[0.035] p-3">
                       <p className="text-lg font-semibold text-white">{item.value}</p>
@@ -1949,6 +2129,35 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                     {done[activeMaterial.id] ? <Check aria-hidden="true" className="size-4" /> : null}
                   </span>
                 </label>
+                <button
+                  type="button"
+                  onClick={markActiveMaterialSessionDone}
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[8px] border border-emerald-200/20 bg-emerald-300/[0.08] px-4 text-sm font-semibold text-emerald-100 transition hover:border-emerald-200/45 focus:outline-none focus:ring-2 focus:ring-emerald-300/35"
+                >
+                  <CircleCheck aria-hidden="true" className="size-4" />
+                  Finish session
+                </button>
+                <button
+                  type="button"
+                  onClick={resetActiveMaterialSession}
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[8px] border border-white/10 px-4 text-sm font-semibold text-slate-400 transition hover:border-rose-200/35 hover:text-rose-100 focus:outline-none focus:ring-2 focus:ring-rose-300/30"
+                >
+                  <RotateCcw aria-hidden="true" className="size-4" />
+                  Reset material
+                </button>
+              </div>
+
+              <div className="mt-4 rounded-[8px] border border-amber-200/16 bg-amber-200/[0.055] p-3">
+                <div className="flex items-center justify-between gap-3 text-xs font-semibold uppercase text-amber-100">
+                  <span>Session progress</span>
+                  <span>{activeMaterialProgressPercent}%</span>
+                </div>
+                <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-950/65">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-amber-200 via-emerald-200 to-sky-200 transition-all duration-500"
+                    style={{ width: `${activeMaterialProgressPercent}%` }}
+                  />
+                </div>
               </div>
 
               <div className="mt-4 grid gap-2 md:grid-cols-4">
@@ -2077,25 +2286,82 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
 
                 <aside className="grid content-start gap-3">
                   <div className="rounded-[8px] border border-amber-200/16 bg-amber-200/[0.06] p-4">
-                    <h4 className="text-sm font-semibold text-amber-100">Routine</h4>
+                    <div className="flex items-center justify-between gap-3">
+                      <h4 className="text-sm font-semibold text-amber-100">Routine</h4>
+                      <span className="rounded-[6px] border border-amber-200/20 bg-slate-950/25 px-2 py-1 text-xs font-bold text-amber-50">
+                        {activeMaterialRoutineDone}/{activeMaterial.routine.length}
+                      </span>
+                    </div>
                     <div className="mt-3 grid gap-2">
-                      {activeMaterial.routine.map((step, index) => (
-                        <div key={step} className="flex items-start gap-3 rounded-[8px] border border-white/10 bg-slate-950/30 p-3 text-sm leading-6 text-slate-300">
-                          <span className="flex size-7 shrink-0 items-center justify-center rounded-[6px] bg-amber-200/10 text-xs font-semibold text-amber-100">{index + 1}</span>
-                          <span>{step}</span>
-                        </div>
-                      ))}
+                      {activeMaterial.routine.map((step, index) => {
+                        const checked = Boolean(activityChecks[materialRoutineKey(activeMaterial.id, index)]);
+
+                        return (
+                          <button
+                            key={step}
+                            type="button"
+                            onClick={() => toggleMaterialRoutine(index)}
+                            className={cn(
+                              "flex items-start gap-3 rounded-[8px] border p-3 text-start text-sm leading-6 transition focus:outline-none focus:ring-2 focus:ring-amber-300/40",
+                              checked ? "border-amber-200/35 bg-amber-200/[0.12] text-amber-50" : "border-white/10 bg-slate-950/30 text-slate-300 hover:border-amber-300/30",
+                            )}
+                          >
+                            <span className={cn("flex size-7 shrink-0 items-center justify-center rounded-[6px] text-xs font-semibold", checked ? "bg-amber-200 text-slate-950" : "bg-amber-200/10 text-amber-100")}>
+                              {checked ? <Check aria-hidden="true" className="size-4" /> : index + 1}
+                            </span>
+                            <span>{step}</span>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
 
                   <div className="rounded-[8px] border border-white/10 bg-white/[0.035] p-4">
-                    <h4 className="text-sm font-semibold text-white">Rubric</h4>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {activeMaterial.rubric.map((item) => (
-                        <span key={item} className="rounded-[8px] border border-white/10 bg-slate-950/35 px-3 py-2 text-xs font-semibold text-slate-200">
-                          {item}
-                        </span>
-                      ))}
+                    <div className="flex items-center justify-between gap-3">
+                      <h4 className="text-sm font-semibold text-white">Rubric</h4>
+                      <span className="rounded-[6px] border border-white/10 bg-slate-950/35 px-2 py-1 text-xs font-bold text-slate-200">
+                        {activeMaterialRubricAverage ? `${activeMaterialRubricAverage}/3` : "Not rated"}
+                      </span>
+                    </div>
+                    <div className="mt-3 grid gap-2">
+                      {activeMaterial.rubric.map((item) => {
+                        const rating = rubricRatings[materialRubricKey(activeMaterial.id, item)] ?? 0;
+
+                        return (
+                          <div key={item} className="rounded-[8px] border border-white/10 bg-slate-950/35 p-3">
+                            <div className="flex items-center justify-between gap-3">
+                              <p className="text-xs font-semibold uppercase text-slate-300">{item}</p>
+                              <span className={cn("rounded-[6px] px-2 py-1 text-[11px] font-bold", rating >= 3 ? "bg-emerald-300/15 text-emerald-100" : rating > 0 ? "bg-amber-300/12 text-amber-100" : "bg-white/[0.055] text-slate-500")}>
+                                {rating ? `${rating}/3` : "open"}
+                              </span>
+                            </div>
+                            <div className="mt-3 grid grid-cols-4 gap-1.5">
+                              {[0, 1, 2, 3].map((score) => (
+                                <button
+                                  key={score}
+                                  type="button"
+                                  onClick={() => rateMaterialRubric(item, score)}
+                                  className={cn(
+                                    "min-h-9 rounded-[7px] border text-xs font-bold transition focus:outline-none focus:ring-2 focus:ring-amber-300/35",
+                                    rating === score
+                                      ? score === 0
+                                        ? "border-slate-500 bg-slate-700 text-white"
+                                        : score === 1
+                                          ? "border-rose-200/55 bg-rose-300/12 text-rose-100"
+                                          : score === 2
+                                            ? "border-amber-200/55 bg-amber-300/12 text-amber-100"
+                                            : "border-emerald-200/55 bg-emerald-300/12 text-emerald-100"
+                                      : "border-white/10 bg-slate-950/35 text-slate-500 hover:border-white/25 hover:text-slate-200",
+                                  )}
+                                  aria-label={`${item} rating ${score}`}
+                                >
+                                  {score === 0 ? "0" : score}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
 

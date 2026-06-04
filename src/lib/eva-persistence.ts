@@ -29,7 +29,7 @@ type EvaLocalResponse = {
   userId: EvaUserId;
   productId: typeof productId;
   responseKey: string;
-  responseJson: { answerIndex?: number; text?: string };
+  responseJson: { answerIndex?: number; completed?: boolean; rating?: number; text?: string };
   updatedAt: string;
 };
 
@@ -234,6 +234,24 @@ function responsesFromState(userId: EvaUserId, state: EvaStoredStudioState, upda
       responseJson: { answerIndex: value },
       updatedAt,
     })),
+    ...Object.entries(state.activityChecks)
+      .filter(([, value]) => value)
+      .map(([key]) => ({
+        userId,
+        productId,
+        responseKey: `activity:${key}`,
+        responseJson: { completed: true },
+        updatedAt,
+      })),
+    ...Object.entries(state.rubricRatings)
+      .filter(([, value]) => value > 0)
+      .map(([key, value]) => ({
+        userId,
+        productId,
+        responseKey: `rubric:${key}`,
+        responseJson: { rating: value },
+        updatedAt,
+      })),
     ...Object.entries(state.writingDrafts)
       .filter(([, value]) => value.trim())
       .map(([key, value]) => ({
@@ -410,6 +428,12 @@ export async function saveEvaStoredState(userId: EvaUserId, state: Partial<EvaSt
     const responseEntries = [
       ...Object.entries(normalized.quizAnswers).map(([key, value]) => [`quiz:${key}`, { answerIndex: value }] as const),
       ...Object.entries(normalized.examAnswers).map(([key, value]) => [`exam:${key}`, { answerIndex: value }] as const),
+      ...Object.entries(normalized.activityChecks)
+        .filter(([, value]) => value)
+        .map(([key]) => [`activity:${key}`, { completed: true }] as const),
+      ...Object.entries(normalized.rubricRatings)
+        .filter(([, value]) => value > 0)
+        .map(([key, value]) => [`rubric:${key}`, { rating: value }] as const),
       ...Object.entries(normalized.writingDrafts)
         .filter(([, value]) => value.trim())
         .map(([key, value]) => [`draft:${key}`, { text: value }] as const),
