@@ -55,6 +55,7 @@ export type EvaLearningActivity = {
   estimatedMinutes: number;
   scoringMode: "completion" | "answer-key" | "rubric" | "teacher-review";
   trackableSignals: string[];
+  contentJson: Record<string, unknown>;
 };
 
 export type EvaTtsSegment = {
@@ -100,7 +101,7 @@ export type EvaLearningDatabase = {
   sections: Array<{ id: string; chapterId: string; type: string; pageIds: string[]; fieldCount: number; checkboxCount: number }>;
   learningItems: Array<{ id: string; activityId: string; title: string; sourcePageId?: string; type: string; tags: string[] }>;
   activities: EvaLearningActivity[];
-  questions: Array<{ id: string; activityId: string; track: string; prompt: string; answerIndex: number }>;
+  questions: Array<{ id: string; activityId: string; track: string; type: string; prompt: string; options: string[]; answerIndex: number; rationale: string }>;
   ttsSegments: EvaTtsSegment[];
   examTasks: EvaExamTask[];
 };
@@ -351,6 +352,19 @@ export function buildEvaLearningDatabase(booklet: EvaBooklet): EvaLearningDataba
     estimatedMinutes: estimateMinutes(page),
     scoringMode: page.type.includes("quiz") ? "answer-key" : page.fieldCount > 0 ? "teacher-review" : "completion",
     trackableSignals: ["active page", "completion", "writing draft", "review queue", "TTS listened", "teacher note"],
+    contentJson: {
+      source: "eva-source-booklet",
+      pageNumber: page.page,
+      chapterId: page.chapterId,
+      chapterTitle: page.chapterTitle,
+      subtitle: page.subtitle,
+      summary: page.summary,
+      type: page.type,
+      fieldCount: page.fieldCount,
+      checkboxCount: page.checkboxCount,
+      wordCount: page.wordCount,
+      blocks: page.blocks,
+    },
   }));
 
   const moduleActivities: EvaLearningActivity[] = [...evaGrammarModules, ...evaReligiousModules].map((module) => ({
@@ -363,6 +377,16 @@ export function buildEvaLearningDatabase(booklet: EvaBooklet): EvaLearningDataba
     estimatedMinutes: module.minutes,
     scoringMode: "teacher-review",
     trackableSignals: ["module completion", "source jump", "writing evidence", "weak skill map"],
+    contentJson: {
+      track: module.track,
+      order: module.order,
+      focus: module.focus,
+      outcome: module.outcome,
+      sourceTypes: module.sourceTypes,
+      practice: module.practice,
+      evidence: module.evidence,
+      level: module.level,
+    },
   }));
 
   const lexicalActivities: EvaLearningActivity[] = evaLexicalResource.map((item) => ({
@@ -378,6 +402,17 @@ export function buildEvaLearningDatabase(booklet: EvaBooklet): EvaLearningDataba
     estimatedMinutes: 8,
     scoringMode: "completion",
     trackableSignals: ["TTS listened", "TTS repeated", "shadowing", "pronunciation mastered"],
+    contentJson: {
+      term: item.term,
+      ipa: item.ipa,
+      stress: item.stress,
+      meaning: item.meaning,
+      ministryUse: item.ministryUse,
+      collocations: item.collocations,
+      pronunciationTip: item.pronunciationTip,
+      example: item.example,
+      tags: item.tags,
+    },
   }));
 
   const materialActivities: EvaLearningActivity[] = allMaterialItems.map((item) => ({
@@ -402,6 +437,23 @@ export function buildEvaLearningDatabase(booklet: EvaBooklet): EvaLearningDataba
     estimatedMinutes: item.timeLimitMinutes,
     scoringMode: item.questions.length ? "answer-key" : item.track === "writing" || item.track === "teacher" ? "teacher-review" : "completion",
     trackableSignals: ["material completion", "material question answers", "writing draft", "TTS listened", "TTS repeated", "review queue"],
+    contentJson: {
+      track: item.track,
+      exam: item.exam,
+      skill: item.skill,
+      level: item.level,
+      summary: item.summary,
+      sourceUse: item.sourceUse,
+      sourceTypeTargets: item.sourceTypeTargets,
+      passage: item.passage,
+      prompt: item.prompt,
+      ttsScript: item.ttsScript,
+      routine: item.routine,
+      rubric: item.rubric,
+      visualAsset: item.visualAsset,
+      tags: item.tags,
+      localeNotes: item.localeNotes,
+    },
   }));
 
   const examActivities: EvaLearningActivity[] = allExamTasks.map((task) => ({
@@ -414,14 +466,26 @@ export function buildEvaLearningDatabase(booklet: EvaBooklet): EvaLearningDataba
     estimatedMinutes: task.timeLimitMinutes,
     scoringMode: task.questions.length ? "answer-key" : "rubric",
     trackableSignals: ["timed start", "answers", "rationale viewed", "review queue", "writing draft"],
+    contentJson: {
+      exam: task.exam,
+      skill: task.skill,
+      level: task.level,
+      timeLimitMinutes: task.timeLimitMinutes,
+      passage: task.passage,
+      prompt: task.prompt,
+      rubric: task.rubric,
+    },
   }));
 
   const quizQuestions = evaQuizQuestions.map((question) => ({
     id: question.id,
     activityId: `quiz-${question.track}`,
     track: question.track,
+    type: "multiple-choice",
     prompt: question.prompt,
+    options: question.options,
     answerIndex: question.answerIndex,
+    rationale: question.explanation,
   }));
 
   const examQuestions = allExamTasks.flatMap((task) =>
@@ -429,8 +493,11 @@ export function buildEvaLearningDatabase(booklet: EvaBooklet): EvaLearningDataba
       id: question.id,
       activityId: `exam-${task.id}`,
       track: `${task.exam}-${task.skill}`,
+      type: question.type,
       prompt: question.prompt,
+      options: question.options,
       answerIndex: question.answerIndex,
+      rationale: question.rationale,
     })),
   );
 
@@ -439,8 +506,11 @@ export function buildEvaLearningDatabase(booklet: EvaBooklet): EvaLearningDataba
       id: `material-${item.id}-${question.id}`,
       activityId: `material-${item.id}`,
       track: `${item.exam}-${item.skill}`,
+      type: question.type,
       prompt: question.prompt,
+      options: question.options,
       answerIndex: question.answerIndex,
+      rationale: question.rationale,
     })),
   );
 

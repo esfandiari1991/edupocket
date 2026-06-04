@@ -14,7 +14,8 @@
     "new:podcast": "node scripts/new-podcast.mjs",
     "verify:routes": "node scripts/verify-routes.mjs",
     "eva:migrate": "node scripts/eva-migrate.mjs",
-    "eva:sync-content": "node scripts/eva-sync-content.mjs",
+    "eva:sync-content": "tsx scripts/eva-sync-content.ts",
+    "eva:sync-content:dry": "tsx scripts/eva-sync-content.ts --dry-run",
     "eva:hash-passcode": "node scripts/eva-hash-passcode.mjs",
     "eva:set-passcode": "node scripts/eva-set-passcode.mjs"
   },
@@ -41,6 +42,7 @@
     "eslint": "^9.39.4",
     "eslint-config-next": "latest",
     "tailwindcss": "latest",
+    "tsx": "^4.22.4",
     "typescript": "latest"
   },
   "pnpm": {

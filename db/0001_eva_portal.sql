@@ -79,19 +79,31 @@ create table if not exists eva_activities (
   estimated_minutes integer not null default 0,
   scoring_mode text not null,
   trackable_signals jsonb not null default '[]'::jsonb,
+  content_json jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table eva_activities
+  add column if not exists content_json jsonb not null default '{}'::jsonb;
 
 create table if not exists eva_questions (
   id text primary key,
   activity_id text not null,
   track text not null,
+  question_type text not null default 'multiple-choice',
   prompt text not null,
+  options jsonb not null default '[]'::jsonb,
   answer_index integer not null,
+  rationale text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table eva_questions
+  add column if not exists question_type text not null default 'multiple-choice',
+  add column if not exists options jsonb not null default '[]'::jsonb,
+  add column if not exists rationale text;
 
 create table if not exists eva_tts_segments (
   id text primary key,
