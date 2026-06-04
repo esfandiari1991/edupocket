@@ -9,7 +9,7 @@ import { siteConfig } from "@/lib/site";
 const routes = [
   { en: `${siteConfig.teacherProfile.yearsOfExperience} years teaching`, fa: "بیش از ۱۵ سال تدریس", icon: GraduationCap },
   { en: "Cambridge CELTA holder", fa: "دارنده CELTA کمبریج", icon: Sparkles },
-  { en: "IELTS TOEFL FCE GRE GMAT", fa: "IELTS TOEFL FCE GRE GMAT", icon: BrainCircuit },
+  { en: "Exams + specialized English", fa: "آزمون + زبان تخصصی", icon: BrainCircuit },
 ];
 
 export function Hero() {
@@ -44,10 +44,10 @@ export function Hero() {
                 en={
                   <>
                     EduPocket is built by Ali Rad, a Cambridge CELTA English teacher with {siteConfig.teacherProfile.yearsOfExperience} years
-                    of experience helping learners prepare for IELTS, TOEFL, Cambridge English, GRE, GMAT, and real academic communication.
+                    of experience helping learners prepare for IELTS, TOEFL, Cambridge English, GRE, GMAT, specialized English, and real academic communication.
                   </>
                 }
-                fa="EduPocket توسط علی راد ساخته شده؛ مدرس انگلیسی دارنده CELTA کمبریج با بیش از ۱۵ سال تجربه در آمادگی آیلتس، تافل، آزمون‌های کمبریج، GRE، GMAT و ارتباط آکادمیک واقعی."
+                fa="EduPocket توسط علی راد ساخته شده؛ مدرس انگلیسی دارنده CELTA کمبریج با بیش از ۱۵ سال تجربه در آمادگی آیلتس، تافل، آزمون‌های کمبریج، GRE، GMAT، زبان تخصصی و ارتباط آکادمیک واقعی."
               />
             </p>
 
@@ -149,10 +149,10 @@ export function Hero() {
                 </div>
                 <div className="rounded-[8px] border border-white/10 bg-slate-950/70 p-4">
                   <p className="text-xs font-semibold uppercase text-sky-200">
-                    <LocalizedText en="Exam path" fa="مسیر آزمون" />
+                    <LocalizedText en="Exam + ESP path" fa="مسیر آزمون + زبان تخصصی" />
                   </p>
                   <p className="mt-2 text-sm leading-6 text-slate-300">
-                    <LocalizedText en="IELTS, TOEFL, FCE, CAE, GRE, GMAT, PTE, Duolingo, and more." fa="IELTS، TOEFL، FCE، CAE، GRE، GMAT، PTE، Duolingo و بیشتر." />
+                    <LocalizedText en="IELTS, TOEFL, FCE, CAE, GRE, GMAT, medical, engineering, business, tech, and more." fa="IELTS، TOEFL، FCE، CAE، GRE، GMAT، پزشکی، مهندسی، بیزینس، تکنولوژی و بیشتر." />
                   </p>
                 </div>
               </div>

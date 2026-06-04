@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Award, BrainCircuit, FlaskConical, Globe2, GraduationCap, Handshake, Sparkles } from "lucide-react";
+import { ArrowRight, Award, BrainCircuit, BriefcaseBusiness, FlaskConical, Globe2, GraduationCap, Handshake, Sparkles } from "lucide-react";
 import { EvaBookletGateway } from "@/components/eva/EvaBookletGateway";
 import { Container } from "@/components/site/Container";
 import { DirectContactButtons } from "@/components/site/DirectContactButtons";
@@ -9,9 +9,9 @@ import { LocalizedText } from "@/components/site/LocalizedText";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Online English Teacher, IELTS, TOEFL, FCE, GRE & GMAT Coaching",
+  title: "Online English Teacher, IELTS, TOEFL, FCE, ESP, GRE & GMAT Coaching",
   description:
-    "EduPocket by Ali Rad: Cambridge CELTA English teacher with 15+ years of experience in IELTS, TOEFL, Cambridge FCE/B2 First, GRE, GMAT, academic English, and AI-assisted study systems.",
+    "EduPocket by Ali Rad: Cambridge CELTA English teacher with 15+ years of experience in IELTS, TOEFL, Cambridge FCE/B2 First, GRE, GMAT, specialized English, academic English, and AI-assisted study systems.",
   keywords: [
     ...siteConfig.seoKeywords,
     "online IELTS teacher",
@@ -21,6 +21,9 @@ export const metadata: Metadata = {
     "GRE verbal English tutor",
     "GMAT verbal tutor online",
     "English teacher for China Taiwan US Canada",
+    "specialized English teacher online",
+    "English for Specific Purposes tutor",
+    "medical engineering business technology English",
   ],
   alternates: {
     canonical: "/",
@@ -53,6 +56,14 @@ const workModes = [
       fa: "IELTS Academic/General، TOEFL iBT، Cambridge FCE/B2 First، CAE، CPE، KET، PET، PTE، Duolingo، GRE Verbal، GMAT Verbal، SAT، ACT و TOEIC.",
     },
     icon: GraduationCap,
+  },
+  {
+    title: { en: "Specialized English", fa: "زبان تخصصی" },
+    text: {
+      en: "ESP for medicine, nursing, engineering, computer science, AI, business, finance, law, tourism, aviation, research, presentations, and interviews.",
+      fa: "زبان تخصصی برای پزشکی، پرستاری، مهندسی، کامپیوتر، AI، بیزینس، مالی، حقوق، گردشگری، هواپیمایی، پژوهش، ارائه و مصاحبه.",
+    },
+    icon: BriefcaseBusiness,
   },
   {
     title: { en: "AI learning systems", fa: "سیستم یادگیری با AI" },
@@ -88,7 +99,7 @@ const teacherSignals = [
   {
     value: "IELTS+",
     label: { en: "major exam pathways", fa: "مسیرهای اصلی آزمون" },
-    text: { en: "IELTS, TOEFL, FCE/B2 First, CAE, GRE, GMAT, PTE, Duolingo, SAT, ACT, TOEIC, KET, and PET.", fa: "IELTS، TOEFL، FCE/B2 First، CAE، GRE، GMAT، PTE، Duolingo، SAT، ACT، TOEIC، KET و PET." },
+    text: { en: "IELTS, TOEFL, FCE/B2 First, CAE, GRE, GMAT, PTE, Duolingo, SAT, ACT, TOEIC, KET, PET, and ESP.", fa: "IELTS، TOEFL، FCE/B2 First، CAE، GRE، GMAT، PTE، Duolingo، SAT، ACT، TOEIC، KET، PET و زبان تخصصی." },
     icon: FlaskConical,
   },
   {
@@ -117,8 +128,8 @@ export default function HomePage() {
               </h2>
               <p className="mt-4 text-sm leading-7 text-slate-300 sm:text-base">
                 <LocalizedText
-                  en="Ali Esfandiari Rad teaches English, academic writing, conversation, business English, kids and teen English, and high-stakes exam preparation through a practical feedback-first system."
-                  fa="علی اسفندیاری راد انگلیسی، رایتینگ آکادمیک، مکالمه، انگلیسی کسب‌وکار، انگلیسی کودک و نوجوان و آمادگی آزمون‌های مهم را با سیستم عملیِ مبتنی بر بازخورد تدریس می‌کند."
+                  en="Ali Esfandiari Rad teaches English, academic writing, conversation, specialized English, business English, kids and teen English, and high-stakes exam preparation through a practical feedback-first system."
+                  fa="علی اسفندیاری راد انگلیسی، رایتینگ آکادمیک، مکالمه، زبان تخصصی، انگلیسی کسب‌وکار، انگلیسی کودک و نوجوان و آمادگی آزمون‌های مهم را با سیستم عملیِ مبتنی بر بازخورد تدریس می‌کند."
                 />
               </p>
             </div>
@@ -215,7 +226,7 @@ export default function HomePage() {
                 variant="hero"
                 className="mt-7 max-w-2xl"
                 primaryLabel={{ en: "Collaborate with me", fa: "همکاری با من" }}
-                primarySubLabel={{ en: "English, AI, education projects", fa: "انگلیسی، AI، پروژه آموزشی" }}
+                primarySubLabel={{ en: "Exams, ESP, AI, education projects", fa: "آزمون، زبان تخصصی، AI، پروژه آموزشی" }}
               />
             </div>
             <div className="grid gap-4 md:grid-cols-2">

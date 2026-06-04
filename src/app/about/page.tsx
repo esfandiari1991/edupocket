@@ -8,9 +8,9 @@ import { SectionHeading } from "@/components/site/SectionHeading";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "About Ali Rad - CELTA English Teacher, IELTS, TOEFL, FCE, GRE & GMAT Tutor",
+  title: "About Ali Rad - CELTA English Teacher, IELTS, TOEFL, FCE, ESP, GRE & GMAT Tutor",
   description:
-    "Ali Esfandiari Rad is a Cambridge CELTA English teacher with 15+ years of experience in IELTS, TOEFL, Cambridge FCE/B2 First, GRE, GMAT, academic writing, business English, and AI-assisted learning systems.",
+    "Ali Esfandiari Rad is a Cambridge CELTA English teacher with 15+ years of experience in IELTS, TOEFL, Cambridge FCE/B2 First, GRE, GMAT, specialized English, academic writing, business English, and AI-assisted learning systems.",
   keywords: [
     "Ali Esfandiari Rad",
     "Ali Rad",
@@ -22,6 +22,11 @@ export const metadata: Metadata = {
     "Cambridge B2 First tutor",
     "GRE verbal tutor",
     "GMAT verbal tutor",
+    "specialized English teacher",
+    "English for Specific Purposes tutor",
+    "medical English tutor",
+    "engineering English tutor",
+    "technology English tutor",
     "online English teacher China Taiwan Canada USA",
     "AI learning-system builder",
     "online tutor",
@@ -31,20 +36,20 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "About Ali Rad - CELTA English Teacher and EduPocket Founder",
-    description: "15+ years of English teaching, exam coaching, Cambridge CELTA training, and AI-assisted learning-system design.",
+    description: "15+ years of English teaching, exam coaching, specialized English, Cambridge CELTA training, and AI-assisted learning-system design.",
     url: "/about",
   },
   twitter: {
     card: "summary_large_image",
     title: "About Ali Rad | CELTA English Teacher | EduPocket",
-    description: "Cambridge CELTA English teacher with 15+ years of IELTS, TOEFL, FCE, GRE, GMAT, and academic English coaching experience.",
+    description: "Cambridge CELTA English teacher with 15+ years of IELTS, TOEFL, FCE, GRE, GMAT, specialized English, and academic English coaching experience.",
   },
 };
 
 const strengths = [
   {
     title: { en: "English teaching", fa: "آموزش انگلیسی" },
-    text: { en: "15+ years of IELTS, TOEFL, Cambridge English, business English, academic writing, conversation, kids, and teen English.", fa: "بیش از ۱۵ سال تجربه در آیلتس، تافل، آزمون‌های کمبریج، انگلیسی کسب‌وکار، رایتینگ آکادمیک، مکالمه و انگلیسی کودک و نوجوان." },
+    text: { en: "15+ years of IELTS, TOEFL, Cambridge English, specialized English, business English, academic writing, conversation, kids, and teen English.", fa: "بیش از ۱۵ سال تجربه در آیلتس، تافل، آزمون‌های کمبریج، زبان تخصصی، انگلیسی کسب‌وکار، رایتینگ آکادمیک، مکالمه و انگلیسی کودک و نوجوان." },
     icon: GraduationCap,
   },
   {
@@ -96,6 +101,10 @@ const examGroups = [
     title: { en: "Learner pathways", fa: "مسیرهای زبان‌آموزی" },
     items: ["Academic Writing", "Business English", "Conversation", "English for kids", "English for teens", "AI-assisted study routines"],
   },
+  {
+    title: { en: "Specialized English / ESP", fa: "زبان تخصصی / ESP" },
+    items: [...siteConfig.teacherProfile.specializedEnglish],
+  },
 ];
 
 export default function AboutPage() {
@@ -127,8 +136,8 @@ export default function AboutPage() {
             </h2>
             <p className="mt-4 text-sm leading-7 text-slate-400">
               <LocalizedText
-                en="Ali teaches English, exam preparation, academic writing, business English, conversation, SQL, Python, and AI learning systems online. EduPocket brings those lessons into a structured content hub: notes, micro-lessons, podcasts, and frameworks that help learners practice with clarity."
-                fa="علی انگلیسی، آمادگی آزمون، رایتینگ آکادمیک، انگلیسی کسب‌وکار، مکالمه، SQL، پایتون و سیستم‌های یادگیری با هوش مصنوعی را آنلاین تدریس می‌کند. EduPocket این تجربه‌ها را به یک هاب محتوایی ساختارمند تبدیل می‌کند: یادداشت، درس کوتاه، پادکست و چارچوب‌هایی که تمرین را شفاف‌تر می‌کنند."
+                en="Ali teaches English, exam preparation, specialized English, academic writing, business English, conversation, SQL, Python, and AI learning systems online. EduPocket brings those lessons into a structured content hub: notes, micro-lessons, podcasts, and frameworks that help learners practice with clarity."
+                fa="علی انگلیسی، آمادگی آزمون، زبان تخصصی، رایتینگ آکادمیک، انگلیسی کسب‌وکار، مکالمه، SQL، پایتون و سیستم‌های یادگیری با هوش مصنوعی را آنلاین تدریس می‌کند. EduPocket این تجربه‌ها را به یک هاب محتوایی ساختارمند تبدیل می‌کند: یادداشت، درس کوتاه، پادکست و چارچوب‌هایی که تمرین را شفاف‌تر می‌کنند."
               />
             </p>
             <p className="mt-4 text-sm leading-7 text-slate-400">
@@ -164,12 +173,12 @@ export default function AboutPage() {
               <LocalizedText en="Online English coaching" fa="کوچینگ آنلاین انگلیسی" />
             </div>
             <h2 className="mt-3 text-2xl font-semibold leading-tight text-white sm:text-3xl">
-              <LocalizedText en="Exam preparation for learners and parents worldwide." fa="آمادگی آزمون برای زبان‌آموزها و خانواده‌ها در سراسر جهان." />
+              <LocalizedText en="Exam preparation and specialized English for learners worldwide." fa="آمادگی آزمون و زبان تخصصی برای زبان‌آموزها در سراسر جهان." />
             </h2>
             <p className="mt-4 text-sm leading-7 text-slate-300">
               <LocalizedText
-                en="The goal is not only to pass a test. The goal is to build a repeatable English system: diagnosis, strategy, practice, feedback, review, and performance."
-                fa="هدف فقط قبول شدن در آزمون نیست. هدف ساختن یک سیستم تکرارپذیر انگلیسی است: تشخیص، استراتژی، تمرین، بازخورد، مرور و عملکرد."
+                en="The goal is not only to pass a test or memorize field vocabulary. The goal is to build a repeatable English system: diagnosis, strategy, practice, feedback, review, and performance."
+                fa="هدف فقط قبول شدن در آزمون یا حفظ کردن واژگان تخصصی نیست. هدف ساختن یک سیستم تکرارپذیر انگلیسی است: تشخیص، استراتژی، تمرین، بازخورد، مرور و عملکرد."
               />
             </p>
             <p className="mt-3 text-sm leading-7 text-slate-400">

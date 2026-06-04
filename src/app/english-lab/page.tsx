@@ -3,9 +3,9 @@ import { EnglishLabExperience } from "@/components/english-lab/EnglishLabExperie
 import { Container } from "@/components/site/Container";
 
 export const metadata: Metadata = {
-  title: "English Test Lab - IELTS, TOEFL, FCE & Cambridge English Practice",
+  title: "English Test Lab - IELTS, TOEFL, FCE, ESP & Cambridge English Practice",
   description:
-    "An interactive EduPocket English practice hub for IELTS, TOEFL, Cambridge FCE/B2 First, grammar, vocabulary, reading, listening, writing, exams, and level checks by Ali Rad.",
+    "An interactive EduPocket English practice hub for IELTS, TOEFL, Cambridge FCE/B2 First, specialized English vocabulary, grammar, vocabulary, reading, listening, writing, exams, and level checks by Ali Rad.",
   keywords: [
     "English test practice",
     "IELTS practice",
@@ -15,20 +15,22 @@ export const metadata: Metadata = {
     "grammar practice",
     "vocabulary practice",
     "English teacher for teens",
+    "specialized English practice",
+    "English for Specific Purposes practice",
     "AI English learning",
   ],
   alternates: {
     canonical: "/english-lab",
   },
   openGraph: {
-    title: "EduPocket English Test Lab - IELTS, TOEFL, FCE & Cambridge Practice",
-    description: "Interactive English practice for IELTS, TOEFL, Cambridge FCE/B2 First, grammar, vocabulary, reading, writing, and level checks.",
+    title: "EduPocket English Test Lab - IELTS, TOEFL, FCE, ESP & Cambridge Practice",
+    description: "Interactive English practice for IELTS, TOEFL, Cambridge FCE/B2 First, specialized English, grammar, vocabulary, reading, writing, and level checks.",
     url: "/english-lab",
   },
   twitter: {
     card: "summary_large_image",
-    title: "English Test Lab - IELTS, TOEFL, FCE Practice | EduPocket",
-    description: "Interactive English practice for IELTS, TOEFL, Cambridge FCE/B2 First, grammar, vocabulary, reading, writing, and level checks.",
+    title: "English Test Lab - IELTS, TOEFL, FCE, ESP Practice | EduPocket",
+    description: "Interactive English practice for IELTS, TOEFL, Cambridge FCE/B2 First, specialized English, grammar, vocabulary, reading, writing, and level checks.",
   },
 };
 
