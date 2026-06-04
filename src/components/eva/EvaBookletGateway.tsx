@@ -25,11 +25,11 @@ export function EvaBookletGateway({ compact = false, loginError }: EvaBookletGat
     >
       <Container>
         <div className="eva-premium-frame motion-view grid min-w-0 gap-6 overflow-hidden rounded-[8px] border border-amber-200/20 p-4 shadow-[0_28px_100px_rgba(0,0,0,0.28)] sm:p-6 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:items-stretch lg:p-7">
-          <div className="relative order-2 min-h-[18rem] min-w-0 overflow-hidden rounded-[8px] border border-white/10 bg-[radial-gradient(circle_at_18%_16%,rgba(251,191,36,0.16),transparent_12rem),linear-gradient(145deg,rgba(6,17,31,0.74),rgba(15,31,39,0.82))] p-4 sm:min-h-[22rem] sm:p-5 lg:order-1 lg:min-h-full">
+          <div className="hidden min-h-[18rem] min-w-0 overflow-hidden rounded-[8px] border border-white/10 bg-[radial-gradient(circle_at_18%_16%,rgba(251,191,36,0.16),transparent_12rem),linear-gradient(145deg,rgba(6,17,31,0.74),rgba(15,31,39,0.82))] p-4 sm:min-h-[22rem] sm:p-5 lg:relative lg:order-1 lg:block lg:min-h-full">
             <div className="absolute inset-x-6 top-8 h-px bg-gradient-to-r from-transparent via-amber-200/46 to-transparent" />
             <div className="absolute bottom-8 left-7 top-8 w-px bg-gradient-to-b from-amber-200/30 via-sky-200/18 to-transparent" />
             <div className="relative flex h-full min-h-[16rem] flex-col justify-between gap-4">
-              <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_6.25rem] sm:items-start">
+              <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_11rem] sm:items-stretch">
                 <div className="rounded-[8px] border border-amber-100/16 bg-slate-950/48 p-4 shadow-[0_20px_64px_rgba(0,0,0,0.22)] backdrop-blur-sm">
                   <div className="flex items-center justify-between gap-4">
                     <span className="flex size-10 items-center justify-center rounded-[8px] bg-amber-200/10 text-amber-200">
@@ -45,9 +45,9 @@ export function EvaBookletGateway({ compact = false, loginError }: EvaBookletGat
                   </p>
                 </div>
 
-                <div className="relative mx-auto w-20 overflow-hidden rounded-[10px] sm:mx-0 sm:w-24">
-                  <div className="absolute inset-0 rounded-[10px] bg-[conic-gradient(from_150deg,rgba(251,191,36,0.7),rgba(125,211,252,0.18),rgba(251,191,36,0.42),rgba(15,23,42,0.2))] opacity-70 blur-[2px]" />
-                  <div className="relative overflow-hidden rounded-[8px] border border-amber-100/18 bg-slate-950/70 shadow-[0_18px_48px_rgba(0,0,0,0.34)]">
+                <div className="relative mx-auto w-full max-w-[18rem] overflow-hidden rounded-[10px] sm:mx-0 sm:max-w-none">
+                  <div className="absolute inset-0 rounded-[10px] bg-[conic-gradient(from_150deg,rgba(251,191,36,0.82),rgba(125,211,252,0.2),rgba(251,191,36,0.5),rgba(15,23,42,0.2))] opacity-80 blur-[2px]" />
+                  <div className="relative overflow-hidden rounded-[8px] border border-amber-100/22 bg-slate-950/70 shadow-[0_24px_70px_rgba(0,0,0,0.38)]">
                     <Image
                       src="/images/eva/eva-digital-booklet-portrait.jpg"
                       alt="Premium member studying inside the Eva Digital Booklet portal"
@@ -55,12 +55,12 @@ export function EvaBookletGateway({ compact = false, loginError }: EvaBookletGat
                       height={720}
                       priority
                       quality={88}
-                      className="aspect-square w-full object-cover object-[50%_42%] contrast-[1.02] saturate-[0.98]"
-                      sizes="(max-width: 640px) 5rem, 6rem"
+                      className="aspect-[4/5] w-full object-cover object-[50%_34%] contrast-[1.03] saturate-[1.02]"
+                      sizes="(max-width: 640px) 18rem, 11rem"
                     />
                     <div className="absolute inset-0 rounded-[8px] ring-1 ring-inset ring-white/12" />
                   </div>
-                  <div className="relative mt-2 rounded-[6px] border border-white/10 bg-slate-950/52 px-2 py-1 text-center text-[10px] font-semibold leading-4 text-amber-100/80">
+                  <div className="relative mt-2 rounded-[6px] border border-white/10 bg-slate-950/52 px-2.5 py-1.5 text-center text-[11px] font-semibold leading-4 text-amber-100/84">
                     <LocalizedText en="Premium learner" fa="زبان‌آموز پریمیوم" />
                   </div>
                 </div>
@@ -109,6 +109,25 @@ export function EvaBookletGateway({ compact = false, loginError }: EvaBookletGat
                   <p className="mt-3 max-w-xl text-xs font-semibold leading-5 text-amber-100/80">
                     <LocalizedText en="Public gateway. Premium chapters stay protected." fa="درگاه عمومی است؛ فصل های پریمیوم محافظت می‌شوند." />
                   </p>
+                ) : null}
+                {!compact ? (
+                  <div className="relative mt-5 overflow-hidden rounded-[8px] border border-amber-100/18 bg-slate-950/62 shadow-[0_22px_68px_rgba(0,0,0,0.28)] lg:hidden">
+                    <Image
+                      src="/images/eva/eva-digital-booklet-study.jpg"
+                      alt="Premium member studying inside the Eva Digital Booklet portal"
+                      width={920}
+                      height={824}
+                      priority
+                      quality={88}
+                      className="aspect-[16/10] w-full object-cover object-[50%_28%] contrast-[1.03] saturate-[1.02]"
+                      sizes="(max-width: 1024px) calc(100vw - 4rem), 1px"
+                    />
+                    <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_58%,rgba(2,6,23,0.7))]" />
+                    <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-3 rounded-[7px] border border-white/10 bg-slate-950/58 px-3 py-2 text-xs font-semibold text-amber-100 backdrop-blur-sm">
+                      <LocalizedText en="Premium learner profile" fa="پروفایل زبان‌آموز پریمیوم" />
+                      <span className="text-slate-400">01</span>
+                    </div>
+                  </div>
                 ) : null}
                 <div className="mt-6 flex flex-wrap gap-2">
                   {evaPublicOffer.included.map((item) => (
