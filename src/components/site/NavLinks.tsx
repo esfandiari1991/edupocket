@@ -29,7 +29,7 @@ export function NavLinks() {
             aria-current={active ? "page" : undefined}
             data-active={active ? "true" : "false"}
             className={cn(
-              "primary-nav-link group relative isolate inline-flex min-h-11 min-w-0 items-center justify-center overflow-hidden rounded-[7px] border px-2 py-2 text-sm font-extrabold text-slate-100 transition duration-200 focus:outline-none focus:ring-2 focus:ring-amber-300/70 sm:px-3 xl:min-h-10 xl:px-2 xl:text-[0.8125rem]",
+              "primary-nav-link group relative isolate inline-flex min-h-11 min-w-0 items-center justify-center overflow-hidden rounded-[7px] border px-1.5 py-2 text-[0.8125rem] font-extrabold text-slate-100 transition duration-200 focus:outline-none focus:ring-2 focus:ring-amber-300/70 min-[430px]:px-2 min-[430px]:text-sm sm:px-3 xl:min-h-10 xl:px-2 xl:text-[0.8125rem]",
               active
                 ? "border-amber-300/70 bg-[linear-gradient(180deg,rgba(251,191,36,0.22),rgba(251,191,36,0.1))] text-amber-50 shadow-[0_14px_42px_rgba(251,191,36,0.18),inset_0_0_0_1px_rgba(255,255,255,0.08)]"
                 : "border-slate-500/25 bg-[linear-gradient(180deg,rgba(15,23,42,0.82),rgba(2,6,23,0.66))] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),inset_0_-1px_0_rgba(0,0,0,0.22)] hover:border-amber-300/50 hover:bg-[linear-gradient(180deg,rgba(30,41,59,0.9),rgba(15,23,42,0.78))] hover:text-white hover:shadow-[0_12px_34px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.08)]",
@@ -37,7 +37,7 @@ export function NavLinks() {
           >
             <span aria-hidden="true" className="primary-nav-link-glow" />
             <span aria-hidden="true" className="primary-nav-link-rail" />
-            <span className="relative z-10 truncate drop-shadow-[0_1px_0_rgba(0,0,0,0.24)]">
+            <span className="relative z-10 text-balance leading-tight drop-shadow-[0_1px_0_rgba(0,0,0,0.24)]">
               <LocalizedText en={item.label} fa={item.faLabel} />
             </span>
           </Link>

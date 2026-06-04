@@ -28,7 +28,7 @@ export function Hero() {
               <span />
               <span />
             </div>
-            <h1 className="motion-reveal motion-hero-title type-display max-w-4xl text-[2.35rem] font-semibold leading-[1.08] text-white sm:text-5xl lg:text-6xl">
+            <h1 className="motion-reveal motion-hero-title type-display max-w-4xl text-[2rem] font-semibold leading-[1.1] text-white min-[430px]:text-[2.35rem] sm:text-5xl sm:leading-[1.08] lg:text-6xl">
               <LocalizedText
                 en={
                   <>
@@ -104,7 +104,11 @@ export function Hero() {
                   height={1360}
                   priority
                   unoptimized
-                  className="h-[25rem] w-full object-cover object-[50%_34%] sm:h-[34rem] lg:h-[38rem]"
+                  className="relative z-0 block h-[25rem] w-full object-cover object-[58%_34%] brightness-[1.08] contrast-[1.04] saturate-[1.12] sm:h-[34rem] lg:h-[38rem]"
+                />
+                <div
+                  className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(2,6,23,0.08),transparent_34%,rgba(2,6,23,0.2)_100%)]"
+                  aria-hidden="true"
                 />
                 <div className="motion-photo-grid" aria-hidden="true">
                   <span />
