@@ -40,6 +40,10 @@ export const evaMaterialSourcePolicy = [
     note: "The practice passages, prompts, answer keys, rationales, rubrics, visual assets, and TTS scripts in this file are original EduPocket/Eva material.",
   },
   {
+    label: "Source workbook conversion",
+    note: "Additional chapter packs are generated from the private Eva source booklet and remain inside the premium studio flow.",
+  },
+  {
     label: "Exam-owner safety",
     note: "The tasks are IELTS/TOEFL-style by skill family only. They do not copy IELTS, TOEFL, ETS, British Council, test-english, or other exam-prep passages.",
   },

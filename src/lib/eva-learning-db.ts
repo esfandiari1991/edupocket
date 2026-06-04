@@ -1,5 +1,6 @@
 import type { EvaBooklet, EvaBookletPage } from "@/lib/eva-private-content";
 import { evaMaterialItems, evaSupplementalExamTasks } from "@/lib/eva-materials";
+import { buildEvaSourceMaterialItems, buildEvaSupplementalExamTasksFromMaterials } from "@/lib/eva-source-materials";
 import { evaGrammarModules, evaLexicalResource, evaQuizQuestions, evaReligiousModules } from "@/lib/eva-studio-curriculum";
 
 export type EvaUserId = "ali" | "eva" | "elham";
@@ -318,7 +319,10 @@ function firstReadableText(page: EvaBookletPage) {
 }
 
 export function buildEvaLearningDatabase(booklet: EvaBooklet): EvaLearningDatabase {
-  const supplementalExamTasks: EvaExamTask[] = evaSupplementalExamTasks.map((task) => ({
+  const sourceMaterialItems = buildEvaSourceMaterialItems(booklet);
+  const allMaterialItems = [...evaMaterialItems, ...sourceMaterialItems];
+  const allSupplementalExamTasks = [...evaSupplementalExamTasks, ...buildEvaSupplementalExamTasksFromMaterials(sourceMaterialItems)];
+  const supplementalExamTasks: EvaExamTask[] = allSupplementalExamTasks.map((task) => ({
     id: task.id,
     exam: task.exam as "IELTS" | "TOEFL",
     skill: task.skill as "reading" | "writing",
@@ -370,7 +374,7 @@ export function buildEvaLearningDatabase(booklet: EvaBooklet): EvaLearningDataba
     trackableSignals: ["TTS listened", "TTS repeated", "shadowing", "pronunciation mastered"],
   }));
 
-  const materialActivities: EvaLearningActivity[] = evaMaterialItems.map((item) => ({
+  const materialActivities: EvaLearningActivity[] = allMaterialItems.map((item) => ({
     id: `material-${item.id}`,
     kind:
       item.track === "reading"
@@ -424,7 +428,7 @@ export function buildEvaLearningDatabase(booklet: EvaBooklet): EvaLearningDataba
     })),
   );
 
-  const materialQuestions = evaMaterialItems.flatMap((item) =>
+  const materialQuestions = allMaterialItems.flatMap((item) =>
     item.questions.map((question) => ({
       id: `material-${item.id}-${question.id}`,
       activityId: `material-${item.id}`,
@@ -466,7 +470,7 @@ export function buildEvaLearningDatabase(booklet: EvaBooklet): EvaLearningDataba
         voiceHint: "exam-reader" as const,
         speedDefault: 0.9,
       })),
-    ...evaMaterialItems
+    ...allMaterialItems
       .filter((item) => item.ttsScript || item.passage || item.prompt)
       .map((item) => ({
         id: `tts-material-${item.id}`,
@@ -525,7 +529,7 @@ export function buildEvaLearningDatabase(booklet: EvaBooklet): EvaLearningDataba
         type: "lexical-pronunciation",
         tags: item.tags,
       })),
-      ...evaMaterialItems.map((item) => ({
+      ...allMaterialItems.map((item) => ({
         id: `item-${item.id}`,
         activityId: `material-${item.id}`,
         title: item.title,

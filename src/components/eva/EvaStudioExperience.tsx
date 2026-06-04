@@ -48,10 +48,10 @@ import {
   evaMaterialCollections,
   evaMaterialItems,
   evaMaterialSourcePolicy,
-  evaMaterialStats,
   type EvaMaterialItem,
   type EvaMaterialTrack,
 } from "@/lib/eva-materials";
+import { buildEvaMaterialStats, buildEvaSourceMaterialItems, extendEvaMaterialCollections } from "@/lib/eva-source-materials";
 import {
   evaGrammarModules,
   evaLexicalResource,
@@ -322,6 +322,14 @@ function recordCount(record: Record<string, unknown>) {
   return Object.values(record).filter(Boolean).length;
 }
 
+function sourcePageIdsForMaterial(item: EvaMaterialItem) {
+  return item.tags.filter((tag) => tag.startsWith("source-page:")).map((tag) => tag.replace("source-page:", ""));
+}
+
+function visibleMaterialTags(item: EvaMaterialItem) {
+  return item.tags.filter((tag) => !tag.startsWith("source-page:") && !tag.startsWith("chapter:"));
+}
+
 function formatTimer(seconds: number) {
   const minutes = Math.floor(seconds / 60);
   const rest = seconds % 60;
@@ -365,6 +373,10 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
   const [examSecondsLeft, setExamSecondsLeft] = useState((activeExamTask?.timeLimitMinutes ?? 0) * 60);
   const [examTimerRunning, setExamTimerRunning] = useState(false);
   const usesServerPersistence = persistenceMode !== "development";
+  const sourceMaterialItems = useMemo(() => buildEvaSourceMaterialItems(booklet), [booklet]);
+  const materialItems = useMemo(() => [...evaMaterialItems, ...sourceMaterialItems], [sourceMaterialItems]);
+  const materialCollections = useMemo(() => extendEvaMaterialCollections(evaMaterialCollections, sourceMaterialItems), [sourceMaterialItems]);
+  const materialStats = useMemo(() => buildEvaMaterialStats(materialItems, materialCollections.length), [materialCollections.length, materialItems]);
   const visibleExamSecondsLeft = examTimerTaskId === activeExamTask.id ? examSecondsLeft : activeExamTask.timeLimitMinutes * 60;
   const visibleExamTimerRunning = examTimerTaskId === activeExamTask.id && examTimerRunning;
 
@@ -379,7 +391,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     setActiveQuizTrack((parsed.activeQuizTrack as EvaStudioTrack | undefined) ?? "grammar");
     setActiveExamId(parsed.activeExamId ?? learningDatabase.examTasks[0]?.id ?? "");
     setActiveMaterialTrack((parsed.activeMaterialTrack as EvaMaterialTrack | undefined) ?? "reading");
-    setActiveMaterialId(parsed.activeMaterialId ?? evaMaterialCollections[0]?.items[0]?.id ?? "");
+    setActiveMaterialId(parsed.activeMaterialId ?? materialCollections[0]?.items[0]?.id ?? "");
     setDone(parsed.done);
     setModuleDone(parsed.moduleDone);
     setNotes(parsed.notes);
@@ -392,7 +404,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     setExamAnswers(parsed.examAnswers);
     setReviewQueue(parsed.reviewQueue);
     setTeacherNotes(parsed.teacherNotes);
-  }, [booklet.chapters, booklet.pages, booklet.stacks, learningDatabase.examTasks]);
+  }, [booklet.chapters, booklet.pages, booklet.stacks, learningDatabase.examTasks, materialCollections]);
 
   useEffect(() => {
     let cancelled = false;
@@ -673,31 +685,31 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
   );
   const activeQuizQuestions = useMemo(() => evaQuizQuestions.filter((question) => question.track === activeQuizTrack), [activeQuizTrack]);
   const activeMaterialCollection = useMemo(
-    () => evaMaterialCollections.find((collection) => collection.id === activeMaterialTrack) ?? evaMaterialCollections[0]!,
-    [activeMaterialTrack],
+    () => materialCollections.find((collection) => collection.id === activeMaterialTrack) ?? materialCollections[0]!,
+    [activeMaterialTrack, materialCollections],
   );
   const activeMaterial = useMemo(() => {
     const activeCollectionIds = new Set(activeMaterialCollection.items.map((item) => item.id));
-    if (!activeCollectionIds.has(activeMaterialId)) return activeMaterialCollection.items[0] ?? evaMaterialItems[0]!;
-    return evaMaterialItems.find((item) => item.id === activeMaterialId) ?? activeMaterialCollection.items[0] ?? evaMaterialItems[0]!;
-  }, [activeMaterialCollection, activeMaterialId]);
-  const materialTitleMap = useMemo(() => new Map(evaMaterialItems.map((item) => [item.id, item.title])), []);
+    if (!activeCollectionIds.has(activeMaterialId)) return activeMaterialCollection.items[0] ?? materialItems[0]!;
+    return materialItems.find((item) => item.id === activeMaterialId) ?? activeMaterialCollection.items[0] ?? materialItems[0]!;
+  }, [activeMaterialCollection, activeMaterialId, materialItems]);
+  const materialTitleMap = useMemo(() => new Map(materialItems.map((item) => [item.id, item.title])), [materialItems]);
   const answeredQuizQuestions = evaQuizQuestions.filter((question) => quizAnswers[question.id] !== undefined);
   const correctQuizQuestions = answeredQuizQuestions.filter((question) => quizAnswers[question.id] === question.answerIndex);
   const reviewItemIds = Object.entries(reviewQueue)
     .filter(([, queued]) => queued)
     .map(([pageId]) => pageId);
   const reviewMaterialItems = reviewItemIds
-    .map((itemId) => evaMaterialItems.find((item) => item.id === itemId))
+    .map((itemId) => materialItems.find((item) => item.id === itemId))
     .filter((item): item is EvaMaterialItem => Boolean(item));
   const reviewPages = reviewItemIds
     .map((pageId) => booklet.pages.find((page) => page.id === pageId))
     .filter((page): page is EvaBookletPage => Boolean(page));
   const reviewQueueCount = reviewPages.length + reviewMaterialItems.length;
   const completedPremiumModules = evaSkillModules.filter((module) => moduleDone[module.id]).length;
-  const completedMaterials = evaMaterialItems.filter((item) => done[item.id]).length;
-  const materialQuestionCount = evaMaterialItems.reduce((total, item) => total + item.questions.length, 0);
-  const materialCorrectCount = evaMaterialItems.reduce(
+  const completedMaterials = materialItems.filter((item) => done[item.id]).length;
+  const materialQuestionCount = materialItems.reduce((total, item) => total + item.questions.length, 0);
+  const materialCorrectCount = materialItems.reduce(
     (total, item) => total + item.questions.filter((question) => examAnswers[`${item.id}:${question.id}`] === question.answerIndex).length,
     0,
   );
@@ -705,7 +717,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
   const studioMastery = Math.round(
     ((booklet.pages.filter((page) => done[page.id]).length / Math.max(booklet.pages.length, 1)) * 0.45 +
       (completedPremiumModules / Math.max(evaSkillModules.length, 1)) * 0.2 +
-      (completedMaterials / Math.max(evaMaterialItems.length, 1)) * 0.1 +
+      (completedMaterials / Math.max(materialItems.length, 1)) * 0.1 +
       (correctQuizQuestions.length / Math.max(evaQuizQuestions.length, 1)) * 0.15 +
       (completedPronunciations / Math.max(evaLexicalResource.length, 1)) * 0.1) *
       100,
@@ -758,8 +770,8 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     for (const pageId of Object.keys(reviewQueue).filter((id) => reviewQueue[id])) {
       const page = booklet.pages.find((item) => item.id === pageId);
       page?.skillTags.slice(0, 5).forEach((skill) => add(skill));
-      const material = evaMaterialItems.find((item) => item.id === pageId);
-      material?.tags.slice(0, 4).forEach((skill) => add(skill));
+      const material = materialItems.find((item) => item.id === pageId);
+      if (material) visibleMaterialTags(material).slice(0, 4).forEach((skill) => add(skill));
     }
 
     for (const question of evaQuizQuestions) {
@@ -774,7 +786,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
       }
     }
 
-    for (const item of evaMaterialItems) {
+    for (const item of materialItems) {
       for (const question of item.questions) {
         const selected = examAnswers[`${item.id}:${question.id}`];
         if (selected !== undefined && selected !== question.answerIndex) add(`${item.exam} ${item.skill}`, 2);
@@ -784,7 +796,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     return Array.from(weights.entries())
       .sort((a, b) => b[1] - a[1])
       .slice(0, 6);
-  }, [booklet.pages, examAnswers, learningDatabase.examTasks, quizAnswers, reviewQueue]);
+  }, [booklet.pages, examAnswers, learningDatabase.examTasks, materialItems, quizAnswers, reviewQueue]);
 
   if (!activeStack || !activeChapter || !activePage) return null;
 
@@ -805,8 +817,13 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
   const activeMaterialDraft = writingDrafts[activeMaterial.id] ?? "";
   const activeMaterialTtsText = activeMaterial.ttsScript ?? activeMaterial.passage ?? activeMaterial.prompt ?? activeMaterial.summary;
   const activeMaterialTtsKey = `tts-material-${activeMaterial.id}`;
-  const activeMaterialSourcePages = booklet.pages.filter((page) => activeMaterial.sourceTypeTargets.includes(page.type)).slice(0, 5);
-  const firstWritingMaterial = evaMaterialItems.find((item) => item.track === "writing") ?? activeMaterial;
+  const activeMaterialSourcePageIds = sourcePageIdsForMaterial(activeMaterial);
+  const activeMaterialSourcePages = activeMaterialSourcePageIds.length
+    ? activeMaterialSourcePageIds
+        .map((pageId) => booklet.pages.find((page) => page.id === pageId))
+        .filter((page): page is EvaBookletPage => Boolean(page))
+    : booklet.pages.filter((page) => activeMaterial.sourceTypeTargets.includes(page.type)).slice(0, 5);
+  const firstWritingMaterial = materialItems.find((item) => item.track === "writing") ?? activeMaterial;
   const activeMaterialContract = materialTrackContracts[activeMaterial.track];
   const activeMaterialProgressPercent = activeMaterial.questions.length
     ? Math.round((activeMaterialAnswered.length / activeMaterial.questions.length) * 100)
@@ -973,7 +990,10 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
     setActivePremiumTab("materials");
     setActiveMaterialTrack(item.track);
     setActiveMaterialId(item.id);
+    const sourcePageIds = sourcePageIdsForMaterial(item);
     const nextPage =
+      stackPages.find((page) => sourcePageIds.includes(page.id)) ??
+      booklet.pages.find((page) => sourcePageIds.includes(page.id)) ??
       stackPages.find((page) => item.sourceTypeTargets.includes(page.type)) ??
       booklet.pages.find((page) => item.sourceTypeTargets.includes(page.type));
     if (nextPage) choosePage(nextPage);
@@ -1183,7 +1203,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
               { label: "TTS segments", value: learningDatabase.ttsSegments.length },
               { label: "Exam tasks", value: learningDatabase.examTasks.length },
               { label: "Questions", value: learningDatabase.questions.length },
-              { label: "Material packs", value: evaMaterialStats.items },
+              { label: "Material packs", value: materialStats.items },
             ].map((item) => (
               <div key={item.label} className="rounded-[8px] border border-white/10 bg-slate-950/32 p-3">
                 <p className="text-lg font-semibold text-white">{item.value}</p>
@@ -1289,7 +1309,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
             {[
               { label: "Pages done", value: booklet.pages.filter((page) => done[page.id]).length, total: booklet.pages.length, icon: FileText },
               { label: "Modules", value: completedPremiumModules, total: evaSkillModules.length, icon: ListChecks },
-              { label: "Materials", value: completedMaterials, total: evaMaterialItems.length, icon: LibraryBig },
+              { label: "Materials", value: completedMaterials, total: materialItems.length, icon: LibraryBig },
               { label: "Quiz correct", value: correctQuizQuestions.length, total: evaQuizQuestions.length, icon: BarChart3 },
               { label: "Pronounced", value: completedPronunciations, total: evaLexicalResource.length, icon: Headphones },
             ].map((item) => {
@@ -1422,7 +1442,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
             </p>
           </div>
           <p className="text-sm font-semibold text-slate-500">
-            20 modules · {evaMaterialStats.items} material packs · {evaLexicalResource.length} pronunciation cards · {learningDatabase.examTasks.length} exam tasks
+            20 modules · {materialStats.items} material packs · {sourceMaterialItems.length} source-linked packs · {learningDatabase.examTasks.length} exam tasks
           </p>
         </div>
 
@@ -1478,7 +1498,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                 { title: "Grammar Atlas", value: evaGrammarModules.length, text: "Accuracy chapters with source-page jumps.", icon: GraduationCap },
                 { title: "Religious Context", value: evaReligiousModules.length, text: "Meaning, service, prayer, and translation chapters.", icon: Flame },
                 { title: "Lexical Resource", value: evaLexicalResource.length, text: "IPA, stress, collocations, and listen practice.", icon: Volume2 },
-                { title: "Material Library", value: evaMaterialStats.items, text: "Original IELTS/TOEFL-style packs and TTS scripts.", icon: LibraryBig },
+                { title: "Material Library", value: materialStats.items, text: "Original IELTS/TOEFL-style packs plus source-linked chapter conversions.", icon: LibraryBig },
               ].map((item) => {
                 const Icon = item.icon;
 
@@ -1519,7 +1539,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                 {[
                   { title: "Source workbook", action: "read + annotate", saved: `${booklet.stats.pages} pages`, proof: "page done, note, TTS" },
                   { title: "Skill modules", action: "practice + evidence", saved: `${evaSkillModules.length} modules`, proof: "module done, source jump" },
-                  { title: "Material packs", action: "answer + draft", saved: `${evaMaterialStats.items} packs`, proof: "answers, drafts, review" },
+                  { title: "Material packs", action: "answer + draft", saved: `${materialStats.items} packs`, proof: "answers, drafts, review" },
                   { title: "Teacher system", action: "inspect + assign", saved: "3 member records", proof: "notes, weak map, next step" },
                 ].map((item) => (
                   <div key={item.title} className="rounded-[8px] border border-white/10 bg-slate-950/30 p-3">
@@ -1761,7 +1781,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                 <LibraryBig aria-hidden="true" className="size-5 shrink-0 text-amber-200" />
               </div>
               <div className="mt-4 grid gap-2">
-                {evaMaterialCollections.map((collection) => {
+                {materialCollections.map((collection) => {
                   const active = collection.id === activeMaterialTrack;
                   const completedInTrack = collection.items.filter((item) => done[item.id]).length;
 
@@ -1792,14 +1812,52 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                   );
                 })}
               </div>
+              <div className="mt-4 rounded-[8px] border border-white/10 bg-white/[0.035] p-3">
+                <div className="flex items-center justify-between gap-3">
+                  <h4 className="text-xs font-semibold uppercase text-slate-400">Track items</h4>
+                  <span className="rounded-[6px] border border-white/10 bg-slate-950/35 px-2 py-1 text-xs font-semibold text-amber-100">
+                    {activeMaterialCollection.items.length}
+                  </span>
+                </div>
+                <div className="mt-3 grid max-h-96 gap-2 overflow-y-auto pr-1">
+                  {activeMaterialCollection.items.map((item) => {
+                    const active = item.id === activeMaterial.id;
+                    const sourceLinked = sourcePageIdsForMaterial(item).length > 0;
+
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => chooseMaterial(item)}
+                        className={cn(
+                          "rounded-[8px] border p-3 text-start transition focus:outline-none focus:ring-2 focus:ring-amber-300/50",
+                          active ? "border-amber-300/55 bg-amber-300/12 text-white" : "border-white/10 bg-slate-950/32 text-slate-300 hover:border-amber-300/35",
+                        )}
+                      >
+                        <span className="flex items-start justify-between gap-3">
+                          <span className="min-w-0 text-sm font-semibold leading-5">{item.title}</span>
+                          <span className={cn("shrink-0 rounded-[6px] border px-2 py-1 text-[11px] font-bold", sourceLinked ? "border-sky-200/20 bg-sky-300/[0.08] text-sky-100" : "border-white/10 bg-white/[0.045] text-slate-400")}>
+                            {sourceLinked ? "Source" : item.exam}
+                          </span>
+                        </span>
+                        <span className="mt-2 block text-xs leading-5 text-slate-500">
+                          {item.exam} · {item.level} · {item.timeLimitMinutes} min · {item.questions.length ? `${item.questions.length} questions` : item.skill}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
               <div className="mt-4 rounded-[8px] border border-sky-200/15 bg-sky-300/[0.055] p-3">
                 <p className="text-xs font-semibold uppercase text-sky-100">Library stats</p>
                 <div className="mt-3 grid grid-cols-2 gap-2">
                   {[
                     ["Questions", materialQuestionCount],
                     ["Correct", materialCorrectCount],
-                    ["Writing", evaMaterialStats.writingPrompts],
-                    ["TTS", evaMaterialStats.ttsScripts],
+                    ["Writing", materialStats.writingPrompts],
+                    ["TTS", materialStats.ttsScripts],
+                    ["Source", sourceMaterialItems.length],
+                    ["Teacher", materialStats.teacherTemplates],
                   ].map(([label, value]) => (
                     <div key={label} className="rounded-[8px] border border-white/10 bg-slate-950/30 p-2">
                       <p className="text-sm font-semibold text-white">{value}</p>
@@ -2375,7 +2433,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                 {writingVaultEntries.length ? (
                   writingVaultEntries.slice(0, 12).map(([id, draft]) => {
                     const page = booklet.pages.find((item) => item.id === id);
-                    const material = evaMaterialItems.find((item) => item.id === id);
+                    const material = materialItems.find((item) => item.id === id);
                     const title = page?.title ?? materialTitleMap.get(id) ?? learningDatabase.examTasks.find((task) => `exam-${task.id}` === id)?.title ?? id;
 
                     return (
