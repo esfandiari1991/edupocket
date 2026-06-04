@@ -8,7 +8,7 @@ import { siteConfig } from "@/lib/site";
 
 const routes = [
   { en: `${siteConfig.teacherProfile.yearsOfExperience} years teaching`, fa: "بیش از ۱۵ سال تدریس", icon: GraduationCap },
-  { en: "Cambridge CELTA Holder", fa: "دارنده CELTA کمبریج", icon: Sparkles },
+  { en: "CELTA-qualified English teacher", fa: "دارنده مدرک CELTA کمبریج", icon: Sparkles },
   { en: "Exams + specialized English", fa: "آزمون + زبان تخصصی", icon: BrainCircuit },
 ];
 
@@ -43,11 +43,11 @@ export function Hero() {
               <LocalizedText
                 en={
                   <>
-                    EduPocket is built by Ali Rad, a Cambridge CELTA Holder with {siteConfig.teacherProfile.yearsOfExperience} years of experience helping learners prepare for IELTS, TOEFL, Cambridge English, PTE, Duolingo,
+                    EduPocket is built by Ali Rad, a Cambridge CELTA-qualified English teacher with {siteConfig.teacherProfile.yearsOfExperience} years of experience helping learners prepare for IELTS, TOEFL, Cambridge English, PTE, Duolingo,
                     TOEIC, OET, GRE, GMAT, specialized English, and real academic communication.
                   </>
                 }
-                fa="EduPocket توسط علی راد ساخته شده؛ دارنده CELTA کمبریج با بیش از ۱۵ سال تجربه در آمادگی آیلتس، تافل، آزمون‌های کمبریج، PTE، Duolingo، TOEIC، OET، GRE، GMAT، زبان تخصصی و ارتباط آکادمیک واقعی."
+                fa="EduPocket توسط علی راد ساخته شده؛ مدرس انگلیسی دارنده مدرک CELTA کمبریج با بیش از ۱۵ سال تجربه در آمادگی آیلتس، تافل، آزمون‌های کمبریج، PTE، Duolingo، TOEIC، OET، GRE، GMAT، زبان تخصصی و ارتباط آکادمیک واقعی."
               />
             </p>
 

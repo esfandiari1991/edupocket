@@ -58,7 +58,7 @@ export function StructuredData() {
       })),
       audience: [
         { "@type": "Audience", audienceType: "English learners" },
-        { "@type": "Audience", audienceType: "IELTS, TOEFL, Cambridge English, PTE, Duolingo, TOEIC, OET, GRE, and GMAT candidates" },
+        { "@type": "Audience", audienceType: "IELTS, TOEFL, Cambridge English, PTE, Duolingo, TOEIC, OET, LanguageCert, CELPIP, CAEL, GRE, GMAT, SAT, ACT, MSRT, TOLIMO, and EPT candidates" },
         { "@type": "Audience", audienceType: "Professionals looking for specialized English and English for Specific Purposes" },
         { "@type": "Audience", audienceType: "Parents looking for FCE and teen English support" },
         { "@type": "Audience", audienceType: "Teachers" },
@@ -102,7 +102,7 @@ export function StructuredData() {
       email: siteConfig.contactEmail,
       jobTitle: siteConfig.teacherProfile.role,
       description:
-        "Cambridge CELTA Holder with 15+ years of English teaching experience in IELTS, TOEFL, Cambridge English, FCE/B2 First, PTE, Duolingo, TOEIC, OET, GRE, GMAT, specialized English, academic English, business English, and AI-assisted learning systems.",
+        "Cambridge CELTA-qualified English teacher with 15+ years of teaching experience in IELTS, TOEFL, Cambridge English, FCE/B2 First, PTE, Duolingo, TOEIC, OET, GRE, GMAT, specialized English, academic English, business English, and AI-assisted learning systems.",
       worksFor: {
         "@id": `${base}/#organization`,
       },
@@ -150,7 +150,7 @@ export function StructuredData() {
       "@id": `${base}/#english-coaching-services`,
       name: "Ali Rad online English tutoring and exam preparation",
       description:
-        "Online English coaching for IELTS, TOEFL, Cambridge English, FCE/B2 First, PTE, Duolingo English Test, TOEIC, OET, LanguageCert, CELPIP, CAEL, GRE Verbal, GMAT Verbal, specialized English, academic writing, business English, kids English, and teen English.",
+        "Online English coaching for IELTS Academic and General, TOEFL iBT, TOEFL Essentials, TOEFL ITP, Cambridge English KET, PET, FCE/B2 First, CAE/C1 Advanced, CPE/C2 Proficiency, YLE, Linguaskill, PTE Academic, PTE Core, Duolingo English Test, TOEIC, OET, LanguageCert, Oxford Test of English, CELPIP, CAEL, MSRT, TOLIMO, EPT, GRE Verbal, GMAT Verbal, SAT English, ACT English, AP English, specialized English, academic writing, business English, kids English, and teen English.",
       itemListElement: teachingServices,
     },
     {

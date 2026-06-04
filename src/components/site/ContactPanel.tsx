@@ -40,8 +40,8 @@ const copy = {
   about: {
     title: { en: "Work with me directly", fa: "مستقیم با من در ارتباط باش" },
     text: {
-      en: "For English tutoring with a CELTA Holder, IELTS, TOEFL, Cambridge exams, PTE, Duolingo, TOEIC, OET, LanguageCert, CELPIP, CAEL, GRE, GMAT, SAT, ACT, MSRT, TOLIMO, specialized English, AI learning systems, or education projects, start with a direct message.",
-      fa: "برای تدریس انگلیسی با دارنده CELTA، IELTS، TOEFL، آزمون‌های کمبریج، PTE، Duolingo، TOEIC، OET، LanguageCert، CELPIP، CAEL، GRE، GMAT، SAT، ACT، MSRT، TOLIMO، زبان تخصصی، سیستم‌های یادگیری با هوش مصنوعی یا پروژه آموزشی، با یک پیام مستقیم شروع کن.",
+      en: "For English tutoring with a CELTA-qualified English teacher, IELTS, TOEFL, Cambridge exams, PTE, Duolingo, TOEIC, OET, LanguageCert, CELPIP, CAEL, GRE, GMAT, SAT, ACT, MSRT, TOLIMO, specialized English, AI learning systems, or education projects, start with a direct message.",
+      fa: "برای تدریس انگلیسی با مدرس دارنده مدرک CELTA، IELTS، TOEFL، آزمون‌های کمبریج، PTE، Duolingo، TOEIC، OET، LanguageCert، CELPIP، CAEL، GRE، GMAT، SAT، ACT، MSRT، TOLIMO، زبان تخصصی، سیستم‌های یادگیری با هوش مصنوعی یا پروژه آموزشی، با یک پیام مستقیم شروع کن.",
     },
   },
 };

@@ -92,8 +92,9 @@ export const siteConfig = {
     "Ali Esfandiari Rad",
     "Ali Rad",
     "Ali Rad English teacher",
-    "Cambridge CELTA Holder",
-    "CELTA Holder English tutor",
+    "Cambridge CELTA-qualified English teacher",
+    "CELTA-qualified English tutor",
+    "CELTA-certified English tutor",
     "English coaching",
     "English teacher with 15 years experience",
     "AI learning systems",
@@ -153,8 +154,8 @@ export const siteConfig = {
   ],
   teacherProfile: {
     yearsOfExperience: "15+",
-    credential: "Cambridge CELTA Holder",
-    credentialFa: "دارنده CELTA کمبریج",
+    credential: "Cambridge CELTA-qualified English teacher",
+    credentialFa: "دارنده مدرک CELTA کمبریج",
     role: "Online English teacher, exam-preparation coach, and AI learning-system designer",
     faRole: "مدرس آنلاین انگلیسی، کوچ آمادگی آزمون و طراح سیستم یادگیری با AI",
     examPrep: [

@@ -9,9 +9,9 @@ import { LocalizedText } from "@/components/site/LocalizedText";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Online English Teacher, CELTA Holder, IELTS, TOEFL, FCE, ESP, GRE & GMAT Coaching",
+  title: "Online English Teacher, CELTA-qualified, IELTS, TOEFL, FCE, ESP, GRE & GMAT Coaching",
   description:
-    "EduPocket by Ali Rad: Cambridge CELTA Holder with 15+ years of English teaching experience in IELTS, TOEFL, Cambridge exams, PTE, Duolingo, TOEIC, OET, GRE, GMAT, specialized English, academic English, and AI-assisted study systems.",
+    "EduPocket by Ali Rad: Cambridge CELTA-qualified English teacher with 15+ years of teaching experience in IELTS, TOEFL, Cambridge exams, PTE, Duolingo, TOEIC, OET, GRE, GMAT, specialized English, academic English, and AI-assisted study systems.",
   keywords: [
     ...siteConfig.seoKeywords,
     "online IELTS teacher",
@@ -98,7 +98,7 @@ const teacherSignals = [
   {
     value: "CELTA",
     label: { en: "Cambridge teaching credential", fa: "مدرک تدریس کمبریج" },
-    text: { en: "Cambridge CELTA Holder approach: clear aims, controlled practice, feedback, and measurable output.", fa: "رویکرد دارنده CELTA کمبریج: هدف روشن، تمرین کنترل‌شده، بازخورد و خروجی قابل سنجش." },
+    text: { en: "Cambridge CELTA-qualified approach: clear aims, controlled practice, feedback, and measurable output.", fa: "رویکرد دارنده مدرک CELTA کمبریج: هدف روشن، تمرین کنترل‌شده، بازخورد و خروجی قابل سنجش." },
     icon: GraduationCap,
   },
   {
@@ -129,7 +129,7 @@ export default function HomePage() {
                 <LocalizedText en="The teacher behind EduPocket" fa="مدرس پشت EduPocket" />
               </p>
               <h2 className="mt-3 text-3xl font-semibold leading-tight text-white sm:text-4xl">
-                <LocalizedText en="Cambridge CELTA Holder, 15+ years, and real exam coaching." fa="دارنده CELTA کمبریج، بیش از ۱۵ سال تجربه، و کوچینگ واقعی آزمون." />
+                <LocalizedText en="Cambridge CELTA-qualified, 15+ years, and real exam coaching." fa="دارنده مدرک CELTA کمبریج، بیش از ۱۵ سال تجربه، و کوچینگ واقعی آزمون." />
               </h2>
               <p className="mt-4 text-sm leading-7 text-slate-300 sm:text-base">
                 <LocalizedText

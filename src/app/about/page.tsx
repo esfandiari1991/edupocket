@@ -8,13 +8,14 @@ import { SectionHeading } from "@/components/site/SectionHeading";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "About Ali Rad - CELTA Holder, IELTS, TOEFL, FCE, ESP, GRE & GMAT Tutor",
+  title: "About Ali Rad - CELTA-qualified English Teacher, IELTS, TOEFL, FCE, ESP, GRE & GMAT Tutor",
   description:
-    "Ali Esfandiari Rad is a Cambridge CELTA Holder with 15+ years of English teaching experience in IELTS, TOEFL, Cambridge exams, PTE, Duolingo, TOEIC, OET, GRE, GMAT, specialized English, academic writing, business English, and AI-assisted learning systems.",
+    "Ali Esfandiari Rad is a Cambridge CELTA-qualified English teacher with 15+ years of experience in IELTS, TOEFL, Cambridge exams, PTE, Duolingo, TOEIC, OET, GRE, GMAT, specialized English, academic writing, business English, and AI-assisted learning systems.",
   keywords: [
     "Ali Esfandiari Rad",
     "Ali Rad",
-    "Cambridge CELTA Holder",
+    "Cambridge CELTA-qualified English teacher",
+    "CELTA-certified English tutor",
     "English teacher 15 years experience",
     "IELTS tutor online",
     "TOEFL iBT teacher",
@@ -43,14 +44,14 @@ export const metadata: Metadata = {
     canonical: "/about",
   },
   openGraph: {
-    title: "About Ali Rad - CELTA Holder and EduPocket Founder",
+    title: "About Ali Rad - CELTA-qualified English Teacher and EduPocket Founder",
     description: "15+ years of English teaching, exam coaching, specialized English, Cambridge CELTA training, and AI-assisted learning-system design.",
     url: "/about",
   },
   twitter: {
     card: "summary_large_image",
-    title: "About Ali Rad | CELTA Holder | EduPocket",
-    description: "Cambridge CELTA Holder with 15+ years of IELTS, TOEFL, Cambridge exams, PTE, Duolingo, TOEIC, OET, GRE, GMAT, specialized English, and academic English coaching experience.",
+    title: "About Ali Rad | CELTA-qualified English Teacher | EduPocket",
+    description: "Cambridge CELTA-qualified English teacher with 15+ years of IELTS, TOEFL, Cambridge exams, PTE, Duolingo, TOEIC, OET, GRE, GMAT, specialized English, and academic English coaching experience.",
   },
 };
 
@@ -62,7 +63,7 @@ const strengths = [
   },
   {
     title: { en: "Cambridge CELTA", fa: "CELTA کمبریج" },
-    text: { en: "CELTA Holder teaching habits: clear lesson aims, learner-centered practice, useful feedback, and measurable progress.", fa: "رویکرد دارنده CELTA: هدف روشن، تمرین زبان‌آموزمحور، بازخورد کاربردی و پیشرفت قابل سنجش." },
+    text: { en: "CELTA-qualified teaching habits: clear lesson aims, learner-centered practice, useful feedback, and measurable progress.", fa: "رویکرد دارنده مدرک CELTA: هدف روشن، تمرین زبان‌آموزمحور، بازخورد کاربردی و پیشرفت قابل سنجش." },
     icon: Award,
   },
   {
@@ -131,8 +132,8 @@ export default function AboutPage() {
         title={<LocalizedText en="About Ali Rad" fa="درباره علی راد" />}
         description={
           <LocalizedText
-            en="EduPocket is the public learning library of Ali Esfandiari Rad: English teacher, computer engineer, Arabic teacher, AI practitioner, Cambridge CELTA Holder, online tutor, and language coach."
-            fa="EduPocket کتابخانه عمومی یادگیری علی اسفندیاری راد است: مدرس انگلیسی، مهندس کامپیوتر، مدرس عربی، فعال در هوش مصنوعی، دارنده CELTA کمبریج، مدرس آنلاین و کوچ زبان."
+            en="EduPocket is the public learning library of Ali Esfandiari Rad: CELTA-qualified English teacher, computer engineer, Arabic teacher, AI practitioner, online tutor, and language coach."
+            fa="EduPocket کتابخانه عمومی یادگیری علی اسفندیاری راد است: مدرس انگلیسی دارنده مدرک CELTA کمبریج، مهندس کامپیوتر، مدرس عربی، فعال در هوش مصنوعی، مدرس آنلاین و کوچ زبان."
           />
         }
       />

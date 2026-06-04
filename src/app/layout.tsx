@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.canonicalUrl),
   applicationName: siteConfig.name,
   title: {
-    default: `${siteConfig.name} - CELTA Holder, IELTS, TOEFL, FCE, ESP, GRE & GMAT Coaching`,
+    default: `${siteConfig.name} - CELTA-qualified English Teacher, IELTS, TOEFL, FCE, ESP, GRE & GMAT Coaching`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
@@ -86,7 +86,7 @@ export const metadata: Metadata = {
     type: "website",
     url: siteConfig.canonicalUrl,
     siteName: siteConfig.name,
-    title: `${siteConfig.name} - CELTA Holder, IELTS, TOEFL, FCE, ESP, GRE & GMAT Coaching`,
+    title: `${siteConfig.name} - CELTA-qualified English Teacher, IELTS, TOEFL, FCE, ESP, GRE & GMAT Coaching`,
     description: siteConfig.description,
     locale: "en_US",
     alternateLocale: ["fa_IR"],
@@ -101,7 +101,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.name} - CELTA Holder, IELTS, TOEFL, FCE, ESP, GRE & GMAT Coaching`,
+    title: `${siteConfig.name} - CELTA-qualified English Teacher, IELTS, TOEFL, FCE, ESP, GRE & GMAT Coaching`,
     description: siteConfig.description,
     images: ["/twitter-image"],
   },

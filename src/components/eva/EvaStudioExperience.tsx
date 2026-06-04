@@ -6,6 +6,7 @@ import {
   BarChart3,
   BookOpen,
   Check,
+  CheckCircle2,
   ChevronRight,
   CircleCheck,
   Database,
@@ -34,6 +35,7 @@ import {
   UserCheck,
   Users,
   Volume2,
+  type LucideIcon,
 } from "lucide-react";
 import type { EvaBooklet, EvaBookletChapter, EvaBookletPage, EvaBookletStack } from "@/lib/eva-private-content";
 import { buildEvaLearningDatabase, evaSeedUsers, evaUserStorageKey, normalizeStoredState, type EvaSeedUser, type EvaStoredStudioState, type EvaUserId } from "@/lib/eva-learning-db";
@@ -52,6 +54,12 @@ const legacyStorageKey = "edupocket-eva-studio-v1";
 const levelOrder = ["Supported", "Independent", "Challenging", "Critical Thinking", "Portfolio"];
 type EvaMaterialExamFilter = "All" | EvaMaterialItem["exam"];
 const materialExamFilters: EvaMaterialExamFilter[] = ["All", "IELTS", "TOEFL", "EduPocket"];
+type ReaderLensId = "close-read" | "exam" | "lexis" | "speaking";
+type ReaderLensCard = {
+  label: string;
+  title: string;
+  text: string;
+};
 
 type StudyLane = {
   id: string;
@@ -258,8 +266,170 @@ const materialTrackContracts: Record<EvaMaterialTrack, { output: string; savedAs
   },
 };
 
+const readerLenses: Array<{
+  id: ReaderLensId;
+  title: string;
+  description: string;
+  icon: LucideIcon;
+}> = [
+  {
+    id: "close-read",
+    title: "Close Read",
+    description: "Understand the page before answering.",
+    icon: BookOpen,
+  },
+  {
+    id: "exam",
+    title: "Exam Lens",
+    description: "Turn the page into IELTS/TOEFL-style work.",
+    icon: Timer,
+  },
+  {
+    id: "lexis",
+    title: "Lexis Builder",
+    description: "Extract reusable vocabulary and chunks.",
+    icon: Volume2,
+  },
+  {
+    id: "speaking",
+    title: "Speaking Rehearsal",
+    description: "Prepare a short spoken response.",
+    icon: Mic2,
+  },
+];
+
+const readerTermStopWords = new Set([
+  "about",
+  "after",
+  "again",
+  "answer",
+  "before",
+  "between",
+  "chapter",
+  "checkbox",
+  "english",
+  "example",
+  "field",
+  "should",
+  "sentence",
+  "teacher",
+  "through",
+  "translation",
+  "useful",
+  "would",
+]);
+
 function unique(values: string[]) {
   return Array.from(new Set(values.filter(Boolean)));
+}
+
+function extractReaderTerms(page: EvaBookletPage) {
+  return unique(
+    page.blocks
+      .join(" ")
+      .replace(/[^A-Za-z'-]+/g, " ")
+      .split(/\s+/)
+      .map((word) => word.replace(/^'+|'+$/g, "").trim())
+      .filter((word) => word.length >= 6)
+      .filter((word) => !readerTermStopWords.has(word.toLowerCase())),
+  ).slice(0, 12);
+}
+
+function readerActivityToken(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function readerLensActivityKey(pageId: string, lens: ReaderLensId, title: string) {
+  return `reader-lens:${pageId}:${lens}:${readerActivityToken(title)}`;
+}
+
+function readerTermActivityKey(pageId: string, term: string) {
+  return `reader-term:${pageId}:${readerActivityToken(term)}`;
+}
+
+function buildReaderLensCards(page: EvaBookletPage, lens: ReaderLensId, terms: string[]): ReaderLensCard[] {
+  const termList = terms.length ? terms.slice(0, 6).join(", ") : page.skillTags.slice(0, 5).join(", ");
+
+  if (lens === "exam") {
+    return [
+      {
+        label: "IELTS/TOEFL reading",
+        title: "Main-idea answer",
+        text: `Read page ${String(page.page).padStart(3, "0")} and answer: What is the central purpose of "${page.title}"? Write 2-3 sentences and quote one phrase from the page as evidence.`,
+      },
+      {
+        label: "Exam skill",
+        title: "Inference check",
+        text: `Choose one sentence from this page and explain what it implies about ${page.chapterTitle}. Keep the answer concise and evidence-based.`,
+      },
+      {
+        label: "Timed output",
+        title: "Paragraph transfer",
+        text: `In 8 minutes, write one IELTS/TOEFL-style paragraph using this page as the source idea. Include a topic sentence, one example, and one final implication.`,
+      },
+    ];
+  }
+
+  if (lens === "lexis") {
+    return [
+      {
+        label: "Vocabulary",
+        title: "Priority terms",
+        text: `Work with these page terms: ${termList}. Define each in simple English, then write one natural sentence connected to ${page.chapterTitle}.`,
+      },
+      {
+        label: "Collocation",
+        title: "Chunk builder",
+        text: `Find two useful word partnerships on this page. Turn each into a reusable speaking or writing chunk.`,
+      },
+      {
+        label: "Pronunciation",
+        title: "Stress and shadowing",
+        text: `Listen to the page, then shadow the sentence that feels hardest. Mark the stressed words and repeat it twice.`,
+      },
+    ];
+  }
+
+  if (lens === "speaking") {
+    return [
+      {
+        label: "Solo speaking",
+        title: "60-second response",
+        text: `Speak for 60 seconds: What does this page teach, and how could Eva use it in a real situation? Use one phrase from the page.`,
+      },
+      {
+        label: "Clarity",
+        title: "Teacher-check sentence",
+        text: `Prepare one clear sentence that Ali could check for grammar, pronunciation, and naturalness.`,
+      },
+      {
+        label: "Shadowing",
+        title: "Repeat with control",
+        text: `Listen to the page summary, pause, then repeat it more slowly with clear sentence stress.`,
+      },
+    ];
+  }
+
+  return [
+    {
+      label: "Comprehension",
+      title: "Purpose first",
+      text: `Before doing any exercise, write the purpose of page ${String(page.page).padStart(3, "0")} in one sentence. Use your own words.`,
+    },
+    {
+      label: "Evidence",
+      title: "Find the proof",
+      text: `Choose one line from the page that proves the main idea. Explain why that line matters for the chapter outcome.`,
+    },
+    {
+      label: "Next action",
+      title: "One useful output",
+      text: `Create one small output from this page: a sentence, a translation note, a vocabulary card, or a question for Ali.`,
+    },
+  ];
 }
 
 function pageMatches(page: EvaBookletPage, query: string) {
@@ -374,6 +544,7 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
   const [activeExamId, setActiveExamId] = useState("ielts-reading-ministry-planning");
   const [activeMaterialTrack, setActiveMaterialTrack] = useState<EvaMaterialTrack>("reading");
   const [activeMaterialId, setActiveMaterialId] = useState(evaMaterialCollections[0]?.items[0]?.id ?? "");
+  const [readerLens, setReaderLens] = useState<ReaderLensId>("close-read");
   const [activeTeacherTargetId, setActiveTeacherTargetId] = useState<EvaUserId>("eva");
   const [skillFilter, setSkillFilter] = useState("All");
   const [query, setQuery] = useState("");
@@ -801,6 +972,12 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
       .filter((page): page is EvaBookletPage => Boolean(page))
       .slice(0, 6);
   }, [activeLane, activePage, booklet.pages, stackPages]);
+  const activeReaderTerms = useMemo(() => extractReaderTerms(activePage), [activePage]);
+  const readerLensCards = useMemo(() => buildReaderLensCards(activePage, readerLens, activeReaderTerms), [activePage, activeReaderTerms, readerLens]);
+  const activeReaderTrackedCount = useMemo(
+    () => readerLensCards.filter((card) => activityChecks[readerLensActivityKey(activePage.id, readerLens, card.title)]).length,
+    [activePage.id, activityChecks, readerLens, readerLensCards],
+  );
 
   const coverage = useMemo(() => {
     const transformedPageIds = new Set(learningDatabase.activities.flatMap((activity) => activity.sourcePageIds));
@@ -1162,6 +1339,22 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
   function updateActiveDraft(value: string) {
     setNotes((current) => ({ ...current, [activePage.id]: value }));
     setWritingDrafts((current) => ({ ...current, [activePage.id]: value }));
+  }
+
+  function saveReaderLensCard(card: ReaderLensCard) {
+    updateActiveDraft([activeNote, `[${card.label}] ${card.title}`, card.text].filter(Boolean).join("\n\n"));
+    setActivityChecks((current) => ({
+      ...current,
+      [readerLensActivityKey(activePage.id, readerLens, card.title)]: true,
+    }));
+  }
+
+  function saveReaderVocabularySeed(term: string) {
+    updateActiveDraft([activeNote, `Vocabulary seed: ${term}`, `Meaning: \nExample sentence connected to ${activePage.chapterTitle}: `].filter(Boolean).join("\n\n"));
+    setActivityChecks((current) => ({
+      ...current,
+      [readerTermActivityKey(activePage.id, term)]: true,
+    }));
   }
 
   function updateMaterialDraft(value: string) {
@@ -1987,6 +2180,38 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                       Practice this page
                       <ChevronRight aria-hidden="true" className="size-4" />
                     </button>
+                    <button
+                      type="button"
+                      onClick={() => speakStudioText(`${activePage.title}. ${activePage.summary}. ${activeBlocks.slice(0, 8).join(". ")}`, `tts-page-${activePage.id}`, false, 0.82)}
+                      className="inline-flex min-h-10 items-center justify-center gap-2 rounded-[8px] border border-white/10 px-3 text-sm font-semibold text-slate-200 transition hover:border-sky-200/40 hover:text-sky-100 focus:outline-none focus:ring-2 focus:ring-sky-300/40"
+                    >
+                      <Volume2 aria-hidden="true" className="size-4" />
+                      Listen
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => speakStudioText(`${activePage.title}. ${activePage.summary}. ${activeBlocks.slice(0, 8).join(". ")}`, `tts-page-${activePage.id}`, true, 0.72)}
+                      className="inline-flex min-h-10 items-center justify-center gap-2 rounded-[8px] border border-white/10 px-3 text-sm font-semibold text-slate-200 transition hover:border-sky-200/40 hover:text-sky-100 focus:outline-none focus:ring-2 focus:ring-sky-300/40"
+                    >
+                      <Repeat2 aria-hidden="true" className="size-4" />
+                      Shadow
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setReviewQueue((current) => ({
+                          ...current,
+                          [activePage.id]: !current[activePage.id],
+                        }))
+                      }
+                      className={cn(
+                        "inline-flex min-h-10 items-center justify-center gap-2 rounded-[8px] border px-3 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-amber-300/40",
+                        reviewQueue[activePage.id] ? "border-amber-200 bg-amber-200 text-slate-950" : "border-white/10 text-slate-200 hover:border-amber-300/35 hover:text-amber-100",
+                      )}
+                    >
+                      <Star aria-hidden="true" className="size-4" />
+                      {reviewQueue[activePage.id] ? "In review" : "Review"}
+                    </button>
                   </div>
                 </div>
 
@@ -2019,6 +2244,99 @@ export function EvaStudioExperience({ booklet, activeUser, persistenceMode }: Ev
                   <p className="mt-2 text-sm leading-7 text-slate-300">
                     This view is intentionally read-only. Use it like an ebook; use Practice this page, Material Library, Exam Mode, or Writing Vault when you want saved answers and progress tracking.
                   </p>
+                </div>
+
+                <div className="mt-5 rounded-[8px] border border-sky-200/15 bg-sky-300/[0.045] p-4">
+                  <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+	                    <div>
+	                      <p className="text-xs font-semibold uppercase text-sky-100">Interactive study lens</p>
+	                      <h4 className="mt-2 text-lg font-semibold text-white">Turn this source page into active work</h4>
+	                      <p className="mt-1 text-sm leading-6 text-slate-400">Each lens uses the current page content, then saves useful prompts to this member&apos;s notes.</p>
+	                    </div>
+	                    <div className="flex flex-col gap-2">
+	                      <div className="inline-flex w-fit items-center gap-2 rounded-[8px] border border-white/10 bg-slate-950/35 px-3 py-2 text-xs font-semibold text-slate-300">
+	                        <CheckCircle2 aria-hidden="true" className="size-4 text-emerald-200" />
+	                        {activeReaderTrackedCount}/{readerLensCards.length} tracked
+	                      </div>
+	                      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+	                        {readerLenses.map((lens) => {
+	                          const Icon = lens.icon;
+	                          const active = readerLens === lens.id;
+
+	                          return (
+	                            <button
+	                              key={lens.id}
+	                              type="button"
+	                              onClick={() => setReaderLens(lens.id)}
+	                              className={cn(
+	                                "rounded-[8px] border p-3 text-start transition focus:outline-none focus:ring-2 focus:ring-sky-300/40",
+	                                active ? "border-sky-200/55 bg-sky-300/14 text-white" : "border-white/10 bg-slate-950/30 text-slate-300 hover:border-sky-200/35",
+	                              )}
+	                            >
+	                              <span className="flex items-center gap-2 text-sm font-semibold">
+	                                <Icon aria-hidden="true" className="size-4 text-sky-100" />
+	                                {lens.title}
+	                              </span>
+	                              <span className="mt-1 block text-xs leading-5 text-slate-500">{lens.description}</span>
+	                            </button>
+	                          );
+	                        })}
+	                      </div>
+	                    </div>
+	                  </div>
+
+	                  <div className="mt-4 grid gap-3 lg:grid-cols-3">
+	                    {readerLensCards.map((card) => {
+	                      const tracked = Boolean(activityChecks[readerLensActivityKey(activePage.id, readerLens, card.title)]);
+
+	                      return (
+	                        <div key={`${readerLens}-${card.title}`} className="rounded-[8px] border border-white/10 bg-slate-950/35 p-4">
+	                          <p className="text-xs font-semibold uppercase text-sky-100">{card.label}</p>
+	                          <h5 className="mt-2 text-base font-semibold leading-6 text-white">{card.title}</h5>
+	                          <p className="mt-2 text-sm leading-7 text-slate-300">{card.text}</p>
+	                          <button
+	                            type="button"
+	                            onClick={() => saveReaderLensCard(card)}
+	                            className={cn(
+	                              "mt-4 inline-flex min-h-10 items-center justify-center gap-2 rounded-[8px] border px-3 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-amber-300/40",
+	                              tracked ? "border-emerald-200/55 bg-emerald-200/12 text-emerald-100" : "border-white/10 text-slate-200 hover:border-amber-300/35 hover:text-amber-100",
+	                            )}
+	                          >
+	                            {tracked ? <CheckCircle2 aria-hidden="true" className="size-4" /> : <NotebookPen aria-hidden="true" className="size-4" />}
+	                            {tracked ? "Tracked in notes" : "Save + track"}
+	                          </button>
+	                        </div>
+	                      );
+	                    })}
+	                  </div>
+
+                  <div className="mt-4 rounded-[8px] border border-white/10 bg-white/[0.035] p-3">
+                    <p className="text-xs font-semibold uppercase text-slate-500">Page vocabulary seeds</p>
+	                    <div className="mt-2 flex flex-wrap gap-2">
+	                      {activeReaderTerms.length ? (
+	                        activeReaderTerms.map((term) => {
+	                          const tracked = Boolean(activityChecks[readerTermActivityKey(activePage.id, term)]);
+
+	                          return (
+	                            <button
+	                              key={term}
+	                              type="button"
+	                              onClick={() => saveReaderVocabularySeed(term)}
+	                              className={cn(
+	                                "rounded-[8px] border px-3 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-sky-300/40",
+	                                tracked ? "border-emerald-200/45 bg-emerald-200/10 text-emerald-100" : "border-white/10 bg-slate-950/35 text-slate-200 hover:border-sky-200/35 hover:text-sky-100",
+	                              )}
+	                            >
+	                              {tracked ? "✓ " : ""}
+	                              {term}
+	                            </button>
+	                          );
+	                        })
+	                      ) : (
+                        <span className="text-sm leading-6 text-slate-400">No strong vocabulary seeds were extracted from this page.</span>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 <div className="mt-5 grid gap-3">

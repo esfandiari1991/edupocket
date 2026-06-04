@@ -108,8 +108,8 @@ Previous local prototype/workspace was found at /Users/ali/Documents/Claude/Proj
 - Latest local product update:
   - read-only ebook reader added inside `/eva-digital-booklet/studio`
   - all 298 imported workbook pages can be read from the protected studio
-  - ebook search, chapter navigation, page navigation, previous/next controls, and practice jumps added
-  - CELTA wording changed to CELTA Holder
+  - ebook search, chapter navigation, page navigation, previous/next controls, TTS/shadowing, review toggles, interactive study lenses, save-and-track prompts, vocabulary seeds, and practice jumps added
+  - CELTA wording changed to CELTA-qualified English teacher after reviewing official and peer-profile wording
   - English exam coverage expanded across SEO, homepage, about page, structured data, and contact copy
 - Product structure added:
   - learning stacks
