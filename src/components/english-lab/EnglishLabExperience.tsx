@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { ArrowRight, Check, CheckCircle2, Eye, EyeOff, LockKeyhole, RefreshCw, Sparkles, Timer, X } from "lucide-react";
-import { defaultLabModule, englishLevels, labModules, skillTracks, type EnglishLevel, type EnglishSkill, type LabModule } from "@/lib/english-lab";
+import { defaultLabModule, englishLabStats, englishLevels, labModules, skillTracks, type EnglishLevel, type EnglishSkill, type LabModule } from "@/lib/english-lab";
 import { cn } from "@/lib/utils";
 import { ContactPanel } from "@/components/site/ContactPanel";
 import { LocalizedText } from "@/components/site/LocalizedText";
@@ -90,15 +90,15 @@ export function EnglishLabExperience() {
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-8 text-slate-300">
               <LocalizedText
-                en="Grammar, vocabulary, reading, listening-style tasks, Use of English, writing prompts, exam habits, and a fast level sample. The structure is benchmarked against serious English-practice sites, but every exercise here is original EduPocket material."
-                fa="گرامر، واژگان، ریدینگ، تمرین‌های شبیه شنیداری، کاربرد انگلیسی، نوشتن، عادت‌های آزمونی و یک نمونه تعیین سطح سریع. ساختار بر اساس سایت‌های جدی تمرین انگلیسی الگوبرداری شده، اما تمرین‌ها محتوای اصلی EduPocket هستند."
+                en="Grammar, vocabulary, reading, listening-style tasks, Use of English, writing prompts, exam habits, and level checks. The learning architecture is benchmarked against serious English-practice sites, but every exercise here is original EduPocket material."
+                fa="گرامر، واژگان، ریدینگ، تمرین‌های شبیه شنیداری، کاربرد انگلیسی، نوشتن، عادت‌های آزمونی و تعیین سطح. معماری یادگیری بر اساس سایت‌های جدی تمرین انگلیسی الگوبرداری شده، اما تمرین‌ها محتوای اصلی EduPocket هستند."
               />
             </p>
             <div className="mt-7 grid gap-3 sm:grid-cols-3">
               {[
-                { en: "40-50% starter scale", fa: "نسخه شروع ۴۰ تا ۵۰ درصدی" },
-                { en: "instant feedback", fa: "بازخورد فوری" },
-                { en: "AI review cues", fa: "نشانه‌های مرور با AI" },
+                { en: `${englishLabStats.readyModules} ready modules`, fa: `${englishLabStats.readyModules} ماژول آماده` },
+                { en: `${englishLabStats.questions} original questions`, fa: `${englishLabStats.questions} سؤال original` },
+                { en: `${englishLabStats.levels} levels / ${englishLabStats.skills} skills`, fa: `${englishLabStats.levels} سطح / ${englishLabStats.skills} مهارت` },
               ].map((item) => (
                 <div key={item.en} className="motion-micro-tile rounded-[8px] border border-white/10 bg-slate-950/30 px-4 py-3 text-sm font-semibold text-slate-200">
                   <LocalizedText en={item.en} fa={item.fa} />
